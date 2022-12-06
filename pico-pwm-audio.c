@@ -13,6 +13,16 @@
  * for converting audio samples into static arrays. 
  */
 #include "./Csine.h"
+/* could include more musical notes and store so long as they have the same WAV_DATA_LENGTH then it should be fine, 
+would also have to change the WAV_DATA[] name for each but this could cause memory problems if the files are too big.
+possible solution to that is to have a set number of values dedicated for each wave and have make a variable to store 
+bottom positon and top positons for these, say we dedicate 100 values to a note then we could say first is C so top would be 0(bottom)
+Then 1*100 (top) instead of "if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { " it would be if(wav_positon<(top<<3)) and 
+else {
+        // reset to start
+        "wav_position = 0;" would be "wav_position = bottom" 
+when we want to change note we could change the top by making it equal to bottom then multiply the bottom by 2 so would be 200 
+say c# would be top=100, bottom=200 on and on for all notes obviously 100 is a low amout of values */
 int wav_position = 0;
 
 /*
