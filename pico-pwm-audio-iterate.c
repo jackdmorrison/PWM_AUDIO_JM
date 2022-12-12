@@ -9,7 +9,7 @@
 #include "./pianonotes.h"
 // Audio PIN is to match some of the design guide shields. 
 #define AUDIO_PIN 28  // you can change this to whatever you like
-int *WAV_DATA_LENGTHS[]={&C4_WAV_DATA_LENGTH,&C5_WAV_DATA_LENGTH,&C6_WAV_DATA_LENGTH,&G3_WAV_DATA_LENGTH,&G4_WAV_DATA_LENGTH,&G5_WAV_DATA_LENGTH,&G6_WAV_DATA_LENGTH};
+#define *WAV_DATA_LENGTHS[]={&C4_WAV_DATA_LENGTH,&C5_WAV_DATA_LENGTH,&C6_WAV_DATA_LENGTH,&G3_WAV_DATA_LENGTH,&G4_WAV_DATA_LENGTH,&G5_WAV_DATA_LENGTH,&G6_WAV_DATA_LENGTH};
 
 /* 
  * This include brings in static arrays which contain audio samples. 
