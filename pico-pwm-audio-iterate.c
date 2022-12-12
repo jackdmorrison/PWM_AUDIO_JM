@@ -6,6 +6,10 @@
  
 // Audio PIN is to match some of the design guide shields. 
 #define AUDIO_PIN 28  // you can change this to whatever you like
+#include "./pianonotes.h"
+// Audio PIN is to match some of the design guide shields. 
+#define AUDIO_PIN 28  // you can change this to whatever you like
+int *WAV_DATA_LENGTHS[]={&C4_WAV_DATA_LENGTH,&C5_WAV_DATA_LENGTH,&C6_WAV_DATA_LENGTH,&G3_WAV_DATA_LENGTH,&G4_WAV_DATA_LENGTH,&G5_WAV_DATA_LENGTH,&G6_WAV_DATA_LENGTH};
 
 /* 
  * This include brings in static arrays which contain audio samples. 
@@ -24,7 +28,7 @@ else {
 when we want to change note we could change the top by making it equal to bottom then multiply the bottom by 2 so would be 200 
 say c# would be top=100, bottom=200 on and on for all notes obviously 100 is a low amout of values */
 int wav_position = 0;
-
+int i=0;
 /*
  * PWM Interrupt Handler which outputs PWM level and advances the 
  * current sample. 
@@ -35,14 +39,19 @@ int wav_position = 0;
  */
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));    
-    if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
+    if (wav_position < (*WAV_DATA_LENGTHS[i]<<3) - 1) { 
         // set pwm level 
         // allow the pwm value to repeat for 8 cycles this is >>3 
         pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[wav_position>>3]);  
         wav_position++;
-    } else {
-        // reset to start
+    }
+    else if(wav_position < (WAV_DATA_LENGTH<<3) - 1) {
         wav_position = 0;
+        i=0;
+    }
+    else {
+        // reset to start
+        i++;
     }
 }
 
