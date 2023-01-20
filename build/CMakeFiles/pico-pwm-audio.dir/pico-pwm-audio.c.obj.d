@@ -60,4 +60,4 @@ CMakeFiles/pico-pwm-audio.dir/pico-pwm-audio.c.obj: \
  /home/vboxuser/raspberry-pi-pico/pico/pico-sdk/src/rp2040/hardware_structs/include/hardware/structs/pwm.h \
  /home/vboxuser/raspberry-pi-pico/pico/pico-sdk/src/rp2040/hardware_regs/include/hardware/regs/pwm.h \
  /home/vboxuser/raspberry-pi-pico/pico/pico-sdk/src/rp2_common/hardware_sync/include/hardware/sync.h \
- /home/vboxuser/raspberry-pi-pico/Workspace/PWM_AUDIO_JM/New.h
+ /home/vboxuser/raspberry-pi-pico/Workspace/PWM_AUDIO_JM/Csine.h
