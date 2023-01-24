@@ -21,11 +21,12 @@ float clockDivChnage( float curFrequency){
 }
 
 void pwm_interrupt_handler() {
-    pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));    
-    if (wav_position < round(WAV_DATA_LENGTH*clkDiv) - 1) { 
+    pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
+    int relativePos= round(wav_position/clkDiv);  
+    if (relativePos < WAV_DATA_LENGTH - 1) { 
         // set pwm level 
         // allow the pwm value to repeat for 8 cycles this is >>3 
-        pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[round(wav_position/clkDiv)]);  
+        pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[relativePos]);  
         wav_position++;
     } else {
         // reset to start
