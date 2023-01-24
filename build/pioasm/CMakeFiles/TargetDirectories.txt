@@ -1,3 +1,0 @@
-/home/vboxuser/raspberry-pi-pico/Workspace/PWM_AUDIO_JM/build/pioasm/CMakeFiles/pioasm.dir
-/home/vboxuser/raspberry-pi-pico/Workspace/PWM_AUDIO_JM/build/pioasm/CMakeFiles/edit_cache.dir
-/home/vboxuser/raspberry-pi-pico/Workspace/PWM_AUDIO_JM/build/pioasm/CMakeFiles/rebuild_cache.dir
