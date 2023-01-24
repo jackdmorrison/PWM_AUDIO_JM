@@ -13,36 +13,36 @@ int wav_position = 0;
 int freqNum=0;
 int timeInterval=100;
 int interval=0;
-float frequencies[]={128,256,284};
+float frequencies=512;
 float frequency=256;
 float clkDiv=2.0f;
-float clockDivChnage( float curFrequency){
+float clockDivChange( float curFrequency){
     return (curFrequency/frequency)*2.0f;
 }
 
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    int relativePos= round(wav_position/clkDiv);  
-    if (relativePos < WAV_DATA_LENGTH - 1) { 
+    //int relativePos= round(wav_position/clkDiv);  
+    if (wav_position < WAV_DATA_LENGTH<<3 - 1) { 
         // set pwm level 
         // allow the pwm value to repeat for 8 cycles this is >>3 
-        pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[relativePos]);  
+        pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[wav_position>>3]);  
         wav_position++;
     } else {
         // reset to start
         wav_position = 0;
-        if(interval==timeInterval){
-            interval=0;
-            if(freqNum==FreqCount){
-                freqNum=0;
-                clkDiv=clockDivChnage(frequencies[freqNum]);
-            } else {
-                freqNum ++;
-                clkDiv=clockDivChnage(frequencies[freqNum]);
-            }
-        } else {
-            interval++;
-        }
+        // if(interval==timeInterval){
+        //     interval=0;
+        //     if(freqNum==FreqCount){
+        //         freqNum=0;
+        //         clkDiv=clockDivChnage(frequencies[freqNum]);
+        //     } else {
+        //         freqNum ++;
+        //         clkDiv=clockDivChnage(frequencies[freqNum]);
+        //     }
+        // } else {
+        //     interval++;
+        // }
         
     }
 }
@@ -66,7 +66,7 @@ int main(void) {
 
     // Setup PWM for audio output
     pwm_config config = pwm_get_default_config();
-
+    clkDiv=clockDivChange(frequencies);
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, 250); 
     pwm_init(audio_pin_slice, &config, true);
