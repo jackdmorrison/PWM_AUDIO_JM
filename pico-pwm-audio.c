@@ -20,7 +20,7 @@ int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
 float currfrequency=WAV_FREQUENCY;
 float clkDiv=2.0f;
 float clockDivChange( float newFrequency){
-    return (newFrequency/currfrequency)*2.0f;
+    return (currfrequency/newFrequency)*2.0f;
 }
 
 void pwm_interrupt_handler() {
