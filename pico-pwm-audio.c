@@ -8,21 +8,23 @@
 // Audio PIN is to match some of the design guide shields. 
 #define AUDIO_PIN 28  // you can change this to whatever you like
 #include "Csine.h"
-int FreqCount = 2;
+
 int wav_position = 0;
 int freqNum=0;
-int timeInterval=100;
 int interval=0;
-float frequencies=512;
-float frequency=256;
+
+int timeInterval=1000;
+
+float frequencies[]={512,448,384,320,256,192,128};
+int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]));
+float currfrequency=WAV_FREQUENCY;
 float clkDiv=2.0f;
-float clockDivChange( float curFrequency){
-    return (curFrequency/frequency)*2.0f;
+float clockDivChange( float newFrequency){
+    return (newFrequency/currfrequency)*2.0f;
 }
 
 void pwm_interrupt_handler() {
-    pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    //int relativePos= round(wav_position/clkDiv);  
+    pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN)); 
     if (wav_position < WAV_DATA_LENGTH<<3 - 1) { 
         // set pwm level 
         // allow the pwm value to repeat for 8 cycles this is >>3 
@@ -31,18 +33,23 @@ void pwm_interrupt_handler() {
     } else {
         // reset to start
         wav_position = 0;
-        // if(interval==timeInterval){
-        //     interval=0;
-        //     if(freqNum==FreqCount){
-        //         freqNum=0;
-        //         clkDiv=clockDivChnage(frequencies[freqNum]);
-        //     } else {
-        //         freqNum ++;
-        //         clkDiv=clockDivChnage(frequencies[freqNum]);
-        //     }
-        // } else {
-        //     interval++;
-        // }
+        if(interval==timeInterval){
+            interval=0;
+            if(freqNum==FreqCount){
+                freqNum=0;
+                clkDiv=clockDivChnage(frequencies[freqNum]);
+            } else {
+                freqNum ++;
+                clkDiv=clockDivChnage(frequencies[freqNum]);
+            }
+            pwm_config config = pwm_get_default_config();
+            pwm_config_set_clkdiv(&config, clkDiv); 
+            pwm_config_set_wrap(&config, 250); 
+            pwm_init(audio_pin_slice, &config, true);
+            pwm_set_gpio_level(AUDIO_PIN, 0);
+        } else {
+            interval++;
+        }
         
     }
 }
@@ -66,8 +73,7 @@ int main(void) {
 
     // Setup PWM for audio output
     pwm_config config = pwm_get_default_config();
-    clkDiv=clockDivChange(frequencies);
-    pwm_config_set_clkdiv(&config, 2.0); 
+    pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, 250); 
     pwm_init(audio_pin_slice, &config, true);
 
