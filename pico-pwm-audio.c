@@ -37,11 +37,12 @@ void pwm_interrupt_handler() {
             interval=0;
             if(freqNum==FreqCount){
                 freqNum=0;
-                clkDiv=clockDivChnage(frequencies[freqNum]);
+                clkDiv=clockDivChange(frequencies[freqNum]);
             } else {
                 freqNum ++;
-                clkDiv=clockDivChnage(frequencies[freqNum]);
+                clkDiv=clockDivChange(frequencies[freqNum]);
             }
+            int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
             pwm_config config = pwm_get_default_config();
             pwm_config_set_clkdiv(&config, clkDiv); 
             pwm_config_set_wrap(&config, 250); 
