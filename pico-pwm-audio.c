@@ -16,7 +16,7 @@ int interval=0;
 int timeInterval=1000;
 
 float frequencies[]={512,448,384,320,256,192,128};
-int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]));
+int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
 float currfrequency=WAV_FREQUENCY;
 float clkDiv=2.0f;
 float clockDivChange( float newFrequency){
