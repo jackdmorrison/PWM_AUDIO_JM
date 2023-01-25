@@ -67,7 +67,7 @@ int main(void) {
     // Setup PWM for audio output
     pwm_config config = pwm_get_default_config();
     clkDiv=clockDivChange(frequencies);
-    pwm_config_set_clkdiv(&config, clkDiv); 
+    pwm_config_set_clkdiv(&config, 2.0); 
     pwm_config_set_wrap(&config, 250); 
     pwm_init(audio_pin_slice, &config, true);
 
