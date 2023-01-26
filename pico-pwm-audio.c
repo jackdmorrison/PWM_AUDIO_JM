@@ -16,13 +16,13 @@ int timeInterval=75;
 float frequencies[]={512,448,384,320,256,192,128};
 int freqNum=0;
 int interval=0;
-int timeInterval=1000;
+
 int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
 float clkDiv=2.0f;
 float clockDivChange( float newFrequency){
     return (WAV_FREQUENCY/newFrequency)*2.0f;
 }
-int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
+
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN)); 
     if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
@@ -42,7 +42,7 @@ void pwm_interrupt_handler() {
                 freqNum ++;
                 clkDiv=clockDivChange(frequencies[freqNum]);
             }
-            
+            int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
             pwm_config config = pwm_get_default_config();
             pwm_config_set_clkdiv(&config, clkDiv); 
             pwm_config_set_wrap(&config, 250); 
@@ -64,7 +64,7 @@ int main(void) {
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
 
     
-
+    int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
     pwm_set_irq_enabled(audio_pin_slice, true);
