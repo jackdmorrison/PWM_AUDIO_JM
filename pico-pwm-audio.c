@@ -10,19 +10,18 @@
 #include "Csine.h"
 
 int wav_position = 0;
-int freqNum=0;
-int interval=0;
 
-int timeInterval=1000;
 
 float frequencies[]={512,448,384,320,256,192,128};
+int freqNum=0;
+int interval=0;
+int timeInterval=1000;
 int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
-float currfrequency=WAV_FREQUENCY;
 float clkDiv=2.0f;
 float clockDivChange( float newFrequency){
-    return (currfrequency/newFrequency)*2.0f;
+    return (WAV_FREQUENCY/newFrequency)*2.0f;
 }
-
+int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN)); 
     if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
@@ -42,7 +41,7 @@ void pwm_interrupt_handler() {
                 freqNum ++;
                 clkDiv=clockDivChange(frequencies[freqNum]);
             }
-            int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
+            
             pwm_config config = pwm_get_default_config();
             pwm_config_set_clkdiv(&config, clkDiv); 
             pwm_config_set_wrap(&config, 250); 
@@ -63,7 +62,7 @@ int main(void) {
     set_sys_clock_khz(176000, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
 
-    int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
+    
 
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
