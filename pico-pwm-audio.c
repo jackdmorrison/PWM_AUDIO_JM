@@ -9,7 +9,7 @@
 // Audio PIN is to match some of the design guide shields. 
 #define AUDIO_PIN 28  // you can change this to whatever you like
 #define ADC_PIN 26
-#define VIBRATO_PIN 20
+#define VIBRATO_PIN 15
 #include "Csine.h"
 
 int wav_position = 0;
@@ -35,12 +35,12 @@ float clockDivChange( float newFrequency){
 void vibratoHandler(){
     if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE){
         gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE);
-        vibrato=true;
+        if(vibrato){
+            vibrato=false;
+        }else{
+            vibrato=true;
+        }
     }
-}
-void gpio_callback(){
-    vibrato=false;
-    currentF=256;
 }
 void updateClockDiv(float clkDiv){
     int pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
@@ -103,10 +103,10 @@ int main(void) {
     set_sys_clock_khz(176000, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
     //adc_gpio_init(ADC_PIN);
-    //gpio_init(VIBRATO_PIN);
+    gpio_init(VIBRATO_PIN);
     //gpio_set_dir(VIBRATO_PIN,GPIO_IN);
-    //gpio_set_irq_enabled_with_callback(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,&gpio_callback);
-    //gpio_add_raw_irq_handler(VIBRATO_PIN, vibratoHandler);
+    gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE,true);
+    gpio_add_raw_irq_handler(VIBRATO_PIN, vibratoHandler);
     int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
