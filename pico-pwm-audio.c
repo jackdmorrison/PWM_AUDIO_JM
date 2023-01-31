@@ -16,12 +16,15 @@ int wav_position = 0;
 
 int timeInterval=75;
 bool vibrato = false; //vibrato on or off
-float frequencies[]={512,448,384,320,256,192,128};
+float frequencies[]={256};
+float currentF = 256
 int freqNum=0;
 int interval=0;
 int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
 float clkDiv=2.0f;
-
+float vibchangeParam = 0.5f;
+float vibsize = currentF/12;
+bool vibUP=true;
 double sine_wave_y(double x) {
     return sin(x);
 }
@@ -37,38 +40,58 @@ void vibratoHandler(){
 }
 void gpio_callback(){
     vibrato=false;
-    return;
+}
+void updateClockDiv(float clkDiv){
+    int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
+    pwm_config config = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config, clkDiv); 
+    pwm_config_set_wrap(&config, 250); 
+    pwm_init(audio_pin_slice, &config, true);
+    pwm_set_gpio_level(AUDIO_PIN, 0);
 }
 void pwm_interrupt_handler() {
-    pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN)); 
-    if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
+    pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
+    if(vibrato){
+        if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
+            // set pwm level 
+            // allow the pwm value to repeat for 8 cycles this is >>3 
+            pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[wav_position>>3]);  
+            wav_position++;
+        } else {
+            // reset to start
+            wav_position = 0;
+            if(vibUP){
+                if(currentF<frequencies[0]+vibsize){
+                    currentF+=vibchangeParam;
+                } else{
+                    vibUP=false;
+                }
+                clkDiv=clockDivChange(currentF);
+            } else{
+                if(currentF>frequencies[0]-vibsize){
+                    currentF-=vibchangeParam;
+                } else{
+                    vibUP=true;
+                }
+                clkDiv=clockDivChange(currentF);
+            }
+            
+        }
+    }else{
+        if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
         // set pwm level 
         // allow the pwm value to repeat for 8 cycles this is >>3 
         pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[wav_position>>3]);  
         wav_position++;
-    } else {
-        // reset to start
-        wav_position = 0;
-        if(interval==timeInterval){
-            interval=0;
-            if(freqNum==FreqCount){
-                freqNum=0;
-                clkDiv=clockDivChange(frequencies[freqNum]);
-            } else {
-                freqNum ++;
-                clkDiv=clockDivChange(frequencies[freqNum]);
-            }
-            int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
-            pwm_config config = pwm_get_default_config();
-            pwm_config_set_clkdiv(&config, clkDiv); 
-            pwm_config_set_wrap(&config, 250); 
-            pwm_init(audio_pin_slice, &config, true);
-            pwm_set_gpio_level(AUDIO_PIN, 0);
         } else {
-            interval++;
+            // reset to start
+            wav_position = 0;
+            
+            
         }
-        
     }
+    
+    
 }
 
 int main(void) {
