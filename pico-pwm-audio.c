@@ -4,7 +4,7 @@
 #include "hardware/irq.h"  // interrupts
 #include "hardware/pwm.h"  // pwm 
 #include "hardware/sync.h" // wait for interrupt 
-#include "hardware/adc.h"
+//#include "hardware/adc.h"
  
 // Audio PIN is to match some of the design guide shields. 
 #define AUDIO_PIN 28  // you can change this to whatever you like
@@ -17,13 +17,13 @@ int wav_position = 0;
 int timeInterval=75;
 bool vibrato = false; //vibrato on or off
 float frequencies[]={256};
-float currentF = 256
+float currentF = 256;
 int freqNum=0;
 int interval=0;
 int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
 float clkDiv=2.0f;
 float vibchangeParam = 0.5f;
-float vibsize = currentF/12;
+float vibsize = 256/12;
 bool vibUP=true;
 double sine_wave_y(double x) {
     return sin(x);
@@ -34,7 +34,7 @@ float clockDivChange( float newFrequency){
 }
 void vibratoHandler(){
     if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE){
-        gpi_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE);
+        gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE);
         vibrato=true;
     }
 }
@@ -43,11 +43,11 @@ void gpio_callback(){
     currentF=256;
 }
 void updateClockDiv(float clkDiv){
-    int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
+    int pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
     pwm_config config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, 250); 
-    pwm_init(audio_pin_slice, &config, true);
+    pwm_init(pin_slice, &config, true);
     pwm_set_gpio_level(AUDIO_PIN, 0);
 }
 void pwm_interrupt_handler() {
@@ -106,7 +106,7 @@ int main(void) {
     gpio_init(VIBRATO_PIN);
     gpio_set_dir(VIBRATO_PIN,GPIO_IN);
     gpio_set_irq_enabled_with_callback(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,&gpio_callback);
-    gpio_add_raw_irq_handler(VIBRATO_PIN,)
+    gpio_add_raw_irq_handler(VIBRATO_PIN, vibratoHandler);
     int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
