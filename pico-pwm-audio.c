@@ -40,6 +40,7 @@ void vibratoHandler(){
 }
 void gpio_callback(){
     vibrato=false;
+    currentF=256;
 }
 void updateClockDiv(float clkDiv){
     int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
@@ -66,14 +67,14 @@ void pwm_interrupt_handler() {
                 } else{
                     vibUP=false;
                 }
-                clkDiv=clockDivChange(currentF);
+                updateClockDiv(clockDivChange(currentF));
             } else{
                 if(currentF>frequencies[0]-vibsize){
                     currentF-=vibchangeParam;
                 } else{
                     vibUP=true;
                 }
-                clkDiv=clockDivChange(currentF);
+                updateClockDiv(clockDivChange(currentF));
             }
             
         }
