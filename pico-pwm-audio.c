@@ -15,14 +15,14 @@
 int wav_position = 0;
 
 int timeInterval=75;
-bool vibrato = false; //vibrato on or off
+bool vibrato = true; //vibrato on or off
 float frequencies[]={256};
 float currentF = 256;
 int freqNum=0;
 int interval=0;
 int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
 float clkDiv=2.0f;
-float vibchangeParam = 0.5f;
+float vibchangeParam = (265/12)/12;
 float vibsize = 256/12;
 bool vibUP=true;
 double sine_wave_y(double x) {
@@ -103,10 +103,10 @@ int main(void) {
     set_sys_clock_khz(176000, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
     //adc_gpio_init(ADC_PIN);
-    gpio_init(VIBRATO_PIN);
-    gpio_set_dir(VIBRATO_PIN,GPIO_IN);
-    gpio_set_irq_enabled_with_callback(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,&gpio_callback);
-    gpio_add_raw_irq_handler(VIBRATO_PIN, vibratoHandler);
+    //gpio_init(VIBRATO_PIN);
+    //gpio_set_dir(VIBRATO_PIN,GPIO_IN);
+    //gpio_set_irq_enabled_with_callback(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,&gpio_callback);
+    //gpio_add_raw_irq_handler(VIBRATO_PIN, vibratoHandler);
     int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
