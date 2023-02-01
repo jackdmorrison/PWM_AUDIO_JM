@@ -32,6 +32,14 @@ double sine_wave_y(double x) {
 float clockDivChange( float newFrequency){
     return (WAV_FREQUENCY/newFrequency)*2.0f;
 }
+void updateClockDiv(float clkDiv){
+    int pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
+    pwm_config config = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config, clkDiv); 
+    pwm_config_set_wrap(&config, 250); 
+    pwm_init(pin_slice, &config, true);
+    pwm_set_gpio_level(AUDIO_PIN, 0);
+}
 void vibratoHandler(){
     if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
@@ -44,14 +52,7 @@ void vibratoHandler(){
         }
     }
 }
-void updateClockDiv(float clkDiv){
-    int pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
-    pwm_config config = pwm_get_default_config();
-    pwm_config_set_clkdiv(&config, clkDiv); 
-    pwm_config_set_wrap(&config, 250); 
-    pwm_init(pin_slice, &config, true);
-    pwm_set_gpio_level(AUDIO_PIN, 0);
-}
+
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
     if(vibrato){
