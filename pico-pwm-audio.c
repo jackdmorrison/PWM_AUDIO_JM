@@ -23,8 +23,8 @@ int freqNum=0;
 int interval=0;
 int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
 float clkDiv=2.0f;
-float vibsize = WAV_FREQUENCY/12;
-float vibchangeParam = (vibsize)/12;
+const float vibsize = WAV_FREQUENCY/12;
+float vibchangeParam = vibsize/12;
 
 bool vibUP=true;
 double sine_wave_y(double x) {
@@ -107,7 +107,7 @@ int main(void) {
      * multiple of typical audio sampling rates.
      */
     stdio_init_all();
-    adc_init()
+    adc_init();
     adc_gpio_init(ADC_PIN);
     adc_select_input(0);
 
