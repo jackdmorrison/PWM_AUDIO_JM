@@ -4,7 +4,7 @@
 #include "hardware/irq.h"  // interrupts
 #include "hardware/pwm.h"  // pwm 
 #include "hardware/sync.h" // wait for interrupt 
-//#include "hardware/adc.h"
+#include "hardware/adc.h"
  
 // Audio PIN is to match some of the design guide shields. 
 #define AUDIO_PIN 28  // you can change this to whatever you like
@@ -13,17 +13,19 @@
 #include "Csine.h"
 
 int wav_position = 0;
-
+float adc_value=0;
+const float conversionfactor=1.65f/(1<<12);
 int timeInterval=75;
 bool vibrato = false; //vibrato on or off
 float frequencies[]={256};
-float currentF = 256;
+float currentF = WAV_FREQUENCY;
 int freqNum=0;
 int interval=0;
 int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
 float clkDiv=2.0f;
-float vibchangeParam = (265/12)/12;
-float vibsize = 256/12;
+float vibsize = WAV_FREQUENCY/12;
+float vibchangeParam = (vibsize)/12;
+
 bool vibUP=true;
 double sine_wave_y(double x) {
     return sin(x);
@@ -53,8 +55,10 @@ void vibratoHandler(){
     }
 }
 
+
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
+    adc_value=(adc_read())*conversionfactor;
     if(vibrato){
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
@@ -90,7 +94,7 @@ void pwm_interrupt_handler() {
         } else {
             // reset to start
             wav_position = 0;
-            
+            updateClockDiv(clockDivChange(frequencies[0]*adc_value));
             
         }
     }
@@ -103,14 +107,18 @@ int main(void) {
      * multiple of typical audio sampling rates.
      */
     stdio_init_all();
-    set_sys_clock_khz(176000, true); 
-    gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
-    //adc_gpio_init(ADC_PIN);
+    adc_init()
+    adc_gpio_init(ADC_PIN);
+    adc_select_input(0);
+
     gpio_init(VIBRATO_PIN);
     gpio_set_dir(VIBRATO_PIN,GPIO_IN);
     gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
     gpio_add_raw_irq_handler(VIBRATO_PIN, vibratoHandler);
     irq_set_enabled(IO_IRQ_BANK0, true);
+    
+    set_sys_clock_khz(176000, true); 
+    gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
     int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
