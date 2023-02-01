@@ -15,7 +15,7 @@
 int wav_position = 0;
 
 int timeInterval=75;
-bool vibrato = true; //vibrato on or off
+bool vibrato = false; //vibrato on or off
 float frequencies[]={256};
 float currentF = 256;
 int freqNum=0;
@@ -33,12 +33,14 @@ float clockDivChange( float newFrequency){
     return (WAV_FREQUENCY/newFrequency)*2.0f;
 }
 void vibratoHandler(){
-    if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE){
-        gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE);
+    if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+        gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         if(vibrato){
             vibrato=false;
+            updateClockDiv(clockDivChange(frequencies[0]));
         }else{
             vibrato=true;
+            updateClockDiv(clockDivChange(frequencies[0]));
         }
     }
 }
@@ -80,10 +82,10 @@ void pwm_interrupt_handler() {
         }
     }else{
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
-        // set pwm level 
-        // allow the pwm value to repeat for 8 cycles this is >>3 
-        pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[wav_position>>3]);  
-        wav_position++;
+            // set pwm level 
+            // allow the pwm value to repeat for 8 cycles this is >>3 
+            pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[wav_position>>3]);  
+            wav_position++;
         } else {
             // reset to start
             wav_position = 0;
@@ -104,9 +106,10 @@ int main(void) {
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
     //adc_gpio_init(ADC_PIN);
     gpio_init(VIBRATO_PIN);
-    //gpio_set_dir(VIBRATO_PIN,GPIO_IN);
-    gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE,true);
+    gpio_set_dir(VIBRATO_PIN,GPIO_IN);
+    gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
     gpio_add_raw_irq_handler(VIBRATO_PIN, vibratoHandler);
+    irq_set_enabled(IO_IRQ_BANK0, true);
     int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
