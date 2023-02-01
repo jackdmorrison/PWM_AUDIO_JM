@@ -14,7 +14,7 @@
 
 int wav_position = 0;
 float adc_value=0;
-const float conversionfactor=1.65f/(1<<12);
+const float conversionfactor=6.6f/(1<<12);
 int timeInterval=75;
 bool vibrato = false; //vibrato on or off
 float frequencies[]={256};
