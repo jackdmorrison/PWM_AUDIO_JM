@@ -54,11 +54,12 @@ void vibratoHandler(){
         }
     }
 }
-
+void ADCHandler(){
+    adc_value=(adc_read())*conversionfactor;
+}
 
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    adc_value=(adc_read())*conversionfactor;
     if(vibrato){
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
@@ -110,7 +111,11 @@ int main(void) {
     adc_init();
     adc_gpio_init(ADC_PIN);
     adc_select_input(0);
-
+    adc_irq_set_enabled(true);
+    adc_set_round_robin(0);
+    irq_set_exclusive_handler(ADC0_IRQ_FIFO,)
+    irq_set_enabled(ADC0_IRQ_FIFO, true);
+    
     gpio_init(VIBRATO_PIN);
     gpio_set_dir(VIBRATO_PIN,GPIO_IN);
     gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
