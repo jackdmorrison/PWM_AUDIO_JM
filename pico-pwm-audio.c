@@ -113,8 +113,8 @@ int main(void) {
     adc_select_input(0);
     adc_irq_set_enabled(true);
     adc_set_round_robin(0);
-    irq_set_exclusive_handler(ADC0_IRQ_FIFO,)
-    irq_set_enabled(ADC0_IRQ_FIFO, true);
+    irq_set_exclusive_handler(ADC_IRQ_FIFO,ADCHandler);
+    irq_set_enabled(ADC_IRQ_FIFO, true);
     
     gpio_init(VIBRATO_PIN);
     gpio_set_dir(VIBRATO_PIN,GPIO_IN);
