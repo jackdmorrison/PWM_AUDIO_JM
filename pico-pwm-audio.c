@@ -10,7 +10,7 @@
 #define AUDIO_PIN 28  // you can change this to whatever you like
 #define ADC_PIN 26
 #define VIBRATO_PIN 15
-#include "Csine.h"
+#include "waves.h"
 
 int wav_position = 0;
 float adc_value=0;
@@ -88,7 +88,7 @@ void pwm_interrupt_handler() {
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
             // allow the pwm value to repeat for 8 cycles this is >>3 
-            pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[wav_position>>3]);  
+            pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);  
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
