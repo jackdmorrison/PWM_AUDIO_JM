@@ -62,7 +62,7 @@ void pwm_interrupt_handler() {
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
             // allow the pwm value to repeat for 8 cycles this is >>3 
-            pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[wav_position>>3]);  
+            pwm_set_gpio_level(AUDIO_PIN, SIN_WAV_DATA[wav_position>>3]);  
             wav_position++;
         } else {
             // reset to start
@@ -88,7 +88,7 @@ void pwm_interrupt_handler() {
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
             // allow the pwm value to repeat for 8 cycles this is >>3 
-            pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);  
+            pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);  
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
