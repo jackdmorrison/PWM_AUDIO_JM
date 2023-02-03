@@ -8,7 +8,7 @@ class wave:
         self.B=2*math.pi*frequency
         self.interval = 1/samplerate
     def make_sin_wav(self):
-        x=self.interval
+        x=0
         v=self.amplitude*(math.sin(self.B*x))
         vals=str(int((v+self.amplitude)/(self.amplitude*2)*255))
         x+=self.interval
@@ -17,23 +17,27 @@ class wave:
             v=self.amplitude*(math.sin(self.B*x))
             vals+=str(int((v+self.amplitude)/(self.amplitude*2)*255))
             x+=self.interval
+            
         return vals
     def make_square_wav(self):
-        x=self.interval
+        x=0
         vals="255"
         x+=self.interval
         while(x<(self.period+self.interval)/2):
             vals+=', '
             vals+="255"
             x+=self.interval
+            
         while(x<(self.period+self.interval)):
             vals+=', '
             vals+="0"
             x+=self.interval
+            
         return vals
     def make_triangle_wav(self):
+        
         tan_theta=4*(self.amplitude/self.period)
-        x=self.interval
+        x=0
         v=x*(tan_theta)
         vals=str(int((v+self.amplitude)/(self.amplitude*2)*255))
         x+=self.interval
@@ -42,6 +46,7 @@ class wave:
             v=x*(tan_theta)
             vals+=str(int((v+self.amplitude)/(self.amplitude*2)*255))
             x+=self.interval
+            
         tan_theta_down=self.period/(4*self.amplitude)
         while(x<(3*(self.period+self.interval)/4)):
             vals+=', '
@@ -49,23 +54,26 @@ class wave:
             vals+=str(int((v+self.amplitude)/(self.amplitude*2)*255))
             x+=self.interval
             
+            
         while x<(self.period+(self.interval)):
             vals+=', '
             v=x*(tan_theta)
             vals+=str(int((v-3*self.amplitude)/(self.amplitude*2)*255))
             x+=self.interval
+            
         return vals
     def make_sawtooth_wav(self):
         tan_theta=2*(self.amplitude/self.period)
-        x=self.interval
+        x=0
         v=x*(tan_theta)
         vals=str(int((v+self.amplitude)/(self.amplitude*2)*255))
         x+=self.interval
-        while(x<(self.period+self.interval)/2):
+        while(x<(self.period+(self.interval))/2):
             vals+=', '
             v=x*(tan_theta)
             vals+=str(int((v+self.amplitude)/(self.amplitude*2)*255))
             x+=self.interval
+            
         while x<(self.period+(self.interval)):
             vals+=', '
             v=x*(tan_theta)
@@ -74,23 +82,24 @@ class wave:
         return vals
     def make_reversed_sawtooth_wav(self):
         tan_theta_down=self.period/(2*self.amplitude)
-        x=self.interval
+        x=0
         v=(self.amplitude)-(x/tan_theta_down)
         vals=str(int((v+self.amplitude)/(self.amplitude*2)*255))
         x+=self.interval
-        while(x<(self.period+self.interval)/2):
+        # while(x<(self.period+self.interval)/2):
+        #     vals+=', '
+        #     v=(self.amplitude)-(x/tan_theta_down)
+        #     vals+=str(int((v+self.amplitude)/(self.amplitude*2)*255))
+        #     x+=self.interval
+        while x<(self.period+(self.interval)):
             vals+=', '
             v=(self.amplitude)-(x/tan_theta_down)
             vals+=str(int((v+self.amplitude)/(self.amplitude*2)*255))
             x+=self.interval
-        while x<(self.period+(self.interval)):
-            vals+=', '
-            v=(x/tan_theta_down)
-            vals+=str(int((v-self.amplitude)/(self.amplitude*2)*255))
-            x+=self.interval
+            
         return vals
 f=open("waves.h","w")
-Frequency=312
+Frequency=256
 samplerate=44000
 amplitude=1
 wav = wave(Frequency,amplitude,samplerate)
