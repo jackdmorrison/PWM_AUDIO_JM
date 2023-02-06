@@ -70,7 +70,7 @@ void handleSine(){
 void handleSquare(){
     if(gpio_get_irq_event_mask(SQUARE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(SQUARE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-        button=1
+        button=1;
     }
 }
 
