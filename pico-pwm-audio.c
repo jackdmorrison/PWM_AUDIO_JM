@@ -220,23 +220,23 @@ int main(void) {
 
     
 
-    gpio_init(TRIANGLE);
-    gpio_set_dir(TRIANGLE,GPIO_IN);
-    gpio_set_irq_enabled(TRIANGLE,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(TRIANGLE, buttonHandler );
-    irq_set_enabled(IO_IRQ_BANK0, true);
+    // gpio_init(TRIANGLE);
+    // gpio_set_dir(TRIANGLE,GPIO_IN);
+    // gpio_set_irq_enabled(TRIANGLE,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    // gpio_add_raw_irq_handler(TRIANGLE, buttonHandler );
+    // irq_set_enabled(IO_IRQ_BANK0, true);
 
-    gpio_init(SAWTOOTH);
-    gpio_set_dir(SAWTOOTH,GPIO_IN);
-    gpio_set_irq_enabled(SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(SAWTOOTH, buttonHandler);
-    irq_set_enabled(IO_IRQ_BANK0, true);
+    // gpio_init(SAWTOOTH);
+    // gpio_set_dir(SAWTOOTH,GPIO_IN);
+    // gpio_set_irq_enabled(SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    // gpio_add_raw_irq_handler(SAWTOOTH, buttonHandler);
+    // irq_set_enabled(IO_IRQ_BANK0, true);
 
-    gpio_init(R_SAWTOOTH);
-    gpio_set_dir(R_SAWTOOTH,GPIO_IN);
-    gpio_set_irq_enabled(R_SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(R_SAWTOOTH, buttonHandler);
-    irq_set_enabled(IO_IRQ_BANK0, true);
+    // gpio_init(R_SAWTOOTH);
+    // gpio_set_dir(R_SAWTOOTH,GPIO_IN);
+    // gpio_set_irq_enabled(R_SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    // gpio_add_raw_irq_handler(R_SAWTOOTH, buttonHandler);
+    // irq_set_enabled(IO_IRQ_BANK0, true);
     
     set_sys_clock_khz(176000, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
