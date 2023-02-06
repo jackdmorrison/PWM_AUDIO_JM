@@ -20,7 +20,7 @@
 
 int wav_position = 0;
 float adc_value=0;
-const float conversionfactor=6.6f/(1<<12);
+const float conversionfactor=1.65f/(1<<12);
 int timeInterval=75;
 bool vibrato = false; //vibrato on or off
 //float frequencies[]={256};
@@ -74,24 +74,24 @@ void handleSquare(){
     }
 }
 
-// void handleTriangle(){
-//     if(gpio_get_irq_event_mask(TRIANGLE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-//         gpio_acknowledge_irq(TRIANGLE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-//         WAV_DATA = TRI_WAV_DATA;
-//     }
-// }
-// void handleSawtooth(){
-//     if(gpio_get_irq_event_mask(SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-//         gpio_acknowledge_irq(SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-//         WAV_DATA = SAW_WAV_DATA;
-//     }
-// }
-// void handleReverseSawtooth(){
-//     if(gpio_get_irq_event_mask(R_SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-//         gpio_acknowledge_irq(R_SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-//         WAV_DATA = SAW_WAV_DATA;
-//     }
-// }
+void handleTriangle(){
+    if(gpio_get_irq_event_mask(TRIANGLE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+        gpio_acknowledge_irq(TRIANGLE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+        button=2;
+    }
+}
+void handleSawtooth(){
+    if(gpio_get_irq_event_mask(SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+        gpio_acknowledge_irq(SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+        button=3;
+    }
+}
+void handleReverseSawtooth(){
+    if(gpio_get_irq_event_mask(R_SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+        gpio_acknowledge_irq(R_SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+        button=4;
+    }
+}
 
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
@@ -104,6 +104,15 @@ void pwm_interrupt_handler() {
             }
             else if(button==1){
                 pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);
+            }
+            else if(button==2){
+                pwm_set_gpio_level(AUDIO_PIN, TRI_WAV_DATA[wav_position>>3]);
+            }
+            else if(button==3){
+                pwm_set_gpio_level(AUDIO_PIN, SAW_WAV_DATA[wav_position>>3]);
+            }
+            else if(button==4){
+                pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);
             }
               
             wav_position++;
@@ -136,7 +145,16 @@ void pwm_interrupt_handler() {
             }
             else if(button==1){
                 pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);
-            } 
+            }
+            else if(button==2){
+                pwm_set_gpio_level(AUDIO_PIN, TRI_WAV_DATA[wav_position>>3]);
+            }
+            else if(button==3){
+                pwm_set_gpio_level(AUDIO_PIN, SAW_WAV_DATA[wav_position>>3]);
+            }
+            else if(button==4){
+                pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);
+            }
 
             wav_position++;
         } else {
@@ -186,23 +204,23 @@ int main(void) {
 
     
 
-    // gpio_init(TRIANGLE);
-    // gpio_set_dir(TRIANGLE,GPIO_IN);
-    // gpio_set_irq_enabled(TRIANGLE,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    // gpio_add_raw_irq_handler(TRIANGLE, handleTriangle );
-    // irq_set_enabled(IO_IRQ_BANK0, true);
+    gpio_init(TRIANGLE);
+    gpio_set_dir(TRIANGLE,GPIO_IN);
+    gpio_set_irq_enabled(TRIANGLE,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    gpio_add_raw_irq_handler(TRIANGLE, handleTriangle );
+    irq_set_enabled(IO_IRQ_BANK0, true);
 
-    // gpio_init(SAWTOOTH);
-    // gpio_set_dir(SAWTOOTH,GPIO_IN);
-    // gpio_set_irq_enabled(SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    // gpio_add_raw_irq_handler(SAWTOOTH, handleSawtooth);
-    // irq_set_enabled(IO_IRQ_BANK0, true);
+    gpio_init(SAWTOOTH);
+    gpio_set_dir(SAWTOOTH,GPIO_IN);
+    gpio_set_irq_enabled(SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    gpio_add_raw_irq_handler(SAWTOOTH, handleSawtooth);
+    irq_set_enabled(IO_IRQ_BANK0, true);
 
-    // gpio_init(R_SAWTOOTH);
-    // gpio_set_dir(R_SAWTOOTH,GPIO_IN);
-    // gpio_set_irq_enabled(R_SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    // gpio_add_raw_irq_handler(R_SAWTOOTH, handleReverseSawtooth);
-    // irq_set_enabled(IO_IRQ_BANK0, true);
+    gpio_init(R_SAWTOOTH);
+    gpio_set_dir(R_SAWTOOTH,GPIO_IN);
+    gpio_set_irq_enabled(R_SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    gpio_add_raw_irq_handler(R_SAWTOOTH, handleReverseSawtooth);
+    irq_set_enabled(IO_IRQ_BANK0, true);
     
     set_sys_clock_khz(176000, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
