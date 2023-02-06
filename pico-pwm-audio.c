@@ -61,37 +61,53 @@ void vibratoHandler(){
         }
     }
 }
-void handleSine(){
+void buttonHandler(){
     if(gpio_get_irq_event_mask(SIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(SIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         button=0;
     }
-}
-void handleSquare(){
-    if(gpio_get_irq_event_mask(SQUARE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+    else if(gpio_get_irq_event_mask(SQUARE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(SQUARE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         button=1;
     }
-}
-
-void handleTriangle(){
-    if(gpio_get_irq_event_mask(TRIANGLE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+    else if(gpio_get_irq_event_mask(TRIANGLE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(TRIANGLE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         button=2;
     }
-}
-void handleSawtooth(){
-    if(gpio_get_irq_event_mask(SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+    else if(gpio_get_irq_event_mask(SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         button=3;
     }
-}
-void handleReverseSawtooth(){
-    if(gpio_get_irq_event_mask(R_SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+    else if(gpio_get_irq_event_mask(R_SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(R_SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         button=4;
     }
 }
+// void handleSquare(){
+//     if(gpio_get_irq_event_mask(SQUARE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+//         gpio_acknowledge_irq(SQUARE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+//         button=1;
+//     }
+// }
+
+// void handleTriangle(){
+//     if(gpio_get_irq_event_mask(TRIANGLE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+//         gpio_acknowledge_irq(TRIANGLE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+//         button=2;
+//     }
+// }
+// void handleSawtooth(){
+//     if(gpio_get_irq_event_mask(SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+//         gpio_acknowledge_irq(SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+//         button=3;
+//     }
+// }
+// void handleReverseSawtooth(){
+//     if(gpio_get_irq_event_mask(R_SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+//         gpio_acknowledge_irq(R_SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+//         button=4;
+//     }
+// }
 
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
@@ -193,13 +209,13 @@ int main(void) {
     gpio_init(SIN);
     gpio_set_dir(SIN,GPIO_IN);
     gpio_set_irq_enabled(SIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(SIN, handleSine);
+    gpio_add_raw_irq_handler(SIN, buttonHandler);
     irq_set_enabled(IO_IRQ_BANK0, true);
 
     gpio_init(SQUARE);
     gpio_set_dir(SQUARE,GPIO_IN);
     gpio_set_irq_enabled(SQUARE,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(SQUARE, handleSquare);
+    gpio_add_raw_irq_handler(SQUARE, buttonHandler);
     irq_set_enabled(IO_IRQ_BANK0, true);
 
     
@@ -207,19 +223,19 @@ int main(void) {
     gpio_init(TRIANGLE);
     gpio_set_dir(TRIANGLE,GPIO_IN);
     gpio_set_irq_enabled(TRIANGLE,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(TRIANGLE, handleTriangle );
+    gpio_add_raw_irq_handler(TRIANGLE, buttonHandler );
     irq_set_enabled(IO_IRQ_BANK0, true);
 
     gpio_init(SAWTOOTH);
     gpio_set_dir(SAWTOOTH,GPIO_IN);
     gpio_set_irq_enabled(SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(SAWTOOTH, handleSawtooth);
+    gpio_add_raw_irq_handler(SAWTOOTH, buttonHandler);
     irq_set_enabled(IO_IRQ_BANK0, true);
 
     gpio_init(R_SAWTOOTH);
     gpio_set_dir(R_SAWTOOTH,GPIO_IN);
     gpio_set_irq_enabled(R_SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(R_SAWTOOTH, handleReverseSawtooth);
+    gpio_add_raw_irq_handler(R_SAWTOOTH, buttonHandler);
     irq_set_enabled(IO_IRQ_BANK0, true);
     
     set_sys_clock_khz(176000, true); 
