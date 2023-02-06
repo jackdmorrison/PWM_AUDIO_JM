@@ -141,7 +141,7 @@ void pwm_interrupt_handler() {
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
-            frequency=frequency*adc_value;
+            frequency=WAV_FREQUENCY*adc_value;
             // reset to start
             wav_position = 0;
             updateClockDiv(clockDivChange(frequency));
