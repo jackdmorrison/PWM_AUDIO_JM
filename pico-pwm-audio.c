@@ -10,6 +10,11 @@
 #define AUDIO_PIN 28  // you can change this to whatever you like
 #define ADC_PIN 26
 #define VIBRATO_PIN 15
+#define SQUARE 14
+#define TRIANGLE 13
+#define SAWTOOTH 12
+#define R_SAWTOOTH 11
+
 #include "waves.h"
 
 int wav_position = 0;
@@ -17,15 +22,16 @@ float adc_value=0;
 const float conversionfactor=6.6f/(1<<12);
 int timeInterval=75;
 bool vibrato = false; //vibrato on or off
-float frequencies[]={256};
+//float frequencies[]={256};
+float frequency=WAV_FREQUENCY;
 float currentF = WAV_FREQUENCY;
 int freqNum=0;
 int interval=0;
-int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
+//int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
 float clkDiv=2.0f;
 const float vibsize = WAV_FREQUENCY/12;
 float vibchangeParam = vibsize/12;
-
+uint8_t *WAV_DATA = SIN_WAV_DATA;
 bool vibUP=true;
 double sine_wave_y(double x) {
     return sin(x);
@@ -47,14 +53,37 @@ void vibratoHandler(){
         gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         if(vibrato){
             vibrato=false;
-            updateClockDiv(clockDivChange(frequencies[0]));
+            updateClockDiv(clockDivChange(frequency));
         }else{
             vibrato=true;
-            updateClockDiv(clockDivChange(frequencies[0]));
+            updateClockDiv(clockDivChange(frequency));
         }
     }
 }
-
+void handleSquare(){
+    if(gpio_get_irq_event_mask(SQUARE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+        gpio_acknowledge_irq(SQUARE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+        WAV_DATA = SQR_WAV_DATA;
+    }
+}
+void handleTriangle(){
+    if(gpio_get_irq_event_mask(TRIANGLE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+        gpio_acknowledge_irq(TRIANGLE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+        WAV_DATA = TRI_WAV_DATA;
+    }
+}
+void handleSawtooth(){
+    if(gpio_get_irq_event_mask(SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+        gpio_acknowledge_irq(SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+        WAV_DATA = SAW_WAV_DATA;
+    }
+}
+void handleReverseSawtooth(){
+    if(gpio_get_irq_event_mask(R_SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+        gpio_acknowledge_irq(R_SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+        WAV_DATA = SAW_WAV_DATA;
+    }
+}
 
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
@@ -68,14 +97,14 @@ void pwm_interrupt_handler() {
             // reset to start
             wav_position = 0;
             if(vibUP){
-                if(currentF<frequencies[0]+vibsize){
+                if(currentF<frequency+vibsize){
                     currentF+=vibchangeParam;
                 } else{
                     vibUP=false;
                 }
                 updateClockDiv(clockDivChange(currentF));
             } else{
-                if(currentF>frequencies[0]-vibsize){
+                if(currentF>frequency-vibsize){
                     currentF-=vibchangeParam;
                 } else{
                     vibUP=true;
@@ -88,13 +117,14 @@ void pwm_interrupt_handler() {
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
             // allow the pwm value to repeat for 8 cycles this is >>3 
-            pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);  
+            pwm_set_gpio_level(AUDIO_PIN, WAV_DATA[wav_position>>3]);  
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
+            frequency=frequency*adc_value;
             // reset to start
             wav_position = 0;
-            updateClockDiv(clockDivChange(frequencies[0]*adc_value));
+            updateClockDiv(clockDivChange(frequency));
             
         }
     }
@@ -120,6 +150,30 @@ int main(void) {
     gpio_set_dir(VIBRATO_PIN,GPIO_IN);
     gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
     gpio_add_raw_irq_handler(VIBRATO_PIN, vibratoHandler);
+    irq_set_enabled(IO_IRQ_BANK0, true);
+
+    gpio_init(SQUARE);
+    gpio_set_dir(SQUARE,GPIO_IN);
+    gpio_set_irq_enabled(SQUARE,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    gpio_add_raw_irq_handler(SQUARE, handleSquare);
+    irq_set_enabled(IO_IRQ_BANK0, true);
+
+    gpio_init(TRIANGLE);
+    gpio_set_dir(TRIANGLE,GPIO_IN);
+    gpio_set_irq_enabled(TRIANGLE,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    gpio_add_raw_irq_handler(TRIANGLE, handleTriangle );
+    irq_set_enabled(IO_IRQ_BANK0, true);
+
+    gpio_init(SAWTOOTH);
+    gpio_set_dir(SAWTOOTH,GPIO_IN);
+    gpio_set_irq_enabled(SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    gpio_add_raw_irq_handler(SAWTOOTH, handleSawtooth);
+    irq_set_enabled(IO_IRQ_BANK0, true);
+
+    gpio_init(R_SAWTOOTH);
+    gpio_set_dir(R_SAWTOOTH,GPIO_IN);
+    gpio_set_irq_enabled(R_SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    gpio_add_raw_irq_handler(R_SAWTOOTH, handleReverseSawtooth);
     irq_set_enabled(IO_IRQ_BANK0, true);
     
     set_sys_clock_khz(176000, true); 
