@@ -62,8 +62,8 @@ void callback(){
     }
 }
 void rawHandler(){
-    if(gpio_get_irq_event_mask(SIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-        gpio_acknowledge_irq(SIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+    if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+        gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         if(button<4){
             button++;
         }
@@ -160,8 +160,8 @@ int main(void) {
 
     gpio_init(VIBRATO_PIN);
     gpio_set_dir(VIBRATO_PIN,GPIO_IN);
-    gpio_set_irq_enabled_with_callback(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,rawHandler);
-    
+    gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    gpio_add_raw_irq_handler(VIBRATO_PIN, callback );
     gpio_init(WAVEBUTTON);
     gpio_set_dir(WAVEBUTTON,GPIO_IN);
     gpio_set_irq_enabled(WAVEBUTTON,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
