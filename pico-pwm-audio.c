@@ -223,7 +223,7 @@ int main(void) {
     gpio_init(VIBRATO_PIN);
     gpio_set_dir(VIBRATO_PIN,GPIO_IN);
     gpio_set_irq_enabled_with_callback(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,rawHandler);
-    gpio_add_raw_irq_handler(VIBRATO_PIN, rawHandler);
+    //gpio_add_raw_irq_handler(VIBRATO_PIN, rawHandler);
     
     // //gpio_set_irq_enabled_with_callback	(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true, rawHandler)
     // gpio_init_mask(SIN);
