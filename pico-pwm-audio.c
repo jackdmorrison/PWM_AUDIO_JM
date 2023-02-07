@@ -60,23 +60,23 @@ void rawHandler(){
             updateClockDiv(clockDivChange(frequency));
         }
     }
-    else if(gpio_get_irq_event_mask(SIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+    if(gpio_get_irq_event_mask(SIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(SIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         button=0;
     }
-    else if(gpio_get_irq_event_mask(SQUARE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+    if(gpio_get_irq_event_mask(SQUARE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(SQUARE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         button=1;
     }
-    else if(gpio_get_irq_event_mask(TRIANGLE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+    if(gpio_get_irq_event_mask(TRIANGLE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(TRIANGLE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         button=2;
     }
-    else if(gpio_get_irq_event_mask(SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+    if(gpio_get_irq_event_mask(SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         button=3;
     }
-    else if(gpio_get_irq_event_mask(R_SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+    if(gpio_get_irq_event_mask(R_SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(R_SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         button=4;
     }
