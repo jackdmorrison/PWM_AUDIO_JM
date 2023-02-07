@@ -10,11 +10,11 @@
 #define AUDIO_PIN 28  // you can change this to whatever you like
 #define ADC_PIN 26
 #define VIBRATO_PIN 15
-#define SIN 14
-#define SQUARE 13
-#define TRIANGLE 12
-#define SAWTOOTH 11
-#define R_SAWTOOTH 10
+#define WAVEBUTTON 14
+// #define SQUARE 13
+// #define TRIANGLE 12
+// #define SAWTOOTH 11
+// #define R_SAWTOOTH 10
 
 #include "waves.h"
 
@@ -49,7 +49,7 @@ void updateClockDiv(float clkDiv){
     pwm_init(pin_slice, &config, true);
     pwm_set_gpio_level(AUDIO_PIN, 0);
 }
-void rawHandler(){
+void callback(){
     if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         if(vibrato){
@@ -60,25 +60,16 @@ void rawHandler(){
             updateClockDiv(clockDivChange(frequency));
         }
     }
+}
+void rawHandler(){
     if(gpio_get_irq_event_mask(SIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(SIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-        button=0;
-    }
-    if(gpio_get_irq_event_mask(SQUARE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-        gpio_acknowledge_irq(SQUARE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-        button=1;
-    }
-    if(gpio_get_irq_event_mask(TRIANGLE) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-        gpio_acknowledge_irq(TRIANGLE, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-        button=2;
-    }
-    if(gpio_get_irq_event_mask(SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-        gpio_acknowledge_irq(SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-        button=3;
-    }
-    if(gpio_get_irq_event_mask(R_SAWTOOTH) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-        gpio_acknowledge_irq(R_SAWTOOTH, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-        button=4;
+        if(button<4){
+            button++;
+        }
+        else{
+            button=0;
+        }
     }
 }
 void pwm_interrupt_handler() {
@@ -171,25 +162,11 @@ int main(void) {
     gpio_set_dir(VIBRATO_PIN,GPIO_IN);
     gpio_set_irq_enabled_with_callback(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,rawHandler);
     
-    gpio_init(SIN);
-    gpio_set_dir(SIN,GPIO_IN);
-    gpio_set_irq_enabled_with_callback(SIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,rawHandler);
-    
-    gpio_init(SQUARE);
-    gpio_set_dir(SQUARE,GPIO_IN);
-    gpio_set_irq_enabled_with_callback(SQUARE,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,rawHandler);
-
-    gpio_init(TRIANGLE);
-    gpio_set_dir(TRIANGLE,GPIO_IN);
-    gpio_set_irq_enabled_with_callback(TRIANGLE,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,rawHandler);
-
-    gpio_init(SAWTOOTH);
-    gpio_set_dir(SAWTOOTH,GPIO_IN);
-    gpio_set_irq_enabled_with_callback(SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,rawHandler);
-
-    gpio_init(R_SAWTOOTH);
-    gpio_set_dir(R_SAWTOOTH,GPIO_IN);
-    gpio_set_irq_enabled_with_callback(R_SAWTOOTH,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true,rawHandler);
+    gpio_init(WAVEBUTTON);
+    gpio_set_dir(WAVEBUTTON,GPIO_IN);
+    gpio_set_irq_enabled(WAVEBUTTON,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    gpio_add_raw_irq_handler(WAVEBUTTON, rawHandler );
+    irq_set_enabled(IO_IRQ_BANK0, true);
     
     set_sys_clock_khz(176000, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
