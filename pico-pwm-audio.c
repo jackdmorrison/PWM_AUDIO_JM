@@ -161,7 +161,7 @@ int main(void) {
     gpio_init(VIBRATO_PIN);
     gpio_set_dir(VIBRATO_PIN,GPIO_IN);
     gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(VIBRATO_PIN, callback );
+    gpio_add_raw_irq_handler(VIBRATO_PIN, callback);
     gpio_init(WAVEBUTTON);
     gpio_set_dir(WAVEBUTTON,GPIO_IN);
     gpio_set_irq_enabled(WAVEBUTTON,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
