@@ -82,10 +82,10 @@ int main(void) {
     adc_gpio_init(ADC_PIN);
     adc_select_input(0);
     
-    gpio_init(VIBRATO_PIN);
-    gpio_set_dir(VIBRATO_PIN,GPIO_IN);
-    gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(VIBRATO_PIN, callback);
+    gpio_init(PULSE_PIN);
+    gpio_set_dir(PULSE_PIN,GPIO_IN);
+    gpio_set_irq_enabled(PULSE_PIN,GPIO_IRQ_EDGE_RISE ,true);
+    gpio_add_raw_irq_handler(PULSE_PIN, rawHandler);
     set_sys_clock_khz(176000, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
     int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
