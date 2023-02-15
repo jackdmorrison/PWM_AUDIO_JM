@@ -10,7 +10,7 @@
 #define AUDIO_PIN 28  // you can change this to whatever you like
 #define ADC_PIN 26
 #define VIBRATO_PIN 15
-#define WAVEBUTTON 14
+#define WAVEBUTTON 10
 // #define SQUARE 13
 // #define TRIANGLE 12
 // #define SAWTOOTH 11
