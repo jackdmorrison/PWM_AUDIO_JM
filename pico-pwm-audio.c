@@ -36,8 +36,8 @@ void updateClockDiv(float clkDiv){
 }
 
 void rawHandler(){
-    if(gpio_get_irq_event_mask(PULSE_PIN) & GPIO_IRQ_EDGE_RISE ){
-        gpio_acknowledge_irq(PULSE_PIN, GPIO_IRQ_EDGE_RISE );
+    if(gpio_get_irq_event_mask(PULSE_PIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL ){
+        gpio_acknowledge_irq(PULSE_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
         if(pulseMode){
             pulseMode = false;
         }else{
@@ -84,7 +84,7 @@ int main(void) {
     
     gpio_init(PULSE_PIN);
     gpio_set_dir(PULSE_PIN,GPIO_IN);
-    gpio_set_irq_enabled(PULSE_PIN,GPIO_IRQ_EDGE_RISE ,true);
+    gpio_set_irq_enabled(PULSE_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL ,true);
     gpio_add_raw_irq_handler(PULSE_PIN, rawHandler);
     set_sys_clock_khz(176000, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
