@@ -12,15 +12,15 @@
 #define PULSE_PIN 15
 
 
-#include "waves.h"
+//#include "waves.h"
 
 int wav_position = 0;
 float adc_value=0;
 const float conversionfactor=1.65f/(1<<12);
-float frequency=WAV_FREQUENCY;
+//float frequency=WAV_FREQUENCY;
 float clkDiv=2.0f;
 int pulseLength=86;
-int pauseLength=86;
+int Wavelength=172;
 bool pulseMode=true;
 
 float clockDivChange( float newFrequency){
@@ -53,16 +53,15 @@ void pwm_interrupt_handler() {
         pwm_set_gpio_level(AUDIO_PIN, 255);
         wav_position++;
 
-    } else if(wav_position<(pulseLength+pauseLength<<3) - 1){
+    } else if(wav_position<(wavelength<<3) - 1){
         pwm_set_gpio_level(AUDIO_PIN, 0);
         wav_position++;
     }
     else {
         adc_value=(adc_read())*conversionfactor;
-        if(pulseMode){
-            pulseLength=round(86*adc_value);
-        }else{
-            pauseLength=round(86*adc_value);
+        pulseLength=round(86*adc_value);
+        if(pulseLength>172){
+            pulseLength=172;
         }
         
         // reset to start
