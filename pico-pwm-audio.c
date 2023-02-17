@@ -49,21 +49,21 @@ void updateClockDiv(float clkDiv){
     pwm_init(pin_slice, &config, true);
     pwm_set_gpio_level(AUDIO_PIN, 0);
 }
-void callback(){
-    if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-        gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-        if(vibrato){
-            vibrato=false;
-            updateClockDiv(clockDivChange(frequency));
-        }else{
-            vibrato=true;
-            updateClockDiv(clockDivChange(frequency));
-        }
-    }
-}
+// void callback(){
+//     if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+//         gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+//         if(vibrato){
+//             vibrato=false;
+//             updateClockDiv(clockDivChange(frequency));
+//         }else{
+//             vibrato=true;
+//             updateClockDiv(clockDivChange(frequency));
+//         }
+//     }
+// }
 void rawHandler(){
-    if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-        gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+    if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
+        gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE );
         if(button<4){
             button++;
         }
@@ -158,13 +158,13 @@ int main(void) {
     adc_gpio_init(ADC_PIN);
     adc_select_input(0);
 
-    gpio_init(VIBRATO_PIN);
-    gpio_set_dir(VIBRATO_PIN,GPIO_IN);
-    gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler(VIBRATO_PIN, callback);
+    // gpio_init(VIBRATO_PIN);
+    // gpio_set_dir(VIBRATO_PIN,GPIO_IN);
+    // gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    // gpio_add_raw_irq_handler(VIBRATO_PIN, callback);
     gpio_init(WAVEBUTTON);
     gpio_set_dir(WAVEBUTTON,GPIO_IN);
-    gpio_set_irq_enabled(WAVEBUTTON,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
+    gpio_set_irq_enabled(WAVEBUTTON,GPIO_IRQ_EDGE_RISE ,true);
     gpio_add_raw_irq_handler(WAVEBUTTON, rawHandler );
     irq_set_enabled(IO_IRQ_BANK0, true);
     
