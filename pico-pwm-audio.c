@@ -20,12 +20,12 @@ const float conversionfactor=1.65f/(1<<12);
 //float frequency=WAV_FREQUENCY;
 float clkDiv=2.0f;
 int pulseLength=86;
-int Wavelength=172;
+int wavelength=172;
 bool pulseMode=true;
 
-float clockDivChange( float newFrequency){
-    return (WAV_FREQUENCY/newFrequency)*2.0f;
-}
+// float clockDivChange( float newFrequency){
+//     return (WAV_FREQUENCY/newFrequency)*2.0f;
+// }
 void updateClockDiv(float clkDiv){
     int pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
     pwm_config config = pwm_get_default_config();
