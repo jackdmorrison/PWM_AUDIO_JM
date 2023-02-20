@@ -21,8 +21,9 @@ float clkDiv=2.0f;
 int pulseLength=86;
 int wavelength=172;
 bool pulseMode=true;
-float tan_theta=1/pulseLength;
-float n_tan_theta=wavelength-pulseLength;
+float tan_theta=1/86;
+float n_tan_theta=172-86;
+int value=0;
 // float clockDivChange( float newFrequency){
 //     return (WAV_FREQUENCY/newFrequency)*2.0f;
 // }
@@ -50,7 +51,7 @@ void pwm_interrupt_handler() {
     
     if (wav_position < (pulseLength<<3) - 1) { 
         // set pwm level 
-        value=round(((wav_position*tan_theta)+1/2)*255)
+        value=round(((wav_position*tan_theta)+1/2)*255);
 
         pwm_set_gpio_level(AUDIO_PIN,value);
         wav_position++;
