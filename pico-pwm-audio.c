@@ -13,7 +13,6 @@
 
 
 //#include "waves.h"
-
 int wav_position = 0;
 float adc_value=0;
 const float conversionfactor=1.65f/(1<<12);
@@ -22,7 +21,8 @@ float clkDiv=2.0f;
 int pulseLength=86;
 int wavelength=172;
 bool pulseMode=true;
-
+float tan_theta=1/pulseLength;
+float n_tan_theta=wavelength-pulseLength;
 // float clockDivChange( float newFrequency){
 //     return (WAV_FREQUENCY/newFrequency)*2.0f;
 // }
@@ -50,11 +50,14 @@ void pwm_interrupt_handler() {
     
     if (wav_position < (pulseLength<<3) - 1) { 
         // set pwm level 
-        pwm_set_gpio_level(AUDIO_PIN, 255);
+        value=round(((wav_position*tan_theta)+1/2)*255)
+
+        pwm_set_gpio_level(AUDIO_PIN,value);
         wav_position++;
 
     } else if(wav_position<(wavelength<<3) - 1){
-        pwm_set_gpio_level(AUDIO_PIN, 0);
+        value=round((1-(wav_position/n_tan_theta)/2)*255);
+        pwm_set_gpio_level(AUDIO_PIN, value);
         wav_position++;
     }
     else {
@@ -63,7 +66,8 @@ void pwm_interrupt_handler() {
         if(pulseLength>172){
             pulseLength=172;
         }
-        
+        tan_theta=1/pulseLength;
+        n_tan_theta=wavelength-pulseLength;
         // reset to start
         wav_position = 0;
     }
