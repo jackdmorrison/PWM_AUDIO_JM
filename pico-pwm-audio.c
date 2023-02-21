@@ -19,10 +19,10 @@ const float conversionfactor=1.65f/(1<<12);
 //float frequency=WAV_FREQUENCY;
 float clkDiv=2.0f;
 int pulseLength=86;
-int wavelength=172;
+const int wavelength=172;
 bool pulseMode=true;
 float tan_theta=1/86;
-float n_tan_theta=172-86;
+float n_tan_theta=86;
 int value=0;
 // float clockDivChange( float newFrequency){
 //     return (WAV_FREQUENCY/newFrequency)*2.0f;
