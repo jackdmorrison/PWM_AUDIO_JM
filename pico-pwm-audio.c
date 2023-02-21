@@ -68,7 +68,7 @@ void pwm_interrupt_handler() {
         if(pulseLength>172){
             pulseLength=172;
         }
-        tan_theta=1/pulseLength;
+        //tan_theta=1/pulseLength;
         n_tan_theta=wavelength-pulseLength;
         // reset to start
         wav_position = 0;
