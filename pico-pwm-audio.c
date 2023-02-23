@@ -54,11 +54,11 @@ void pwm_interrupt_handler()
     var=wav_position>>3;
     if (wav_position <= (pulseLength<<3) ) { 
         // set pwm level 
-        
-        value=round(255*(var/pulseLength));
-        if(value>255){
-            value=127;
-        }
+        value=round((1-((var-pulseLength)/n_tan_theta))*255);
+        // value=round(255*(var/pulseLength));
+        // if(value>255){
+        //     value=127;
+        // }
         pwm_set_gpio_level(AUDIO_PIN,value);
         wav_position++;
 
