@@ -85,7 +85,7 @@ void pwm_interrupt_handler()
         n_tan_theta = wavelength - pulseLength;
         // reset to start
         wav_position = 0;
-        var=pulseLength;
+        var=1;
     }
 }
 
