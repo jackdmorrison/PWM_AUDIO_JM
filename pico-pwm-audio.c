@@ -51,10 +51,10 @@ void updateClockDiv(float clkDiv)
 void pwm_interrupt_handler()
 {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    var++;
+    var=round(var+0.125);
     if (wav_position <= (pulseLength<<3) ) { 
         // // set pwm level 
-        x=((1+var-pulseLength)>>3)/86;
+        x=(var)/86;
         // value=round(122.5*(1+x));
         // if(value>255){
         //     value=127;
@@ -67,7 +67,7 @@ void pwm_interrupt_handler()
         wav_position++;
 
     } else if(wav_position<(wavelength<<3) - 1){
-        value=round((1-((((var-pulseLength)>>3)-pulseLength)/n_tan_theta))*255);
+        value=round((1-(((var)-pulseLength)/n_tan_theta))*255);
         
         
         pwm_set_gpio_level(AUDIO_PIN, value);
