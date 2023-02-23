@@ -24,7 +24,7 @@ float tan_theta=1/86;
 float n_tan_theta=86;
 int value=0;
 int var=0;
-
+int x=1;
 // float clockDivChange( float newFrequency){
 //     return (WAV_FREQUENCY/newFrequency)*2.0f;
 // }
@@ -54,8 +54,9 @@ void pwm_interrupt_handler()
     var=wav_position>>3;
     if (wav_position <= (pulseLength<<3) ) { 
         // set pwm level 
-        value=round((1-((var-pulseLength)/n_tan_theta))*255);
-        // value=round(255*(var/pulseLength));
+
+        value=round(255*((x>>3)/pulseLength));
+        x++;
         // if(value>255){
         //     value=127;
         // }
@@ -87,6 +88,7 @@ void pwm_interrupt_handler()
         n_tan_theta = wavelength - pulseLength;
         // reset to start
         wav_position = 0;
+        x=1;
     }
 }
 
