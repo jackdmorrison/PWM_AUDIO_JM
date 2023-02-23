@@ -55,7 +55,7 @@ void pwm_interrupt_handler()
     if (wav_position <= (pulseLength<<3) ) { 
         // set pwm level 
 
-        value=round(255*((x>>3)/pulseLength));
+        value=round(255*((x)/pulseLength));
         x++;
         // if(value>255){
         //     value=127;
