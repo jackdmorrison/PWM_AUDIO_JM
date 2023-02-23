@@ -14,16 +14,17 @@
 // #include "waves.h"
 int wav_position = 0;
 float adc_value = 0;
-const float conversionfactor = 1.65f / (1 << 12);
-// float frequency=WAV_FREQUENCY;
-float clkDiv = 2.0f;
-int pulseLength = 86;
-const int wavelength = 172;
-bool pulseMode = true;
-float tan_theta = 1 / 86;
-float n_tan_theta = 86;
-int value = 0;
-float d = 0.f;
+const float conversionfactor=1.65f/(1<<12);
+//float frequency=WAV_FREQUENCY;
+float clkDiv=2.0f;
+int pulseLength=86;
+const int wavelength=172;
+bool pulseMode=true;
+float tan_theta=1/86;
+float n_tan_theta=86;
+int value=0;
+int var=0;
+
 // float clockDivChange( float newFrequency){
 //     return (WAV_FREQUENCY/newFrequency)*2.0f;
 // }
@@ -50,20 +51,20 @@ void updateClockDiv(float clkDiv)
 void pwm_interrupt_handler()
 {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
+    var=wav_position>>3;
+    if (wav_position <= (pulseLength<<3) ) { 
+        // set pwm level 
+        
+        value=round(255*(var/pulseLength));
+        if(value>255){
+            value=127;
+        }
+        pwm_set_gpio_level(AUDIO_PIN,value);
+        wav_position++;
 
-    if (wav_position <= (pulseLength << 3))
-    {
-        // set pwm level
-        d = (wav_position/8) / (pulseLength);
-        value = round(d * 2550);
-        // if (value > 255)
-        // {
-        //     value = 127;
-        // }
-        // else if (value < 10)
-        // {
-        //     value = 255;
-        // }
+    } else if(wav_position<(wavelength<<3) - 1){
+        value=round((1-((var-pulseLength)/n_tan_theta))*255);
+        //value=round(122.5*(2-((wav_position>>3)-pulseLength)/n_tan_theta));
         pwm_set_gpio_level(AUDIO_PIN, value);
         wav_position++;
     }
