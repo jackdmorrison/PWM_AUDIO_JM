@@ -64,7 +64,7 @@ void updateClockDiv(float clkDiv){
 void rawHandler(){
     if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
         gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE );
-        if(button<4){
+        if(button<5){
             button++;
         }
         else{
@@ -92,6 +92,9 @@ void pwm_interrupt_handler() {
             }
             else if(button==4){
                 pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);
+            }
+            else if(button==5){
+                pwm_set_gpio_level(AUDIO_PIN, PRBA_WAV_DATA[wav_position>>3]);
             }
               
             wav_position++;

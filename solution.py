@@ -98,6 +98,19 @@ class wave:
             x+=self.interval
             
         return vals
+    def make_porabola_wav(self):
+        x=0
+        
+        v=self.amplitude*(2*self.frequency*(x-(self.period/2)))*(2*self.frequency*(x-(self.period/2)))
+        vals=str(int(v*255))
+        x+=self.interval
+        while x<(self.period+(self.interval)):
+            vals+=', '
+            v=self.amplitude*(2*self.frequency*(x-(self.period/2)))*(2*self.frequency*(x-(self.period/2)))
+            vals+=str(int((v*255)))
+            x+=self.interval
+        print(vals)
+        return vals
 f=open("waves.h","w")
 Frequency=256
 samplerate=44000
@@ -108,6 +121,7 @@ sqr=wav.make_square_wav()
 tri=wav.make_triangle_wav()
 saw=wav.make_sawtooth_wav()
 rsaw=wav.make_reversed_sawtooth_wav()
+pbla=wav.make_porabola_wav()
 f.write("/* wave tables for a frequency of "+str(Frequency)+'\n')
 f.write(" * with sampling rate of " + str(samplerate)+'\n')
 f.write(" */\n")
@@ -128,6 +142,9 @@ f.write('    '+saw+'\n')
 f.write('};\n')
 f.write("uint8_t R_SAW_WAV_DATA[] = {\n")
 f.write('    '+rsaw+'\n')
+f.write('};\n')
+f.write("uint8_t PRBA_WAV_DATA[] = {\n")
+f.write('    '+pbla+'\n')
 f.write('};\n')
 f.close()
 
