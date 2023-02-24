@@ -100,16 +100,17 @@ class wave:
         return vals
     def make_porabola_wav(self):
         x=0
-        
+        d=0
         v=self.amplitude*(2*self.frequency*(x-(self.period/2)))*(2*self.frequency*(x-(self.period/2)))
         vals=str(int(v*255))
         x+=self.interval
         while x<(self.period+(self.interval)):
+            d+=1
+            print(d)
             vals+=', '
             v=self.amplitude*(2*self.frequency*(x-(self.period/2)))*(2*self.frequency*(x-(self.period/2)))
             vals+=str(int((v*255)))
             x+=self.interval
-        print(vals)
         return vals
 f=open("waves.h","w")
 Frequency=256
