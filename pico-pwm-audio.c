@@ -63,7 +63,7 @@ void pwm_interrupt_handler()
         //     x=((wav_position+8))/(pulseLength<<3);
         // }
         //value=round(255*(((wav_position)/pulseLength)));
-        pwm_set_gpio_level(AUDIO_PIN,round(255*(((wav_position)/pulseLength))));
+        pwm_set_gpio_level(AUDIO_PIN,round(255*(((wav_position>>3)/pulseLength))));
         wav_position++;
 
     } else if(wav_position<(wavelength<<3) - 1){
