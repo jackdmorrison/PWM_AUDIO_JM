@@ -137,7 +137,9 @@ void pwm_interrupt_handler() {
             else if(button==4){
                 pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);
             }
-
+            else if(button==5){
+                pwm_set_gpio_level(AUDIO_PIN, PRBA_WAV_DATA[wav_position>>3]);
+            }
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
