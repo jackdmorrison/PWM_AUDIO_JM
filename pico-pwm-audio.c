@@ -11,10 +11,6 @@
 #define ADC_PIN 26
 #define VIBRATO_PIN 15
 #define WAVEBUTTON 10
-// #define SQUARE 13
-// #define TRIANGLE 12
-// #define SAWTOOTH 11
-// #define R_SAWTOOTH 10
 
 #include "waves.h"
 
@@ -78,25 +74,26 @@ void pwm_interrupt_handler() {
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
             // allow the pwm value to repeat for 8 cycles this is >>3 
-            if(button==0){
-                pwm_set_gpio_level(AUDIO_PIN, SIN_WAV_DATA[wav_position>>3]);
-            }
-            else if(button==1){
-                pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);
-            }
-            else if(button==2){
-                pwm_set_gpio_level(AUDIO_PIN, TRI_WAV_DATA[wav_position>>3]);
-            }
-            else if(button==3){
-                pwm_set_gpio_level(AUDIO_PIN, SAW_WAV_DATA[wav_position>>3]);
-            }
-            else if(button==4){
-                pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);
-            }
-            else if(button==5){
-                pwm_set_gpio_level(AUDIO_PIN, PRBA_WAV_DATA[wav_position>>3]);
-            }
-              
+            switch (button){
+                case 0: //sin wave
+                    pwm_set_gpio_level(AUDIO_PIN, SIN_WAV_DATA[wav_position>>3]);
+                    break;
+                case 1: //square wave
+                    pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);
+                    break;
+                case 2: //Triangle wave
+                    pwm_set_gpio_level(AUDIO_PIN, TRI_WAV_DATA[wav_position>>3]);
+                    break;
+                case 3: //Saw wave
+                    pwm_set_gpio_level(AUDIO_PIN, SAW_WAV_DATA[wav_position>>3]);
+                    break;
+                case 4: //Reverse Saw wave
+                    pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);
+                    break;
+                case 5:
+                    pwm_set_gpio_level(AUDIO_PIN, PRBA_WAV_DATA[wav_position>>3]);
+                    break;
+            }  
             wav_position++;
         } else {
             // reset to start
@@ -122,23 +119,25 @@ void pwm_interrupt_handler() {
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
             // allow the pwm value to repeat for 8 cycles this is >>3 
-            if(button==0){
-                pwm_set_gpio_level(AUDIO_PIN, SIN_WAV_DATA[wav_position>>3]);
-            }
-            else if(button==1){
-                pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);
-            }
-            else if(button==2){
-                pwm_set_gpio_level(AUDIO_PIN, TRI_WAV_DATA[wav_position>>3]);
-            }
-            else if(button==3){
-                pwm_set_gpio_level(AUDIO_PIN, SAW_WAV_DATA[wav_position>>3]);
-            }
-            else if(button==4){
-                pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);
-            }
-            else if(button==5){
-                pwm_set_gpio_level(AUDIO_PIN, PRBA_WAV_DATA[wav_position>>3]);
+            switch (button){
+                case 0: //sin wave
+                    pwm_set_gpio_level(AUDIO_PIN, SIN_WAV_DATA[wav_position>>3]);
+                    break;
+                case 1: //square wave
+                    pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);
+                    break;
+                case 2: //Triangle wave
+                    pwm_set_gpio_level(AUDIO_PIN, TRI_WAV_DATA[wav_position>>3]);
+                    break;
+                case 3: //Saw wave
+                    pwm_set_gpio_level(AUDIO_PIN, SAW_WAV_DATA[wav_position>>3]);
+                    break;
+                case 4: //Reverse Saw wave
+                    pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);
+                    break;
+                case 5:
+                    pwm_set_gpio_level(AUDIO_PIN, PRBA_WAV_DATA[wav_position>>3]);
+                    break;
             }
             wav_position++;
         } else {
