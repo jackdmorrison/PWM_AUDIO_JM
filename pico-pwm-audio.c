@@ -19,15 +19,11 @@ const float conversionfactor=1.65f/(1<<12);
 float clkDiv=2.0f;
 int pulseLength=86;
 const int wavelength=172;
-bool pulseMode=true;
 float tan_theta=1/86;
 float n_tan_theta=86;
 int value=0;
 int var=0;
-float x=0.f;
-// float clockDivChange( float newFrequency){
-//     return (WAV_FREQUENCY/newFrequency)*2.0f;
-// }
+
 void updateClockDiv(float clkDiv)
 {
     int pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
@@ -38,32 +34,14 @@ void updateClockDiv(float clkDiv)
     pwm_set_gpio_level(AUDIO_PIN, 0);
 }
 
-// void rawHandler(){
-//     if(gpio_get_irq_event_mask(PULSE_PIN) & GPIO_IRQ_EDGE_RISE ){
-//         gpio_acknowledge_irq(PULSE_PIN, GPIO_IRQ_EDGE_RISE);
-//         if(pulseMode){
-//             pulseMode = false;
-//         }else{
-//             pulseMode=true;
-//         }
-//     }
-// }
+
 void pwm_interrupt_handler()
 {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
     var=(wav_position>>3);
     if (wav_position <= (pulseLength<<3) ) { 
-        // // set pwm level 
-        //x=;
-        // value=round(122.5*(1+x));
-        // if(value>255){
-        //     value=127;
-        // }
-        // if(x<1.0f){
-        //     x=((wav_position+8))/(pulseLength<<3);
-        // }
-        //value=round(255*(((wav_position)/pulseLength)));
-        pwm_set_gpio_level(AUDIO_PIN,round(255*(((wav_position>>3)/pulseLength))));
+        
+        pwm_set_gpio_level(AUDIO_PIN,round(255*(wav_position/round(pulseLength*8))));
         wav_position++;
 
     } else if(wav_position<(wavelength<<3) - 1){
@@ -81,7 +59,6 @@ void pwm_interrupt_handler()
         {
             pulseLength = 172;
         }
-        // tan_theta=1/pulseLength;
         n_tan_theta = wavelength - pulseLength;
         // reset to start
         wav_position = 0;
