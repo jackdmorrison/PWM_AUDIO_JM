@@ -62,11 +62,11 @@ void rawHandler(){
     if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
         gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE );
         if(button<5){
-            waveLength=WAV_DATA_LENGTH
+            waveLength=WAV_DATA_LENGTH;
             button++;
         }
         else if(button<8){
-            waveLength=WAV_DATA_LENGTH*8
+            waveLength=WAV_DATA_LENGTH*8;
             button++;
         }
         else{
