@@ -117,10 +117,10 @@ class wave:
         harmonics=[]
         while h<8:
             x=0
-            B=(2*math.pi*(self.frequency/(h+1)))
+            B=(2*math.pi*(self.frequency)*(h+1))
             vals=[(self.amplitude*(math.sin(B*x)))]
             x+=self.interval
-            while x<(8*(self.period)+(self.interval)):
+            while x<((self.period)+(self.interval)):
                 vals.append((self.amplitude*(math.sin(B*x))))
                 x+=self.interval
             harmonics.append(vals)
@@ -138,10 +138,10 @@ class wave:
         while h<8:
             
             x=0
-            B=(2*math.pi*(self.frequency/(h+1)))
+            B=(2*math.pi*(self.frequency)*(h+1))
             vals=[(self.amplitude*(math.sin(B*x)))]
             x+=self.interval
-            while x<(8*(self.period)+(self.interval)):
+            while x<((self.period)+(self.interval)):
                 vals.append((self.amplitude*(math.sin(B*x))))
                 x+=self.interval
 
@@ -159,10 +159,10 @@ class wave:
         while h<8:
             
             x=0
-            B=(2*math.pi*(self.frequency/(h+1)))
+            B=(2*math.pi*(self.frequency)*(h+1))
             vals=[(self.amplitude*(math.sin(B*x)))]
             x+=self.interval
-            while x<(8*(self.period)+(self.interval)):
+            while x<((self.period)+(self.interval)):
                 vals.append((self.amplitude*(math.sin(B*x))))
                 x+=self.interval
             harmonics.append(vals)

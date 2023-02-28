@@ -30,7 +30,6 @@ const float vibsize = WAV_FREQUENCY/12;
 float vibchangeParam = vibsize/12;
 int button = 0;
 bool vibUP=true;
-int waveLength=WAV_DATA_LENGTH;
 double sine_wave_y(double x) {
     return sin(x);
 }
@@ -61,12 +60,8 @@ void updateClockDiv(float clkDiv){
 void rawHandler(){
     if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
         gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE );
-        if(button<5){
-            waveLength=WAV_DATA_LENGTH;
-            button++;
-        }
-        else if(button<8){
-            waveLength=WAV_DATA_LENGTH*8;
+
+        if(button<8){
             button++;
         }
         else{
@@ -77,7 +72,7 @@ void rawHandler(){
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
     if(vibrato){
-        if (wav_position < (waveLength<<3) - 1) { 
+        if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
             // allow the pwm value to repeat for 8 cycles this is >>3 
             switch (button){
@@ -131,7 +126,7 @@ void pwm_interrupt_handler() {
             
         }
     }else{
-        if (wav_position < (waveLength<<3) - 1) { 
+        if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
             // allow the pwm value to repeat for 8 cycles this is >>3 
             switch (button){
