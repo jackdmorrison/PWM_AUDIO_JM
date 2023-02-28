@@ -115,77 +115,24 @@ class wave:
     def make_harmonics(self):
         h=0
         harmonics=[]
-        while h<8:
+        while h<=8:
             x=0
             B=(2*math.pi*(self.frequency)*(h+1))
-            vals=[(self.amplitude*(math.sin(B*x)))]
+            vals=str(int(255*(self.amplitude*(math.sin(B*x))+1)/2))
             x+=self.interval
             while x<((self.period)+(self.interval)):
-                vals.append((self.amplitude*(math.sin(B*x))))
+                vals+=', '
+                vals+=str(int(255*(self.amplitude*(math.sin(B*x))+1)/2))
                 x+=self.interval
             harmonics.append(vals)
             h+=1
-        total=str(int(((((harmonics[0][0]+harmonics[1][0]+harmonics[2][0]+harmonics[3][0]+harmonics[4][0]+harmonics[5][0]+harmonics[6][0]+harmonics[7][0])/8)+self.amplitude)/(self.amplitude*2)*255)))
-        for x in range(1,len(harmonics[0])):
-            total+=' ,'
-            total+=str(int(((((harmonics[0][x]+harmonics[1][x]+harmonics[2][x]+harmonics[3][x]+harmonics[4][x]+harmonics[5][x]+harmonics[6][x]+harmonics[7][x])/8)+self.amplitude)/(self.amplitude*2)*255)))
-        #print(total)
-        return total
-    def make_even_harmonics(self):
-        h=0
-        harmonics=[]
-        
-        while h<8:
-            
-            x=0
-            B=(2*math.pi*(self.frequency)*(h+1))
-            vals=[(self.amplitude*(math.sin(B*x)))]
-            x+=self.interval
-            while x<((self.period)+(self.interval)):
-                vals.append((self.amplitude*(math.sin(B*x))))
-                x+=self.interval
-
-            harmonics.append(vals)
-           
-            h+=2
-        total=str(int(((((harmonics[0][0]+harmonics[1][0]+harmonics[2][0]+harmonics[3][0])/4)+self.amplitude)/(self.amplitude*2)*255)))
-        for x in range(1,len(harmonics[0])):
-            total+=", "
-            total+=str(int(((((harmonics[0][x]+harmonics[1][x]+harmonics[2][x]+harmonics[3][x])/4)+self.amplitude)/(self.amplitude*2)*255)))
-        return total
-    def make_odd_harmonics(self):
-        h=1
-        harmonics=[]
-        while h<8:
-            
-            x=0
-            B=(2*math.pi*(self.frequency)*(h+1))
-            vals=[(self.amplitude*(math.sin(B*x)))]
-            x+=self.interval
-            while x<((self.period)+(self.interval)):
-                vals.append((self.amplitude*(math.sin(B*x))))
-                x+=self.interval
-            harmonics.append(vals)
-            h+=2
-        total=str(int(((((harmonics[0][0]+harmonics[1][0]+harmonics[2][0]+harmonics[3][0])/4)+self.amplitude)/(self.amplitude*2)*255)))
-        for x in range(1,len(harmonics[0])):
-            total+=", "
-            total+=str(int(((((harmonics[0][x]+harmonics[1][x]+harmonics[2][x]+harmonics[3][x])/4)+self.amplitude)/(self.amplitude*2)*255)))
-        return total
+        return harmonics
 f=open("waves.h","w")
 Frequency=256
 samplerate=44000
 amplitude=1
 wav = wave(Frequency,amplitude,samplerate)
-sin=wav.make_sin_wav()
-sqr=wav.make_square_wav()
-tri=wav.make_triangle_wav()
-saw=wav.make_sawtooth_wav()
-rsaw=wav.make_reversed_sawtooth_wav()
-pbla=wav.make_porabola_wav()
 harmonics=wav.make_harmonics()
-even_harmonics=wav.make_even_harmonics()
-odd_harmonics=wav.make_odd_harmonics()
 f.write("/* wave tables for a frequency of "+str(Frequency)+'\n')
 f.write(" * with sampling rate of " + str(samplerate)+'\n')
 f.write(" */\n")
@@ -194,40 +141,11 @@ f.write("#define WAV_DATA_LENGTH "+str(math.ceil(samplerate/Frequency))+'\n')
 f.write("#define WAV_FREQUENCY "+str(Frequency)+'\n')
 f.write('\n')
 
-f.write("uint8_t SIN_WAV_DATA[] = {\n")
-f.write('    '+sin+'\n')
-f.write('};\n')
-
-f.write("uint8_t SQR_WAV_DATA[] = {\n")
-f.write('    '+sqr+'\n')
-f.write('};\n')
-
-f.write("uint8_t TRI_WAV_DATA[] = {\n")
-f.write('    '+tri+'\n')
-f.write('};\n')
-
-f.write("uint8_t SAW_WAV_DATA[] = {\n")
-f.write('    '+saw+'\n')
-f.write('};\n')
-
-f.write("uint8_t R_SAW_WAV_DATA[] = {\n")
-f.write('    '+rsaw+'\n')
-f.write('};\n')
-
-f.write("uint8_t PRBA_WAV_DATA[] = {\n")
-f.write('    '+pbla+'\n')
-f.write('};\n')
-
-f.write("uint8_t HARMONICS_WAV_DATA[] = {\n")
-f.write('    '+harmonics+'\n')
-f.write('};\n')
-
-f.write("uint8_t EVEN_HARMONICS_WAV_DATA[] = {\n")
-f.write('    '+even_harmonics+'\n')
-f.write('};\n')
-
-f.write("uint8_t ODD_HARMONICS_WAV_DATA[] = {\n")
-f.write('    '+odd_harmonics+'\n')
-f.write('};\n')
+d=1
+for harmonic in harmonics:
+    f.write("uint8_t HARMONIC"+str(d)+"_WAV_DATA[] = {\n")
+    f.write('    '+harmonic+'\n')
+    f.write('};\n')
+    d+=1
 f.close()
 

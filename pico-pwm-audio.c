@@ -30,6 +30,7 @@ const float vibsize = WAV_FREQUENCY/12;
 float vibchangeParam = vibsize/12;
 int button = 0;
 bool vibUP=true;
+int value=0;
 double sine_wave_y(double x) {
     return sin(x);
 }
@@ -71,93 +72,46 @@ void rawHandler(){
 }
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    if(vibrato){
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
             // allow the pwm value to repeat for 8 cycles this is >>3 
             switch (button){
                 case 0: //sin wave
-                    pwm_set_gpio_level(AUDIO_PIN, SIN_WAV_DATA[wav_position>>3]);
+                    value=HARMONIC1_WAV_DATA[wav_position>>3];
+                    pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
-                case 1: //square wave
-                    pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);
+                case 1: //+harmonic1+2
+                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3])/2);
+                    pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
-                case 2: //Triangle wave
-                    pwm_set_gpio_level(AUDIO_PIN, TRI_WAV_DATA[wav_position>>3]);
+                case 2: //+harmonic1+2+3
+                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3])/3);
+                    pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
-                case 3: //Saw wave
-                    pwm_set_gpio_level(AUDIO_PIN, SAW_WAV_DATA[wav_position>>3]);
+                case 3: //+harmonic1+2+3+4
+                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3])/4);
+                    pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
-                case 4: //Reverse Saw wave
-                    pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);
+                case 4: //+harmonic1+2+3+4+5
+                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3])/5);
+                    pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
-                case 5:
-                    pwm_set_gpio_level(AUDIO_PIN, PRBA_WAV_DATA[wav_position>>3]);
+                case 5: //+harmonic1+2+3+4+5+6
+                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3])/6);
+                    pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
-                case 6:
-                    pwm_set_gpio_level(AUDIO_PIN, HARMONICS_WAV_DATA[wav_position>>3]);
+                case 6: //+harmonic1+2+3+4+5+6+7
+                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3])/7);
+                    pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
-                case 7:
-                    pwm_set_gpio_level(AUDIO_PIN, EVEN_HARMONICS_WAV_DATA[wav_position>>3]);
+                case 7: //+harmonic1+2+3+4+5+6+7+8
+                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3])/8);
+                    pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
-                case 8:
-                    pwm_set_gpio_level(AUDIO_PIN, ODD_HARMONICS_WAV_DATA[wav_position>>3]);
+                case 8: //+harmonic1+2+3+4+5+6+7+8+9
+                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]++HARMONIC9_WAV_DATA[wav_position>>3])/9);
+                    pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
-            }
-            wav_position++;
-        } else {
-            // reset to start
-            wav_position = 0;
-            if(vibUP){
-                if(currentF<frequency+vibsize){
-                    currentF+=vibchangeParam;
-                } else{
-                    vibUP=false;
-                }
-                updateClockDiv(clockDivChange(currentF));
-            } else{
-                if(currentF>frequency-vibsize){
-                    currentF-=vibchangeParam;
-                } else{
-                    vibUP=true;
-                }
-                updateClockDiv(clockDivChange(currentF));
-            }
-            
-        }
-    }else{
-        if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
-            // set pwm level 
-            // allow the pwm value to repeat for 8 cycles this is >>3 
-            switch (button){
-                case 0: //sin wave
-                    pwm_set_gpio_level(AUDIO_PIN, SIN_WAV_DATA[wav_position>>3]);
-                    break;
-                case 1: //square wave
-                    pwm_set_gpio_level(AUDIO_PIN, SQR_WAV_DATA[wav_position>>3]);
-                    break;
-                case 2: //Triangle wave
-                    pwm_set_gpio_level(AUDIO_PIN, TRI_WAV_DATA[wav_position>>3]);
-                    break;
-                case 3: //Saw wave
-                    pwm_set_gpio_level(AUDIO_PIN, SAW_WAV_DATA[wav_position>>3]);
-                    break;
-                case 4: //Reverse Saw wave
-                    pwm_set_gpio_level(AUDIO_PIN, R_SAW_WAV_DATA[wav_position>>3]);
-                    break;
-                case 5:
-                    pwm_set_gpio_level(AUDIO_PIN, PRBA_WAV_DATA[wav_position>>3]);
-                    break;
-                case 6:
-                    pwm_set_gpio_level(AUDIO_PIN, HARMONICS_WAV_DATA[wav_position>>3]);
-                    break;
-                case 7:
-                    pwm_set_gpio_level(AUDIO_PIN, EVEN_HARMONICS_WAV_DATA[wav_position>>3]);
-                    break;
-                case 8:
-                    pwm_set_gpio_level(AUDIO_PIN, ODD_HARMONICS_WAV_DATA[wav_position>>3]);
-                    break;
-            }
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
@@ -167,7 +121,6 @@ void pwm_interrupt_handler() {
             updateClockDiv(clockDivChange(frequency));
             
         }
-    }
     
     
 }
