@@ -109,9 +109,10 @@ void pwm_interrupt_handler() {
                     pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
                 case 8: //+harmonic1+2+3+4+5+6+7+8+9
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]++HARMONIC9_WAV_DATA[wav_position>>3])/9);
+                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3])/9);
                     pwm_set_gpio_level(AUDIO_PIN, value);
                     break;
+            }
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
