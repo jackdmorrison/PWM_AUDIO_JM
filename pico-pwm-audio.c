@@ -57,67 +57,71 @@ void pwm_interrupt_handler() {
             switch (cycleNum){
                 case 0: //base Harmonic
                     value=FFT[wav_position>>3];
-                    Hnumber=1;
+                    
                     break;
                 case 1: //+harmonic1+2
-                    value=FFT[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3];
-                    Hnumber=2;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3];
+                   
                     break;
                 case 2: //+harmonic
-                    value=FFT[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3];
-                    Hnumber=3;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3];
+                    
                     break;
                 case 3: //+harmonic
-                    value=FFT[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3];
-                    Hnumber=4;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3];
+                    
                     break;
                 case 4: //+harmonic
-                    value=FFT[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3];
-                    Hnumber=5;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3];
+                    
                     break;
                 case 5: //+harmonic
-                    value=FFT[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3];
-                    Hnumber=6;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3];
+                    
                     break;
                 case 6: //+harmonic
-                    value=FFT[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3];
-                    Hnumber=7;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3];
+                    
                     break;
                 case 7: //+harmonic
-                    value=FFT[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
-                    Hnumber=8;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
+                   
                     break;
                 case 8: //+harmonic
-                    value=FFT[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
-                    Hnumber=9;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
+              
                     break;
                 case 9: //-harmonic
-                    value=FFT[wav_position>>3]-HARMONIC8_WAV_DATA[wav_position>>3];
-                    Hnumber=8;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC9_WAV_DATA[wav_position>>3];
+                   
                     break;
                 case 10: //-harmonic
-                    value=FFT[wav_position>>3]-HARMONIC7_WAV_DATA[wav_position>>3];
-                    Hnumber=7;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC8_WAV_DATA[wav_position>>3];
+                   
                     break;
                 case 11: //-harmonic
-                    value=FFT[wav_position>>3]-HARMONIC6_WAV_DATA[wav_position>>3];
-                    Hnumber=6;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC7_WAV_DATA[wav_position>>3];
+                  
                     break;
                 case 12: //-harmonic
-                    value=FFT[wav_position>>3]-HARMONIC5_WAV_DATA[wav_position>>3];
-                    Hnumber=5;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC6_WAV_DATA[wav_position>>3];
+                  
                     break;
                 case 13: //-harmonic
-                    value=FFT[wav_position>>3]-HARMONIC4_WAV_DATA[wav_position>>3];
-                    Hnumber=4;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC5_WAV_DATA[wav_position>>3];
+                   
                     break;
                 case 14: //-harmonic
-                    value=FFT[wav_position>>3]-HARMONIC3_WAV_DATA[wav_position>>3];
-                    Hnumber=3;
+                    value=FFT[wav_position>>3]-HARMONIC4_WAV_DATA[wav_position>>3];
+                  
                     break;
                 case 15: //-harmonic
-                    value=FFT[wav_position>>3]-HARMONIC2_WAV_DATA[wav_position>>3];
-                    Hnumber=2;
+                    FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC3_WAV_DATA[wav_position>>3];
+                   
+                    break;
+                case 16: //-harmonic
+                    FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC2_WAV_DATA[wav_position>>3];
+                    
                     break;
 
             }
@@ -131,8 +135,76 @@ void pwm_interrupt_handler() {
             wav_position = 0;
             updateClockDiv(clockDivChange(frequency));
             cycleNum++;
-            if(cycleNum==16){
+            if(cycleNum>16){
                 cycleNum=0;
+            }
+            switch (cycleNum){
+                case 0: //base Harmonic
+                    Hnumber=1;
+                    break;
+                case 1: //+harmonic1+2
+                    
+                    Hnumber=2;
+                    break;
+                case 2: //+harmonic
+                    
+                    Hnumber=3;
+                    break;
+                case 3: //+harmonic
+                    
+                    Hnumber=4;
+                    break;
+                case 4: //+harmonic
+                   
+                    Hnumber=5;
+                    break;
+                case 5: //+harmonic
+                    
+                    Hnumber=6;
+                    break;
+                case 6: //+harmonic
+                    
+                    Hnumber=7;
+                    break;
+                case 7: //+harmonic
+                    
+                    Hnumber=8;
+                    break;
+                case 8: //+harmonic
+                    
+                    Hnumber=9;
+                    break;
+                case 9: //-harmonic
+                    
+                    Hnumber=8;
+                    break;
+                case 10: //-harmonic
+                    
+                    Hnumber=7;
+                    break;
+                case 11: //-harmonic
+                    
+                    Hnumber=6;
+                    break;
+                case 12: //-harmonic
+                    
+                    Hnumber=5;
+                    break;
+                case 13: //-harmonic
+                    
+                    Hnumber=4;
+                    break;
+                case 14: //-harmonic
+                    
+                    Hnumber=3;
+                    break;
+                case 15: //-harmonic
+                    Hnumber=2;
+                    break;
+                case 16: //-harmonic
+                    Hnumber=1;
+                    break;
+
             }
         }   
     
