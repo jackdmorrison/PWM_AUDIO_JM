@@ -125,7 +125,7 @@ void pwm_interrupt_handler() {
                     break;
 
             }
-            pwm_set_gpio_level(AUDIO_PIN, round(FFT[wav_position>>3]/Hnumber));
+            pwm_set_gpio_level(AUDIO_PIN, round(FFT[wav_position>>3]/(Hnumber+1)));
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
