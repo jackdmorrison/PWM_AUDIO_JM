@@ -16,7 +16,7 @@
 
 int wav_position = 0;
 float adc_value=0;
-const float conversionfactor=1.65f/(1<<12);
+const float conversionfactor=1.f/(1<<12);
 float frequency=WAV_FREQUENCY;
 float clkDiv=2.0f;
 int Hnumber=1;
