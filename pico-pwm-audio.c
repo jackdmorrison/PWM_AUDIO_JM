@@ -23,7 +23,7 @@ int Hnumber=1;
 
 int value=0;
 int cycleNum=0;
-uint8_t FFT[]={
+int FFT[]={
     127, 132, 136, 141, 146, 150, 155, 159, 164, 168, 173, 177, 181, 185, 189, 193, 197, 201, 205, 209, 212, 216, 219, 222, 225, 228, 231, 233, 236, 238, 240, 242, 244, 246, 248, 249, 250, 251, 252, 253, 254, 254, 254, 254, 254, 254, 254, 253, 252, 251, 250, 249, 248, 246, 244, 242, 240, 238, 236, 233, 231, 228, 225, 222, 219, 215, 212, 208, 205, 201, 197, 193, 189, 185, 181, 177, 172, 168, 163, 159, 154, 150, 145, 141, 136, 131, 127, 122, 117, 113, 108, 104, 99, 94, 90, 86, 81, 77, 73, 68, 64, 60, 56, 53, 49, 45, 42, 38, 35, 32, 29, 26, 23, 20, 18, 16, 13, 11, 10, 8, 6, 5, 4, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 21, 24, 26, 29, 32, 36, 39, 42, 46, 49, 53, 57, 61, 65, 69, 73, 78, 82, 86, 91, 95, 100, 104, 109, 114, 118, 123, 128
 };
 double sine_wave_y(double x) {
@@ -57,71 +57,71 @@ void pwm_interrupt_handler() {
             switch (cycleNum){
                 case 0: //base Harmonic
                     value=FFT[wav_position>>3];
-                    Hnumber=1;
+                  
                     break;
                 case 1: //+harmonic1+2
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3];
-                    Hnumber=2;
+                   
                     break;
                 case 2: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3];
-                    Hnumber=3;
+                  
                     break;
                 case 3: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3];
-                    Hnumber=4;
+                  
                     break;
                 case 4: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3];
-                    Hnumber=5;
+                  
                     break;
                 case 5: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3];
-                    Hnumber=6;
+                 
                     break;
                 case 6: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3];
-                    Hnumber=7;
+                 
                     break;
                 case 7: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
-                    Hnumber=8;
+                  
                     break;
                 case 8: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
-                    Hnumber=9;
+                   
                     break;
                 case 9: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC9_WAV_DATA[wav_position>>3];
-                    Hnumber=8;
+               
                     break;
                 case 10: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC8_WAV_DATA[wav_position>>3];
-                    Hnumber=7;
+                   
                     break;
                 case 11: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC7_WAV_DATA[wav_position>>3];
-                    Hnumber=6;
+                   
                     break;
                 case 12: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC6_WAV_DATA[wav_position>>3];
-                    Hnumber=5;
+                   
                     break;
                 case 13: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC5_WAV_DATA[wav_position>>3];
-                    Hnumber=4;
+                  
                     break;
                 case 14: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC4_WAV_DATA[wav_position>>3];
-                    Hnumber=3;
+                   
                     break;
                 case 15: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC3_WAV_DATA[wav_position>>3];
-                    Hnumber=2;
+                   
                     break;
                 case 16: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC2_WAV_DATA[wav_position>>3];
-                    Hnumber=1;
+                    
                     break;
 
             }
