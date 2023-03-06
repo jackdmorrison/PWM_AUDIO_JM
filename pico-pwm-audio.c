@@ -57,71 +57,71 @@ void pwm_interrupt_handler() {
             switch (cycleNum){
                 case 0: //base Harmonic
                     value=FFT[wav_position>>3];
-                    
+                    Hnumber=1;
                     break;
                 case 1: //+harmonic1+2
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3];
-                   
+                    Hnumber=2;
                     break;
                 case 2: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3];
-                    
+                    Hnumber=3;
                     break;
                 case 3: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3];
-                    
+                    Hnumber=4;
                     break;
                 case 4: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3];
-                    
+                    Hnumber=5;
                     break;
                 case 5: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3];
-                    
+                    Hnumber=6;
                     break;
                 case 6: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3];
-                    
+                    Hnumber=7;
                     break;
                 case 7: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
-                   
+                    Hnumber=8;
                     break;
                 case 8: //+harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
-              
+                    Hnumber=9;
                     break;
                 case 9: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC9_WAV_DATA[wav_position>>3];
-                   
+                    Hnumber=8;
                     break;
                 case 10: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC8_WAV_DATA[wav_position>>3];
-                   
+                    Hnumber=7;
                     break;
                 case 11: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC7_WAV_DATA[wav_position>>3];
-                  
+                    Hnumber=6;
                     break;
                 case 12: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC6_WAV_DATA[wav_position>>3];
-                  
+                    Hnumber=5;
                     break;
                 case 13: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC5_WAV_DATA[wav_position>>3];
-                   
+                    Hnumber=4;
                     break;
                 case 14: //-harmonic
                     value=FFT[wav_position>>3]-HARMONIC4_WAV_DATA[wav_position>>3];
-                  
+                    Hnumber=3;
                     break;
                 case 15: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC3_WAV_DATA[wav_position>>3];
-                   
+                    Hnumber=2;
                     break;
                 case 16: //-harmonic
                     FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC2_WAV_DATA[wav_position>>3];
-                    
+                    Hnumber=1;
                     break;
 
             }
@@ -140,6 +140,7 @@ void pwm_interrupt_handler() {
             }
             switch (cycleNum){
                 case 0: //base Harmonic
+                
                     Hnumber=1;
                     break;
                 case 1: //+harmonic1+2
