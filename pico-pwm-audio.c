@@ -17,20 +17,15 @@
 int wav_position = 0;
 float adc_value=0;
 const float conversionfactor=1.65f/(1<<12);
-int timeInterval=75;
-bool vibrato = false; //vibrato on or off
-//float frequencies[]={256};
 float frequency=WAV_FREQUENCY;
-float currentF = WAV_FREQUENCY;
-int freqNum=0;
-int interval=0;
-//int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
 float clkDiv=2.0f;
-const float vibsize = WAV_FREQUENCY/12;
-float vibchangeParam = vibsize/12;
-int button = 0;
-bool vibUP=true;
+int Hnumber=1;
+
 int value=0;
+int cycleNum=0;
+uint8_t FFT[]={
+    127, 132, 136, 141, 146, 150, 155, 159, 164, 168, 173, 177, 181, 185, 189, 193, 197, 201, 205, 209, 212, 216, 219, 222, 225, 228, 231, 233, 236, 238, 240, 242, 244, 246, 248, 249, 250, 251, 252, 253, 254, 254, 254, 254, 254, 254, 254, 253, 252, 251, 250, 249, 248, 246, 244, 242, 240, 238, 236, 233, 231, 228, 225, 222, 219, 215, 212, 208, 205, 201, 197, 193, 189, 185, 181, 177, 172, 168, 163, 159, 154, 150, 145, 141, 136, 131, 127, 122, 117, 113, 108, 104, 99, 94, 90, 86, 81, 77, 73, 68, 64, 60, 56, 53, 49, 45, 42, 38, 35, 32, 29, 26, 23, 20, 18, 16, 13, 11, 10, 8, 6, 5, 4, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 21, 24, 26, 29, 32, 36, 39, 42, 46, 49, 53, 57, 61, 65, 69, 73, 78, 82, 86, 91, 95, 100, 104, 109, 114, 118, 123, 128
+};
 double sine_wave_y(double x) {
     return sin(x);
 }
@@ -46,28 +41,12 @@ void updateClockDiv(float clkDiv){
     pwm_init(pin_slice, &config, true);
     pwm_set_gpio_level(AUDIO_PIN, 0);
 }
-// void callback(){
-//     if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-//         gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-//         if(vibrato){
-//             vibrato=false;
-//             updateClockDiv(clockDivChange(frequency));
-//         }else{
-//             vibrato=true;
-//             updateClockDiv(clockDivChange(frequency));
-//         }
-//     }
-// }
 void rawHandler(){
     if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
         gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE );
-
-        if(button<16){
-            button++;
-        }
-        else{
-            button=0;
-        }
+        adc_value=(adc_read())*conversionfactor;
+        frequency=WAV_FREQUENCY*adc_value;
+        updateClockDiv(clockDivChange(frequency));
     }
 }
 void pwm_interrupt_handler() {
@@ -75,60 +54,75 @@ void pwm_interrupt_handler() {
         if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
             // set pwm level 
             // allow the pwm value to repeat for 8 cycles this is >>3 
-            switch (button){
+            switch (cycleNum){
                 case 0: //base Harmonic
-                    value=HARMONIC1_WAV_DATA[wav_position>>3];
+                    value=FFT[wav_position>>3];
+                    Hnumber=1;
                     break;
                 case 1: //+harmonic1+2
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3])/2);
+                    value=FFT[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3];
+                    Hnumber=2;
                     break;
-                case 2: //+harmonic1+2+3
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3])/3);
+                case 2: //+harmonic
+                    value=FFT[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3];
+                    Hnumber=3;
                     break;
-                case 3: //+harmonic1+2+3+4
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3])/4);
+                case 3: //+harmonic
+                    value=FFT[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3];
+                    Hnumber=4;
                     break;
-                case 4: //+harmonic1+2+3+4+5
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3])/5);
+                case 4: //+harmonic
+                    value=FFT[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3];
+                    Hnumber=5;
                     break;
-                case 5: //+harmonic1+2+3+4+5+6
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3])/6);
+                case 5: //+harmonic
+                    value=FFT[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3];
+                    Hnumber=6;
                     break;
-                case 6: //+harmonic1+2+3+4+5+6+7
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3])/7);
+                case 6: //+harmonic
+                    value=FFT[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3];
+                    Hnumber=7;
                     break;
-                case 7: //+harmonic1+2+3+4+5+6+7+8
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3])/8);
+                case 7: //+harmonic
+                    value=FFT[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
+                    Hnumber=8;
                     break;
-                case 8: //+harmonic1+2+3+4+5+6+7+8+9
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3])/9);
+                case 8: //+harmonic
+                    value=FFT[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
+                    Hnumber=9;
                     break;
-                case 9: //+harmonic1+2+3+4+5+6+7+9
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3])/8);
+                case 9: //-harmonic
+                    value=FFT[wav_position>>3]-HARMONIC8_WAV_DATA[wav_position>>3];
+                    Hnumber=8;
                     break;
-                case 10: //+harmonic1+2+3+4+5+7+9
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3])/7);
+                case 10: //-harmonic
+                    value=FFT[wav_position>>3]-HARMONIC7_WAV_DATA[wav_position>>3];
+                    Hnumber=7;
                     break;
-                case 11: //+harmonic1+2+3+5+7+9
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3])/6);
-                    break; 
-                case 12: //+harmonic1+3+5+7+9
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3])/5);
+                case 11: //-harmonic
+                    value=FFT[wav_position>>3]-HARMONIC6_WAV_DATA[wav_position>>3];
+                    Hnumber=6;
                     break;
-                case 13: //+harmonic1+2+5+7+9
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3])/5);
+                case 12: //-harmonic
+                    value=FFT[wav_position>>3]-HARMONIC5_WAV_DATA[wav_position>>3];
+                    Hnumber=5;
                     break;
-                case 14: //+harmonic1+2+4+7+9
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3])/5);
+                case 13: //-harmonic
+                    value=FFT[wav_position>>3]-HARMONIC4_WAV_DATA[wav_position>>3];
+                    Hnumber=4;
                     break;
-                case 15: //+harmonic1+2+4+6+9
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3])/5);
+                case 14: //-harmonic
+                    value=FFT[wav_position>>3]-HARMONIC3_WAV_DATA[wav_position>>3];
+                    Hnumber=3;
                     break;
-                case 16: //+harmonic1+2+4+6+8
-                    value=round((HARMONIC1_WAV_DATA[wav_position>>3]+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3])/5);
+                case 15: //-harmonic
+                    value=FFT[wav_position>>3]-HARMONIC2_WAV_DATA[wav_position>>3];
+                    Hnumber=2;
                     break;
+
             }
-            pwm_set_gpio_level(AUDIO_PIN, value);
+            FFT[wav_position>>3]=value;
+            pwm_set_gpio_level(AUDIO_PIN, round(value/Hnumber));
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
@@ -136,8 +130,11 @@ void pwm_interrupt_handler() {
             // reset to start
             wav_position = 0;
             updateClockDiv(clockDivChange(frequency));
-            
-        }
+            cycleNum++;
+            if(cycleNum==16){
+                cycleNum=0;
+            }
+        }   
     
     
 }
