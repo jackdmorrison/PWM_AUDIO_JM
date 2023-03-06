@@ -112,7 +112,7 @@ void pwm_interrupt_handler() {
                     Hnumber=4;
                     break;
                 case 14: //-harmonic
-                    value=FFT[wav_position>>3]-HARMONIC4_WAV_DATA[wav_position>>3];
+                    FFT[wav_position>>3]=FFT[wav_position>>3]-HARMONIC4_WAV_DATA[wav_position>>3];
                     Hnumber=3;
                     break;
                 case 15: //-harmonic
@@ -125,8 +125,7 @@ void pwm_interrupt_handler() {
                     break;
 
             }
-            FFT[wav_position>>3]=value;
-            pwm_set_gpio_level(AUDIO_PIN, round(value/Hnumber));
+            pwm_set_gpio_level(AUDIO_PIN, round(FFT[wav_position>>3]/Hnumber));
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
