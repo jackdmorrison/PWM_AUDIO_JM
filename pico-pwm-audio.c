@@ -56,7 +56,7 @@ void pwm_interrupt_handler() {
             // allow the pwm value to repeat for 8 cycles this is >>3 
             switch (cycleNum){
                 case 0: //base Harmonic
-                    value=FFT[wav_position>>3];
+                    FFT[wav_position>>3]=HARMONIC1_WAV_DATA[wav_position>>3];
                   
                     break;
                 case 1: //+harmonic1+2
@@ -125,7 +125,7 @@ void pwm_interrupt_handler() {
                     break;
 
             }
-            pwm_set_gpio_level(AUDIO_PIN, round(FFT[wav_position>>3]/(Hnumber+1)));
+            pwm_set_gpio_level(AUDIO_PIN, round(FFT[wav_position>>3]/(Hnumber)));
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
