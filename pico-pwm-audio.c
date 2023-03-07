@@ -128,14 +128,17 @@ void pwm_interrupt_handler() {
                         break;
 
                 }
-                else if(i>8{
-                    i=0;
-                }
+                i++;
+                
+            }else if(i==7){
+                i=0;
+            }
+            else{
+                i++;
             }
             
             pwm_set_gpio_level(AUDIO_PIN, round(FFT[wav_position>>3]/(Hnumber)));
             wav_position++;
-            i++;
         } else {
             adc_value=(adc_read())*conversionfactor;
             frequency=WAV_FREQUENCY*adc_value;
