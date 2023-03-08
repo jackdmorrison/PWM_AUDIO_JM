@@ -165,12 +165,12 @@ int main(void) {
     gpio_init(VIBRATO_PIN);
     gpio_set_dir(VIBRATO_PIN,GPIO_IN);
     gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE ,true);
-    gpio_add_raw_irq_handler(VIBRATO_PIN, rawHandler1 );
+    gpio_add_raw_irq_handler_masked(( 0x01 << VIBRATO_PIN),&rawHandler1);
 
     gpio_init(WAVEBUTTON);
     gpio_set_dir(WAVEBUTTON,GPIO_IN);
     gpio_set_irq_enabled(WAVEBUTTON,GPIO_IRQ_EDGE_RISE ,true);
-    gpio_add_raw_irq_handler(WAVEBUTTON, rawHandler2 );
+    gpio_add_raw_irq_handler_masked(( 0x01 << WAVEBUTTON),&rawHandler1);
     irq_set_enabled(IO_IRQ_BANK0, true);
     
     set_sys_clock_khz(176000, true); 
@@ -206,8 +206,6 @@ void rawHandler1(){
             updateClockDiv(clockDivChange(frequency));
         }
     }
-}
-void rawHandler2(){
     if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
         gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE );
 
@@ -219,27 +217,3 @@ void rawHandler2(){
         }
     }
 }
-// void rawHandler3(){
-//     if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
-//         gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE );
-
-//         if(button<8){
-//             button++;
-//         }
-//         else{
-//             button=0;
-//         }
-//     }
-// }
-// void rawHandler4(){
-//     if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
-//         gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE );
-
-//         if(button<8){
-//             button++;
-//         }
-//         else{
-//             button=0;
-//         }
-//     }
-// }
