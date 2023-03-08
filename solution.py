@@ -173,7 +173,7 @@ class wave:
             total+=str(int(((((harmonics[0][x]+harmonics[1][x]+harmonics[2][x]+harmonics[3][x])/4)+self.amplitude)/(self.amplitude*2)*255)))
         return total
 f=open("waves.h","w")
-Frequency=256
+Frequency=263.74
 samplerate=44000
 amplitude=1
 wav = wave(Frequency,amplitude,samplerate)
@@ -221,13 +221,45 @@ f.write('};\n')
 f.write("uint8_t HARMONICS_WAV_DATA[] = {\n")
 f.write('    '+harmonics+'\n')
 f.write('};\n')
+f.write("float[] NOTES={\n")
+for i in range(0,13):
+    if(i==0):
+        f.write("   "+str(1*Frequency)+", ")
+    elif(i==1):
+        f.write(str(round((Frequency*(16/15)),3))+", ")
+    elif(i==2):
+        f.write(str(round((Frequency*(9/8)),3))+", ")
+    elif(i==3):
+        f.write(str(round((Frequency*(6/5)),3))+", ")
+    elif(i==4):
+        f.write(str(round((Frequency*(5/4)),3))+", ")
+    elif(i==5):
+        f.write(str(round((Frequency*(4/3)),3))+", ")
+    elif(i==6):
+        f.write(str(round((Frequency*(45/32)),3))+", ")
+    elif(i==7):
+        f.write(str(round((Frequency*(3/2)),3))+", ")
+    elif(i==8):
+        f.write(str(round((Frequency*(8/5)),3))+", ")
+    elif(i==9):
+        f.write(str(round((Frequency*(5/3)),3))+", ")
+    elif(i==10):
+        f.write(str(round((Frequency*(9/5)),3))+", ")
+    elif(i==11):
+        f.write(str(round((Frequency*(15/8)),3))+", ")
+    elif(i==12):
+        f.write(str(round((Frequency*(2)),3))+"\n")
+        f.write("};\n")
 
-f.write("uint8_t EVEN_HARMONICS_WAV_DATA[] = {\n")
-f.write('    '+even_harmonics+'\n')
-f.write('};\n')
 
-f.write("uint8_t ODD_HARMONICS_WAV_DATA[] = {\n")
-f.write('    '+odd_harmonics+'\n')
-f.write('};\n')
+    
+
+# f.write("uint8_t EVEN_HARMONICS_WAV_DATA[] = {\n")
+# f.write('    '+even_harmonics+'\n')
+# f.write('};\n')
+
+# f.write("uint8_t ODD_HARMONICS_WAV_DATA[] = {\n")
+# f.write('    '+odd_harmonics+'\n')
+# f.write('};\n')
 f.close()
 

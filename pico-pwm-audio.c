@@ -16,7 +16,7 @@
 
 int wav_position = 0;
 float adc_value=0;
-const float conversionfactor=1.65f/(1<<12);
+const float conversionfactor=1.0f/(1<<12);
 int timeInterval=75;
 bool vibrato = false; //vibrato on or off
 //float frequencies[]={256};
@@ -161,7 +161,70 @@ void pwm_interrupt_handler() {
             wav_position++;
         } else {
             adc_value=(adc_read())*conversionfactor;
-            frequency=WAV_FREQUENCY*adc_value;
+            if(adc_value>1.5f){
+                if(adc_value>1.75){
+                    if(adc_value>1.875){
+                        if(adc_value<1.9375){
+                            frequency=NOTES[11];
+                        }else{
+                            frequency=NOTES[12];
+                        }
+                    }
+                    else{
+                        frequency=NOTES[10];
+                    }
+                }
+                else{
+                    if(adc_value>1.625){
+                        if(adc_value>1.6875){
+                            frequency=NOTES[9];
+                        }
+                        else{
+                            frequency=Notes[8];
+                        }
+                    }
+                    else{
+                        if(adc_value>1.5625){
+                            frequency=NOTES[7];
+                        }else{
+                            frequency=NOTES[6];
+                        }
+                    }
+                }
+            }else{
+                if(adc_value>1.25){
+                    if(adc_value>1.375){
+                        if(adc_value>1.4375){
+                            frequency=NOTES[6];
+                        }else{
+                            frequency=NOTES[5];
+                        }
+                    }else{
+                        if(adc_value>1.3125){
+                            frequency=NOTES[4];
+                        }
+                        else{
+                            frequency=NOTES[3];
+                        }
+                    }
+                }else{
+                    if(adc_value>1.125){
+                        if(adc_value>1.1875){
+                            frequency=NOTES[3];
+                        }else{
+                            frequency=NOTES[2];
+                        }
+                    }else{
+                        if(adc_value>1.0625){
+                            frequency=NOTES[1];
+                        }
+                        else{
+                            frequency=NOTES[0];
+                        }
+                    }
+                }
+            }
+            //frequency=WAV_FREQUENCY*adc_value;
             // reset to start
             wav_position = 0;
             updateClockDiv(clockDivChange(frequency));
