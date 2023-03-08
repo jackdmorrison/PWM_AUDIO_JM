@@ -182,7 +182,7 @@ int main(void) {
     // set the handle function above
     irq_set_exclusive_handler(PWM_IRQ_WRAP, pwm_interrupt_handler); 
     irq_set_enabled(PWM_IRQ_WRAP, true);
-
+ 
     // Setup PWM for audio output
     pwm_config config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
