@@ -97,12 +97,12 @@ void pwm_interrupt_handler() {
                 case 6:
                     pwm_set_gpio_level(AUDIO_PIN, HARMONICS_WAV_DATA[wav_position>>3]);
                     break;
-                case 7:
-                    pwm_set_gpio_level(AUDIO_PIN, EVEN_HARMONICS_WAV_DATA[wav_position>>3]);
-                    break;
-                case 8:
-                    pwm_set_gpio_level(AUDIO_PIN, ODD_HARMONICS_WAV_DATA[wav_position>>3]);
-                    break;
+                // case 7:
+                //     pwm_set_gpio_level(AUDIO_PIN, EVEN_HARMONICS_WAV_DATA[wav_position>>3]);
+                //     break;
+                // case 8:
+                //     pwm_set_gpio_level(AUDIO_PIN, ODD_HARMONICS_WAV_DATA[wav_position>>3]);
+                //     break;
             }
             wav_position++;
         } else {
@@ -151,16 +151,16 @@ void pwm_interrupt_handler() {
                 case 6:
                     pwm_set_gpio_level(AUDIO_PIN, HARMONICS_WAV_DATA[wav_position>>3]);
                     break;
-                case 7:
-                    pwm_set_gpio_level(AUDIO_PIN, EVEN_HARMONICS_WAV_DATA[wav_position>>3]);
-                    break;
-                case 8:
-                    pwm_set_gpio_level(AUDIO_PIN, ODD_HARMONICS_WAV_DATA[wav_position>>3]);
-                    break;
+                // case 7:
+                //     pwm_set_gpio_level(AUDIO_PIN, EVEN_HARMONICS_WAV_DATA[wav_position>>3]);
+                //     break;
+                // case 8:
+                //     pwm_set_gpio_level(AUDIO_PIN, ODD_HARMONICS_WAV_DATA[wav_position>>3]);
+                //     break;
             }
             wav_position++;
         } else {
-            adc_value=(adc_read())*conversionfactor;
+            adc_value=((adc_read())*conversionfactor)*2;
             if(adc_value>1.5f){
                 if(adc_value>1.75){
                     if(adc_value>1.875){
@@ -180,7 +180,7 @@ void pwm_interrupt_handler() {
                             frequency=NOTES[9];
                         }
                         else{
-                            frequency=Notes[8];
+                            frequency=NOTES[8];
                         }
                     }
                     else{
