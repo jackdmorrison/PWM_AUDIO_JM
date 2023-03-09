@@ -148,7 +148,7 @@ void pwm_interrupt_handler() {
                 //frequency=WAV_FREQUENCY*adc_value;
                 // reset to start
                 wav_position = 0;
-                updateClockDiv(clockDivChange(frequency));
+                
                 
             }
         }
@@ -420,7 +420,9 @@ void rawHandler1(){
                     }
                 }
             }
+
         }
+        updateClockDiv(clockDivChange(frequency));
     }else if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_FALL ){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_FALL );
         PLAY=false;
