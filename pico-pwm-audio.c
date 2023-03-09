@@ -224,8 +224,8 @@ void rawHandler1(){
     //         button=0;
     //     }
     // }
-    if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE ){
-        gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE );
+    if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_RISE ){
+        gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_RISE );
         PLAY=true;
         adc_value=((adc_read())*conversionfactor);
         if(adc_value>2){
