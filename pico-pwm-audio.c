@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <math.h>
-#include "pico/stdlib.h"   // stdlib 
-#include "hardware/irq.h"  // interrupts
-#include "hardware/pwm.h"  // pwm 
-#include "hardware/sync.h" // wait for interrupt 
+#include "pico/stdlib.h"    
+#include "hardware/irq.h"  
+#include "hardware/pwm.h"  
+#include "hardware/sync.h" 
 #include "hardware/adc.h"
- 
-// Audio PIN is to match some of the design guide shields. 
-#define AUDIO_PIN 28  // you can change this to whatever you like
+  
+#define AUDIO_PIN 28  
 #define ADC_PIN 26
 #define VIBRATO_PIN 15
 #define WAVEBUTTON 10
@@ -19,7 +18,6 @@ float adc_value=0;
 const float conversionfactor=1.0f/(1<<12);
 int timeInterval=75;
 bool vibrato = false; //vibrato on or off
-//float frequencies[]={256};
 float frequency=WAV_FREQUENCY;
 float currentF = WAV_FREQUENCY;
 int freqNum=0;
@@ -45,30 +43,13 @@ void updateClockDiv(float clkDiv){
     pwm_init(pin_slice, &config, true);
     pwm_set_gpio_level(AUDIO_PIN, 0);
 }
-// void callback(){
-//     if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
-//         gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-//         if(vibrato){
-//             vibrato=false;
-//             updateClockDiv(clockDivChange(frequency));
-//         }else{
-//             vibrato=true;
-//             updateClockDiv(clockDivChange(frequency));
-//         }
-//     }
-// }
-void rawHandler(){
-    if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
-        gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE );
 
-        if(button<8){
-            button++;
-        }
-        else{
-            button=0;
-        }
-    }
-}
+void rawHandler1();
+void rawHandler2();
+// void rawHandler3();
+// void rawHandler4();
+
+
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
     if(vibrato){
@@ -374,14 +355,15 @@ int main(void) {
     adc_gpio_init(ADC_PIN);
     adc_select_input(0);
 
-    // gpio_init(VIBRATO_PIN);
-    // gpio_set_dir(VIBRATO_PIN,GPIO_IN);
-    // gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,true);
-    // gpio_add_raw_irq_handler(VIBRATO_PIN, callback);
+    gpio_init(VIBRATO_PIN);
+    gpio_set_dir(VIBRATO_PIN,GPIO_IN);
+    gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE ,true);
+    gpio_add_raw_irq_handler_masked(( 0x01 << VIBRATO_PIN),&rawHandler1);
+
     gpio_init(WAVEBUTTON);
     gpio_set_dir(WAVEBUTTON,GPIO_IN);
     gpio_set_irq_enabled(WAVEBUTTON,GPIO_IRQ_EDGE_RISE ,true);
-    gpio_add_raw_irq_handler(WAVEBUTTON, rawHandler );
+    gpio_add_raw_irq_handler_masked(( 0x01 << WAVEBUTTON),&rawHandler1);
     irq_set_enabled(IO_IRQ_BANK0, true);
     
     set_sys_clock_khz(176000, true); 
@@ -393,7 +375,7 @@ int main(void) {
     // set the handle function above
     irq_set_exclusive_handler(PWM_IRQ_WRAP, pwm_interrupt_handler); 
     irq_set_enabled(PWM_IRQ_WRAP, true);
-
+ 
     // Setup PWM for audio output
     pwm_config config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
@@ -404,5 +386,26 @@ int main(void) {
 
     while(1) {
         __wfi(); // Wait for Interrupt
+    }
+}
+void rawHandler1(){
+    if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
+        gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
+        if(button>0){
+            button--;
+        }
+        else{
+            button=8;
+        }
+    }
+    if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
+        gpio_acknowledge_irq(WAVEBUTTON, GPIO_IRQ_EDGE_RISE );
+
+        if(button<8){
+            button++;
+        }
+        else{
+            button=0;
+        }
     }
 }
