@@ -172,7 +172,7 @@ int main(void) {
 
     gpio_init(GATE);
     gpio_set_dir(GATE,GPIO_IN);
-    gpio_pull_up(GATE);
+    gpio_pull_down(GATE);
     gpio_set_irq_enabled(GATE,GPIO_IRQ_EDGE_RISE|GPIO_IRQ_EDGE_FALL,true);
     gpio_add_raw_irq_handler_masked(( 0x01 << GATE),&rawHandler1);
     
