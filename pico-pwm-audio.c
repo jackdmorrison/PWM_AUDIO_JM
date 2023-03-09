@@ -198,12 +198,11 @@ int main(void) {
 void rawHandler1(){
     if(gpio_get_irq_event_mask(VIBRATO_PIN) & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(VIBRATO_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL);
-        if(vibrato){
-            vibrato=false;
-            updateClockDiv(clockDivChange(frequency));
-        }else{
-            vibrato=true;
-            updateClockDiv(clockDivChange(frequency));
+        if(button>0){
+            button--;
+        }
+        else{
+            button=8;
         }
     }
     if(gpio_get_irq_event_mask(WAVEBUTTON) & GPIO_IRQ_EDGE_RISE ){
