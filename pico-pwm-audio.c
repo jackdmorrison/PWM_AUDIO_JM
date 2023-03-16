@@ -59,7 +59,7 @@ void updateClockDiv(float clkDiv){
     pwm_set_gpio_level(AUDIO_PIN, 0);
 }
 
-void buttonHandler(button_t *button_p) {
+void onchange(button_t *button_p) {
   button_t *button = (button_t*)button_p;
 
   if(button->state) return; // Ignore button release. Invert the logic if using
@@ -307,14 +307,14 @@ int main(void) {
     gpio_set_irq_enabled(GATE,GPIO_IRQ_EDGE_RISE|GPIO_IRQ_EDGE_FALL,true);
     gpio_add_raw_irq_handler_masked(( 0x01 << GATE),&rawHandler1);
 
-    button_t *sine = create_button(SINE, buttonHandler);
-    button_t *square = create_button(SQUARE, buttonHandler);
-    button_t *triangle = create_button(TRIANGLE, buttonHandler);
-    button_t *porabola = create_button(PORABOLA, buttonHandler);
-    button_t *hm_even_up = create_button(HM_EVEN_UP, buttonHandler);
-    button_t *hm_even_down = create_button(HM_EVEN_DOWN, buttonHandler);
-    button_t *hm_odd_up = create_button(HM_ODD_UP, buttonHandler);
-    button_t *hm_odd_down = create_button(HM_ODD_DOWN, buttonHandler);
+    button_t *sine = create_button(SINE, onchange);
+    button_t *square = create_button(SQUARE, onchange);
+    button_t *triangle = create_button(TRIANGLE, onchange);
+    button_t *porabola = create_button(PORABOLA, onchange);
+    button_t *hm_even_up = create_button(HM_EVEN_UP, onchange);
+    button_t *hm_even_down = create_button(HM_EVEN_DOWN, onchange);
+    button_t *hm_odd_up = create_button(HM_ODD_UP, onchange);
+    button_t *hm_odd_down = create_button(HM_ODD_DOWN, onchange);
     
     irq_set_enabled(IO_IRQ_BANK0, true);
     
