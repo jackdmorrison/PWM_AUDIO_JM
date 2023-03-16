@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include <button.h>
+#include "button.h"
 #include "pico/stdlib.h"    
 #include "hardware/irq.h"  
 #include "hardware/pwm.h"  
@@ -24,7 +24,7 @@
 #define GATE 0
 
 #include "waves.h"
-
+void rawHandler1();
 int wav_position = 0;
 float adc_value=0;
 const float conversionfactor=1.0f/(1<<12);
@@ -40,6 +40,7 @@ float vibchangeParam = vibsize/12;
 int buttonNum = 0;
 int evenHarmonics=0;
 int oddHarmonics=0;
+int value=0;
 bool vibUP=true;
 bool PLAY=true;
 double sine_wave_y(double x) {
@@ -85,7 +86,7 @@ void buttonHandler(button_t *button_p) {
         buttonNum=5;
         break;
     case HM_EVEN_UP:
-        if(evenHarmonics<5){
+        if(evenHarmonics<6){
             evenHarmonics++;
         }
         
@@ -123,7 +124,7 @@ void pwm_interrupt_handler() {
             if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
                 // set pwm level 
                 // allow the pwm value to repeat for 8 cycles this is >>3 
-                switch (button){
+                switch (buttonNum){
                     case 0: //sin wave
                         value=SIN_WAV_DATA[wav_position>>3];
                         break;
@@ -158,10 +159,10 @@ void pwm_interrupt_handler() {
                     case 4:
                         value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
                         break;
-                    case 4:
+                    case 5:
                         value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3];
                         break;
-                    case 5:
+                    case 6:
                         value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3]+HARMONIC12_WAV_DATA[wav_position>>3];
                         break;
                 }
@@ -180,11 +181,11 @@ void pwm_interrupt_handler() {
                     case 4:
                         value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
                         break;
-                    case 4:
+                    case 5:
                         value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3]+HARMONIC11_WAV_DATA[wav_position>>3];
                         break;
                 }
-                pwm_set_gpio_level(AUDIO_PIN, round(value/(evenHarmonics+oddHarmonics+1));
+                pwm_set_gpio_level(AUDIO_PIN, round(value/(evenHarmonics+oddHarmonics+1)));
                 wav_position++;
             } else {
                 // reset to start
@@ -210,7 +211,7 @@ void pwm_interrupt_handler() {
             if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
                 // set pwm level 
                 // allow the pwm value to repeat for 8 cycles this is >>3 
-                switch (button){
+                switch (buttonNum){
                     case 0: //sin wave
                         value=SIN_WAV_DATA[wav_position>>3];
                         break;
@@ -245,10 +246,10 @@ void pwm_interrupt_handler() {
                     case 4:
                         value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
                         break;
-                    case 4:
+                    case 5:
                         value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3];
                         break;
-                    case 5:
+                    case 6:
                         value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3]+HARMONIC12_WAV_DATA[wav_position>>3];
                         break;
                 }
@@ -267,11 +268,11 @@ void pwm_interrupt_handler() {
                     case 4:
                         value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
                         break;
-                    case 4:
+                    case 5:
                         value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3]+HARMONIC11_WAV_DATA[wav_position>>3];
                         break;
                 }
-                pwm_set_gpio_level(AUDIO_PIN, round(value/(evenHarmonics+oddHarmonics+1));
+                pwm_set_gpio_level(AUDIO_PIN, round(value/(evenHarmonics+oddHarmonics+1)));
                 wav_position++;
             } else {
                 
