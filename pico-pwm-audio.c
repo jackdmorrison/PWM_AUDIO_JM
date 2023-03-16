@@ -306,11 +306,16 @@ int main(void) {
     gpio_pull_down(GATE);
     gpio_set_irq_enabled(GATE,GPIO_IRQ_EDGE_RISE|GPIO_IRQ_EDGE_FALL,true);
     gpio_add_raw_irq_handler_masked(( 0x01 << GATE),&rawHandler1);
+
+    button_t *sine = create_button(SINE, buttonHandler);
+    button_t *square = create_button(SQUARE, buttonHandler);
+    button_t *triangle = create_button(TRIANGLE, buttonHandler);
+    button_t *porabola = create_button(PORABOLA, buttonHandler);
+    button_t *hm_even_up = create_button(HM_EVEN_UP, buttonHandler);
+    button_t *hm_even_down = create_button(HM_EVEN_DOWN, buttonHandler);
+    button_t *hm_odd_up = create_button(HM_ODD_UP, buttonHandler);
+    button_t *hm_odd_down = create_button(HM_ODD_DOWN, buttonHandler);
     
-    // gpio_init(WAVEBUTTON);
-    // gpio_set_dir(WAVEBUTTON,GPIO_IN);
-    // gpio_set_irq_enabled(WAVEBUTTON,GPIO_IRQ_EDGE_RISE ,true);
-    // gpio_add_raw_irq_handler_masked(( 0x01 << WAVEBUTTON),&rawHandler1);
     irq_set_enabled(IO_IRQ_BANK0, true);
     
     set_sys_clock_khz(176000, true); 
