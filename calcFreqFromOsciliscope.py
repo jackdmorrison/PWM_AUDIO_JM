@@ -1,4 +1,4 @@
-timeDiv=0.002
-numberofdivisions=2
-f=1/(timeDiv*numberofdivisions)
+timeDiv=0.5
+numberofdivisions=2.8
+f=(timeDiv*numberofdivisions)
 print(f)
