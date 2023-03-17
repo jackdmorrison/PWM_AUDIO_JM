@@ -128,7 +128,7 @@ class wave:
             h+=1
         return harmonics
 f=open("waves.h","w")
-Frequency=16.05
+Frequency=32.11
 samplerate=44000
 amplitude=1
 wav = wave(Frequency,amplitude,samplerate)
