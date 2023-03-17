@@ -27,7 +27,7 @@
 void rawHandler1();
 int wav_position = 0;
 float adc_value=0;
-const float conversionfactor=1.0f/(1<<12);
+const float conversionfactor=3.3f/(1<<12);
 bool vibrato = false; //vibrato on or off
 float frequency=WAV_FREQUENCY;
 float currentF = WAV_FREQUENCY;
@@ -389,30 +389,58 @@ void rawHandler1(){
             if(adc_value>2.5f){
                 if(adc_value>2.75){
                     if(adc_value>2.875){
-                        if(adc_value<2.9375){
-                            frequency=OCTAVE3[11];
+                        if(adc_value>2.9375){
+                            if(adc_value>2.96875){
+                                frequency=OCTAVE5[0]*2;
+                            }else{
+                                frequency=OCTAVE5[11];
+                            }
+                            
                         }else{
-                            frequency=OCTAVE3[12];
+                            
+                            frequency=OCTAVE5[10];
                         }
                     }
                     else{
-                        frequency=OCTAVE3[10];
+                        if(adc_value>2.8125){
+                            frequency=OCTAVE5[9];
+                        }
+                        else{
+                            if(adc_value>2.78125){
+                                frequency=OCTAVE5[8];
+                            }
+                            else{
+                                frequency=OCTAVE5[7];
+                            }
+                        }
+                        
                     }
                 }
                 else{
                     if(adc_value>2.625){
                         if(adc_value>2.6875){
-                            frequency=OCTAVE3[9];
+                            if(adc_value>2.71875){
+                                frequency=OCTAVE5[7];
+                            }else{
+                                frequency=OCTAVE5[6];
+                            }
+                            
                         }
                         else{
-                            frequency=OCTAVE3[8];
+                            frequency=OCTAVE5[5];
                         }
                     }
                     else{
                         if(adc_value>2.5625){
-                            frequency=OCTAVE3[7];
+                            frequency=OCTAVE5[4];
                         }else{
-                            frequency=OCTAVE3[6];
+                            if(adc_value>2.5125){
+                                frequency=OCTAVE5[3];
+                            }
+                            else{
+                                frequency=OCTAVE5[2];
+                            }
+                            
                         }
                     }
                 }
@@ -420,31 +448,53 @@ void rawHandler1(){
                 if(adc_value>2.25){
                     if(adc_value>2.375){
                         if(adc_value>2.4375){
-                            frequency=OCTAVE3[6];
+                            if(adc_value>2.46875){
+                                frequency=OCTAVE5[2];
+                            }else{
+                                frequency=OCTAVE5[1];
+                            }
+                            
                         }else{
-                            frequency=OCTAVE3[5];
+
+                            frequency=OCTAVE5[0];
                         }
                     }else{
                         if(adc_value>2.3125){
-                            frequency=OCTAVE3[4];
+                            frequency=OCTAVE4[11];
                         }
                         else{
-                            frequency=OCTAVE3[3];
+                            if(adc_value>2.28125){
+                                frequency=OCTAVE4[10];
+                            }
+                            else{
+                                frequency=OCTAVE4[9];
+                            }
+                            
                         }
                     }
                 }else{
                     if(adc_value>2.125){
                         if(adc_value>2.1875){
-                            frequency=OCTAVE3[3];
+                            if(adc_value>2.21875){
+                                frequency=OCTAVE4[9];
+                            }else{
+                                frequency=OCTAVE4[8];
+                            }
+                            
                         }else{
-                            frequency=OCTAVE3[2];
+                            frequency=OCTAVE4[7];
                         }
                     }else{
                         if(adc_value>2.0625){
-                            frequency=OCTAVE3[1];
+                            frequency=OCTAVE4[6];
                         }
                         else{
-                            frequency=OCTAVE3[0];
+                            if(adc_value>2.03125){
+                                frequency=OCTAVE4[5];
+                            }else{
+                                frequency=OCTAVE4[4];
+                            }
+                            
                         }
                     }
                 }
@@ -453,30 +503,58 @@ void rawHandler1(){
             if(adc_value>1.5f){
                 if(adc_value>1.75){
                     if(adc_value>1.875){
-                        if(adc_value<1.9375){
-                            frequency=OCTAVE2[11];
+                        if(adc_value>1.9375){
+                            if(adc_value>1.96875){
+                                frequency=OCTAVE4[4];
+                            }else{
+                                frequency=OCTAVE4[3];
+                            }
+                            
                         }else{
-                            frequency=OCTAVE2[12];
+                            
+                            frequency=OCTAVE4[2];
                         }
                     }
                     else{
-                        frequency=OCTAVE2[10];
+                        if(adc_value>1.8125){
+                            frequency=OCTAVE4[1];
+                        }
+                        else{
+                            if(adc_value>1.78125){
+                                frequency=OCTAVE4[0];
+                            }
+                            else{
+                                frequency=OCTAVE3[11];
+                            }
+                        }
+                        
                     }
                 }
                 else{
                     if(adc_value>1.625){
                         if(adc_value>1.6875){
-                            frequency=OCTAVE2[9];
+                            if(adc_value>1.71875){
+                                frequency=OCTAVE3[11];
+                            }else{
+                                frequency=OCTAVE3[10];
+                            }
+                            
                         }
                         else{
-                            frequency=OCTAVE2[8];
+                            frequency=OCTAVE3[9];
                         }
                     }
                     else{
                         if(adc_value>1.5625){
-                            frequency=OCTAVE2[7];
+                            frequency=OCTAVE3[8];
                         }else{
-                            frequency=OCTAVE2[6];
+                            if(adc_value>1.5125){
+                                frequency=OCTAVE3[7];
+                            }
+                            else{
+                                frequency=OCTAVE3[6];
+                            }
+                            
                         }
                     }
                 }
@@ -484,31 +562,55 @@ void rawHandler1(){
                 if(adc_value>1.25){
                     if(adc_value>1.375){
                         if(adc_value>1.4375){
-                            frequency=OCTAVE2[6];
+                            if(adc_value>1.46875){
+                                frequency=OCTAVE3[6];
+                            }else{
+                                frequency=OCTAVE3[5];
+                            }
+                            
                         }else{
-                            frequency=OCTAVE2[5];
+
+                            frequency=OCTAVE3[4];
                         }
                     }else{
                         if(adc_value>1.3125){
-                            frequency=OCTAVE2[4];
+                            
+                            frequency=OCTAVE3[3];
+                            
                         }
                         else{
-                            frequency=OCTAVE2[3];
+                            if(adc_value>1.28125){
+                                frequency=OCTAVE3[2];
+                            }
+                            else{
+                                frequency=OCTAVE3[1];
+                            }
+                            
                         }
                     }
                 }else{
                     if(adc_value>1.125){
                         if(adc_value>1.1875){
-                            frequency=OCTAVE2[3];
+                            if(adc_value>1.21875){
+                                frequency=OCTAVE3[1];
+                            }else{
+                                frequency=OCTAVE3[0];
+                            }
+                            
                         }else{
-                            frequency=OCTAVE2[2];
+                            frequency=OCTAVE2[11];
                         }
                     }else{
                         if(adc_value>1.0625){
-                            frequency=OCTAVE2[1];
+                            frequency=OCTAVE2[10];
                         }
                         else{
-                            frequency=OCTAVE2[0];
+                            if(adc_value>1.03125){
+                                frequency=OCTAVE2[9];
+                            }else{
+                                frequency=OCTAVE2[8];
+                            }
+                            
                         }
                     }
                 }
@@ -517,30 +619,53 @@ void rawHandler1(){
             if(adc_value>0.5f){
                 if(adc_value>0.75){
                     if(adc_value>0.875){
-                        if(adc_value<0.9375){
-                            frequency=OCTAVE1[11];
+                        if(adc_value>0.9375){
+                            frequency=OCTAVE2[7];
                         }else{
-                            frequency=OCTAVE1[12];
+                            
+                            frequency=OCTAVE2[6];
                         }
                     }
                     else{
-                        frequency=OCTAVE1[10];
+                        if(adc_value>0.8125){
+                            frequency=OCTAVE2[5];
+                        }
+                        else{
+                            if(adc_value>0.78125){
+                                frequency=OCTAVE2[4];
+                            }
+                            else{
+                                frequency=OCTAVE2[3];
+                            }
+                        }
+                        
                     }
                 }
                 else{
                     if(adc_value>0.625){
                         if(adc_value>0.6875){
-                            frequency=OCTAVE1[9];
+                            if(adc_value>0.71875){
+                                frequency=OCTAVE2[3];
+                            }else{
+                                frequency=OCTAVE2[2];
+                            }
+                            
                         }
                         else{
-                            frequency=OCTAVE1[8];
+                            frequency=OCTAVE2[1];
                         }
                     }
                     else{
                         if(adc_value>0.5625){
-                            frequency=OCTAVE1[7];
+                            frequency=OCTAVE2[0];
                         }else{
-                            frequency=OCTAVE1[6];
+                            if(adc_value>0.5125){
+                                frequency=OCTAVE1[11];
+                            }
+                            else{
+                                frequency=OCTAVE1[10];
+                            }
+                            
                         }
                     }
                 }
@@ -548,31 +673,58 @@ void rawHandler1(){
                 if(adc_value>0.25){
                     if(adc_value>0.375){
                         if(adc_value>0.4375){
-                            frequency=OCTAVE1[6];
+                            if(adc_value>0.46875){
+                                frequency=OCTAVE1[10];
+                            }else{
+                                frequency=OCTAVE1[9];
+                            }
+                            
                         }else{
-                            frequency=OCTAVE1[5];
+
+                            frequency=OCTAVE1[8];
                         }
                     }else{
                         if(adc_value>0.3125){
-                            frequency=OCTAVE1[4];
+                            if(adc_value>0.34375){
+                                frequency=OCTAVE1[7];
+                            }else{
+                                frequency=OCTAVE1[6];
+                            }
+                            
                         }
                         else{
-                            frequency=OCTAVE1[3];
+                            if(adc_value>0.28125){
+                                frequency=OCTAVE1[6];
+                            }
+                            else{
+                                frequency=OCTAVE1[5];
+                            }
+                            
                         }
                     }
                 }else{
                     if(adc_value>0.125){
                         if(adc_value>0.1875){
-                            frequency=OCTAVE1[3];
+                            if(adc_value>0.21875){
+                                frequency=OCTAVE1[5];
+                            }else{
+                                frequency=OCTAVE1[4];
+                            }
+                            
                         }else{
-                            frequency=OCTAVE1[2];
+                            frequency=OCTAVE1[3];
                         }
                     }else{
                         if(adc_value>0.0625){
-                            frequency=OCTAVE1[1];
+                            frequency=OCTAVE1[2];
                         }
                         else{
-                            frequency=OCTAVE1[0];
+                            if(adc_value>0.03125){
+                                frequency=OCTAVE1[1];
+                            }else{
+                                frequency=OCTAVE1[0];
+                            }
+                            
                         }
                     }
                 }
