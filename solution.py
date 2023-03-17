@@ -128,7 +128,7 @@ class wave:
             h+=1
         return harmonics
 f=open("waves.h","w")
-Frequency=32.11
+Frequency=128.43
 samplerate=44000
 amplitude=1
 wav = wave(Frequency,amplitude,samplerate)
@@ -177,6 +177,7 @@ for harmonic in harmonics:
     f.write('    '+harmonic+'\n')
     f.write('};\n')
     d+=1
+Frequency=Frequency/4
 f.write("float OCTAVE1[]={\n")
 for i in range(0,12):
     if(i==0):
