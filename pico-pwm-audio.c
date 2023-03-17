@@ -16,7 +16,7 @@
 #define HM_EVEN_DOWN 13
 #define HM_EVEN_UP 12
 #define PORABOLA 9
-#define SAWTOOTH 8
+#define SAWTOOTH 10
 #define TRIANGLE 6
 #define SQUARE 5
 #define SINE 2
@@ -159,7 +159,7 @@ void onchange(button_t *button_p) {
 
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    if(PLAY){
+    //if(PLAY){
         if(vibrato){
             if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
                 // set pwm level 
@@ -323,7 +323,7 @@ void pwm_interrupt_handler() {
                 
             }
         }
-    }
+    //}
     
 }
 
@@ -383,7 +383,7 @@ int main(void) {
 void rawHandler1(){
     if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_RISE ){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_RISE );
-        PLAY=true;
+        //PLAY=true;
         adc_value=((adc_read())*conversionfactor);
         if(adc_value>2){
             if(adc_value>2.5f){
@@ -582,6 +582,6 @@ void rawHandler1(){
         updateClockDiv(clockDivChange(frequency));
     }else if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_FALL ){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_FALL );
-        PLAY=false;
+        //PLAY=false;
     }
 }
