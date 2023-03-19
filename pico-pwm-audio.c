@@ -10,18 +10,20 @@
   
 #define AUDIO_PIN 28  
 #define ADC_PIN 26
-#define VIBRATO_PIN 16
-#define HM_ODD_DOWN 15
-#define HM_ODD_UP 14
-#define HM_EVEN_DOWN 13
-#define HM_EVEN_UP 12
+
+
+#define HM_ODD_DOWN 13
+#define HM_ODD_UP 12
+#define HM_EVEN_DOWN 11
+#define HM_EVEN_UP 10
+
 #define PORABOLA 9
-#define SAWTOOTH 10
+#define SAWTOOTH 8
 #define TRIANGLE 6
 #define SQUARE 5
 #define SINE 2
-
-#define GATE 0
+#define VIBRATO_PIN 0
+#define GATE 15
 
 #include "waves.h"
 void rawHandler1();
