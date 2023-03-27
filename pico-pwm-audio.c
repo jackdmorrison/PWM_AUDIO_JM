@@ -23,7 +23,7 @@
 #define SQUARE 5
 #define SINE 2
 #define VIBRATO_PIN 0
-// #define GATE 15
+#define GATE 15
 
 #include "waves.h"
 void rawHandler1();
@@ -318,11 +318,7 @@ void pwm_interrupt_handler() {
                 pwm_set_gpio_level(AUDIO_PIN, round(value/(evenHarmonics+oddHarmonics+1)));
                 wav_position++;
             } else {
-                adc_value=((adc_read())*conversionfactor);
-                subScript=round(60*adc_value/3);
-                frequency=OCTAVE1[subScript];
-
-                updateClockDiv(clockDivChange(frequency));
+                
                 // reset to start
                 wav_position = 0;
                 
@@ -347,11 +343,11 @@ int main(void) {
     // gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE ,true);
     // gpio_add_raw_irq_handler_masked(( 0x01 << VIBRATO_PIN),&rawHandler1);
 
-    // gpio_init(GATE);
-    // gpio_set_dir(GATE,GPIO_IN);
-    // gpio_pull_down(GATE);
-    // gpio_set_irq_enabled(GATE,GPIO_IRQ_EDGE_RISE|GPIO_IRQ_EDGE_FALL,true);
-    // gpio_add_raw_irq_handler_masked(( 0x01 << GATE),&rawHandler1);
+    gpio_init(GATE);
+    gpio_set_dir(GATE,GPIO_IN);
+    gpio_pull_down(GATE);
+    gpio_set_irq_enabled(GATE,GPIO_IRQ_EDGE_RISE|GPIO_IRQ_EDGE_FALL,true);
+    gpio_add_raw_irq_handler_masked(( 0x01 << GATE),&rawHandler1);
 
     button_t *sine = create_button(SINE, onchange);
     button_t *square = create_button(SQUARE, onchange);
@@ -384,5 +380,15 @@ int main(void) {
 
     while(1) {
         __wfi(); // Wait for Interrupt
+    }
+}
+void rawHandler1(){
+    if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_RISE ){
+        gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_RISE );
+        adc_value=((adc_read())*conversionfactor);
+        subScript=round(60*adc_value/3);
+        frequency=OCTAVE1[subScript];
+
+        updateClockDiv(clockDivChange(frequency));
     }
 }
