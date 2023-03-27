@@ -23,7 +23,7 @@
 #define SQUARE 5
 #define SINE 2
 #define VIBRATO_PIN 0
-#define GATE 15
+// #define GATE 15
 
 #include "waves.h"
 void rawHandler1();
@@ -44,7 +44,8 @@ int evenHarmonics=0;
 int oddHarmonics=0;
 int value=0;
 bool vibUP=true;
-bool PLAY=true;
+int subScript = 0;
+
 closure_t handlers[28] = {NULL};
 alarm_id_t alarm_ids[28];
 double sine_wave_y(double x) {
@@ -161,7 +162,7 @@ void onchange(button_t *button_p) {
 
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    //if(PLAY){
+    
         if(vibrato){
             if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
                 // set pwm level 
@@ -317,8 +318,11 @@ void pwm_interrupt_handler() {
                 pwm_set_gpio_level(AUDIO_PIN, round(value/(evenHarmonics+oddHarmonics+1)));
                 wav_position++;
             } else {
-                
-    
+                adc_value=((adc_read())*conversionfactor);
+                subScript=round(60*adc_value/3);
+                frequency=OCTAVE1[subScript];
+
+                updateClockDiv(clockDivChange(frequency));
                 // reset to start
                 wav_position = 0;
                 
@@ -343,11 +347,11 @@ int main(void) {
     // gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE ,true);
     // gpio_add_raw_irq_handler_masked(( 0x01 << VIBRATO_PIN),&rawHandler1);
 
-    gpio_init(GATE);
-    gpio_set_dir(GATE,GPIO_IN);
-    gpio_pull_down(GATE);
-    gpio_set_irq_enabled(GATE,GPIO_IRQ_EDGE_RISE|GPIO_IRQ_EDGE_FALL,true);
-    gpio_add_raw_irq_handler_masked(( 0x01 << GATE),&rawHandler1);
+    // gpio_init(GATE);
+    // gpio_set_dir(GATE,GPIO_IN);
+    // gpio_pull_down(GATE);
+    // gpio_set_irq_enabled(GATE,GPIO_IRQ_EDGE_RISE|GPIO_IRQ_EDGE_FALL,true);
+    // gpio_add_raw_irq_handler_masked(( 0x01 << GATE),&rawHandler1);
 
     button_t *sine = create_button(SINE, onchange);
     button_t *square = create_button(SQUARE, onchange);
@@ -357,7 +361,7 @@ int main(void) {
     button_t *hm_even_down = create_button(HM_EVEN_DOWN, onchange);
     button_t *hm_odd_up = create_button(HM_ODD_UP, onchange);
     button_t *hm_odd_down = create_button(HM_ODD_DOWN, onchange);
-    
+    button_t *vibrato = create_button(VIBRATO_PIN, onchange);
     irq_set_enabled(IO_IRQ_BANK0, true);
     
     set_sys_clock_khz(176000, true); 
@@ -380,362 +384,5 @@ int main(void) {
 
     while(1) {
         __wfi(); // Wait for Interrupt
-    }
-}
-void rawHandler1(){
-    if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_RISE ){
-        gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_RISE );
-        //PLAY=true;
-        adc_value=((adc_read())*conversionfactor);
-        if(adc_value>2){
-            if(adc_value>2.5f){
-                if(adc_value>2.75){
-                    if(adc_value>2.875){
-                        if(adc_value>2.9375){
-                            if(adc_value>2.96875){
-                                frequency=OCTAVE5[0]*2;
-                            }else{
-                                frequency=OCTAVE5[11];
-                            }
-                            
-                        }else{
-                            
-                            frequency=OCTAVE5[10];
-                        }
-                    }
-                    else{
-                        if(adc_value>2.8125){
-                            frequency=OCTAVE5[9];
-                        }
-                        else{
-                            if(adc_value>2.78125){
-                                frequency=OCTAVE5[8];
-                            }
-                            else{
-                                frequency=OCTAVE5[7];
-                            }
-                        }
-                        
-                    }
-                }
-                else{
-                    if(adc_value>2.625){
-                        if(adc_value>2.6875){
-                            if(adc_value>2.71875){
-                                frequency=OCTAVE5[7];
-                            }else{
-                                frequency=OCTAVE5[6];
-                            }
-                            
-                        }
-                        else{
-                            frequency=OCTAVE5[5];
-                        }
-                    }
-                    else{
-                        if(adc_value>2.5625){
-                            frequency=OCTAVE5[4];
-                        }else{
-                            if(adc_value>2.5125){
-                                frequency=OCTAVE5[3];
-                            }
-                            else{
-                                frequency=OCTAVE5[2];
-                            }
-                            
-                        }
-                    }
-                }
-            }else{
-                if(adc_value>2.25){
-                    if(adc_value>2.375){
-                        if(adc_value>2.4375){
-                            if(adc_value>2.46875){
-                                frequency=OCTAVE5[2];
-                            }else{
-                                frequency=OCTAVE5[1];
-                            }
-                            
-                        }else{
-
-                            frequency=OCTAVE5[0];
-                        }
-                    }else{
-                        if(adc_value>2.3125){
-                            frequency=OCTAVE4[11];
-                        }
-                        else{
-                            if(adc_value>2.28125){
-                                frequency=OCTAVE4[10];
-                            }
-                            else{
-                                frequency=OCTAVE4[9];
-                            }
-                            
-                        }
-                    }
-                }else{
-                    if(adc_value>2.125){
-                        if(adc_value>2.1875){
-                            if(adc_value>2.21875){
-                                frequency=OCTAVE4[9];
-                            }else{
-                                frequency=OCTAVE4[8];
-                            }
-                            
-                        }else{
-                            frequency=OCTAVE4[7];
-                        }
-                    }else{
-                        if(adc_value>2.0625){
-                            frequency=OCTAVE4[6];
-                        }
-                        else{
-                            if(adc_value>2.03125){
-                                frequency=OCTAVE4[5];
-                            }else{
-                                frequency=OCTAVE4[4];
-                            }
-                            
-                        }
-                    }
-                }
-            }
-        }else if(adc_value>1){
-            if(adc_value>1.5f){
-                if(adc_value>1.75){
-                    if(adc_value>1.875){
-                        if(adc_value>1.9375){
-                            if(adc_value>1.96875){
-                                frequency=OCTAVE4[4];
-                            }else{
-                                frequency=OCTAVE4[3];
-                            }
-                            
-                        }else{
-                            
-                            frequency=OCTAVE4[2];
-                        }
-                    }
-                    else{
-                        if(adc_value>1.8125){
-                            frequency=OCTAVE4[1];
-                        }
-                        else{
-                            if(adc_value>1.78125){
-                                frequency=OCTAVE4[0];
-                            }
-                            else{
-                                frequency=OCTAVE3[11];
-                            }
-                        }
-                        
-                    }
-                }
-                else{
-                    if(adc_value>1.625){
-                        if(adc_value>1.6875){
-                            if(adc_value>1.71875){
-                                frequency=OCTAVE3[11];
-                            }else{
-                                frequency=OCTAVE3[10];
-                            }
-                            
-                        }
-                        else{
-                            frequency=OCTAVE3[9];
-                        }
-                    }
-                    else{
-                        if(adc_value>1.5625){
-                            frequency=OCTAVE3[8];
-                        }else{
-                            if(adc_value>1.5125){
-                                frequency=OCTAVE3[7];
-                            }
-                            else{
-                                frequency=OCTAVE3[6];
-                            }
-                            
-                        }
-                    }
-                }
-            }else{
-                if(adc_value>1.25){
-                    if(adc_value>1.375){
-                        if(adc_value>1.4375){
-                            if(adc_value>1.46875){
-                                frequency=OCTAVE3[6];
-                            }else{
-                                frequency=OCTAVE3[5];
-                            }
-                            
-                        }else{
-
-                            frequency=OCTAVE3[4];
-                        }
-                    }else{
-                        if(adc_value>1.3125){
-                            
-                            frequency=OCTAVE3[3];
-                            
-                        }
-                        else{
-                            if(adc_value>1.28125){
-                                frequency=OCTAVE3[2];
-                            }
-                            else{
-                                frequency=OCTAVE3[1];
-                            }
-                            
-                        }
-                    }
-                }else{
-                    if(adc_value>1.125){
-                        if(adc_value>1.1875){
-                            if(adc_value>1.21875){
-                                frequency=OCTAVE3[1];
-                            }else{
-                                frequency=OCTAVE3[0];
-                            }
-                            
-                        }else{
-                            frequency=OCTAVE2[11];
-                        }
-                    }else{
-                        if(adc_value>1.0625){
-                            frequency=OCTAVE2[10];
-                        }
-                        else{
-                            if(adc_value>1.03125){
-                                frequency=OCTAVE2[9];
-                            }else{
-                                frequency=OCTAVE2[8];
-                            }
-                            
-                        }
-                    }
-                }
-            }
-        }else{
-            if(adc_value>0.5f){
-                if(adc_value>0.75){
-                    if(adc_value>0.875){
-                        if(adc_value>0.9375){
-                            frequency=OCTAVE2[7];
-                        }else{
-                            
-                            frequency=OCTAVE2[6];
-                        }
-                    }
-                    else{
-                        if(adc_value>0.8125){
-                            frequency=OCTAVE2[5];
-                        }
-                        else{
-                            if(adc_value>0.78125){
-                                frequency=OCTAVE2[4];
-                            }
-                            else{
-                                frequency=OCTAVE2[3];
-                            }
-                        }
-                        
-                    }
-                }
-                else{
-                    if(adc_value>0.625){
-                        if(adc_value>0.6875){
-                            if(adc_value>0.71875){
-                                frequency=OCTAVE2[3];
-                            }else{
-                                frequency=OCTAVE2[2];
-                            }
-                            
-                        }
-                        else{
-                            frequency=OCTAVE2[1];
-                        }
-                    }
-                    else{
-                        if(adc_value>0.5625){
-                            frequency=OCTAVE2[0];
-                        }else{
-                            if(adc_value>0.5125){
-                                frequency=OCTAVE1[11];
-                            }
-                            else{
-                                frequency=OCTAVE1[10];
-                            }
-                            
-                        }
-                    }
-                }
-            }else{
-                if(adc_value>0.25){
-                    if(adc_value>0.375){
-                        if(adc_value>0.4375){
-                            if(adc_value>0.46875){
-                                frequency=OCTAVE1[10];
-                            }else{
-                                frequency=OCTAVE1[9];
-                            }
-                            
-                        }else{
-
-                            frequency=OCTAVE1[8];
-                        }
-                    }else{
-                        if(adc_value>0.3125){
-                            if(adc_value>0.34375){
-                                frequency=OCTAVE1[7];
-                            }else{
-                                frequency=OCTAVE1[6];
-                            }
-                            
-                        }
-                        else{
-                            if(adc_value>0.28125){
-                                frequency=OCTAVE1[6];
-                            }
-                            else{
-                                frequency=OCTAVE1[5];
-                            }
-                            
-                        }
-                    }
-                }else{
-                    if(adc_value>0.125){
-                        if(adc_value>0.1875){
-                            if(adc_value>0.21875){
-                                frequency=OCTAVE1[5];
-                            }else{
-                                frequency=OCTAVE1[4];
-                            }
-                            
-                        }else{
-                            frequency=OCTAVE1[3];
-                        }
-                    }else{
-                        if(adc_value>0.0625){
-                            frequency=OCTAVE1[2];
-                        }
-                        else{
-                            if(adc_value>0.03125){
-                                frequency=OCTAVE1[1];
-                            }else{
-                                frequency=OCTAVE1[0];
-                            }
-                            
-                        }
-                    }
-                }
-            }
-
-        }
-        updateClockDiv(clockDivChange(frequency));
-    }else if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_FALL ){
-        gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_FALL );
-        //PLAY=false;
     }
 }

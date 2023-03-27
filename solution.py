@@ -203,13 +203,11 @@ for i in range(0,12):
     elif(i==10):
         f.write(str(round((Frequency*(9/5)),3))+", ")
     elif(i==11):
-        f.write(str(round((Frequency*(15/8)),3))+"\n")
-        f.write("};\n")
-f.write("float OCTAVE2[]={\n")
+        f.write(str(round((Frequency*(15/8)),3))+", ")
 Frequency=Frequency*2
 for i in range(0,12):
     if(i==0):
-        f.write("   "+str(1*Frequency)+", ")
+        f.write(str(1*Frequency)+", ")
     elif(i==1):
         f.write(str(round((Frequency*(16/15)),3))+", ")
     elif(i==2):
@@ -231,14 +229,12 @@ for i in range(0,12):
     elif(i==10):
         f.write(str(round((Frequency*(9/5)),3))+", ")
     elif(i==11):
-        f.write(str(round((Frequency*(15/8)),3))+"\n")
-        f.write("};\n")
+        f.write(str(round((Frequency*(15/8)),3))+", ")
 
-f.write("float OCTAVE3[]={\n")
 Frequency=Frequency*2
 for i in range(0,12):
     if(i==0):
-        f.write("   "+str(1*Frequency)+", ")
+        f.write(str(1*Frequency)+", ")
     elif(i==1):
         f.write(str(round((Frequency*(16/15)),3))+", ")
     elif(i==2):
@@ -260,14 +256,11 @@ for i in range(0,12):
     elif(i==10):
         f.write(str(round((Frequency*(9/5)),3))+", ")
     elif(i==11):
-        f.write(str(round((Frequency*(15/8)),3))+"\n")
-        f.write("};\n")
-
-f.write("float OCTAVE4[]={\n")
+        f.write(str(round((Frequency*(15/8)),3))+", ")
 Frequency=Frequency*2
 for i in range(0,12):
     if(i==0):
-        f.write("   "+str(1*Frequency)+", ")
+        f.write(str(1*Frequency)+", ")
     elif(i==1):
         f.write(str(round((Frequency*(16/15)),3))+", ")
     elif(i==2):
@@ -289,14 +282,12 @@ for i in range(0,12):
     elif(i==10):
         f.write(str(round((Frequency*(9/5)),3))+", ")
     elif(i==11):
-        f.write(str(round((Frequency*(15/8)),3))+"\n")
-        f.write("};\n")
+        f.write(str(round((Frequency*(15/8)),3))+", ")
 
-f.write("float OCTAVE5[]={\n")
 Frequency=Frequency*2
-for i in range(0,12):
+for i in range(0,13):
     if(i==0):
-        f.write("   "+str(1*Frequency)+", ")
+        f.write(str(1*Frequency)+", ")
     elif(i==1):
         f.write(str(round((Frequency*(16/15)),3))+", ")
     elif(i==2):
@@ -318,9 +309,10 @@ for i in range(0,12):
     elif(i==10):
         f.write(str(round((Frequency*(9/5)),3))+", ")
     elif(i==11):
-        f.write(str(round((Frequency*(15/8)),3))+"\n")
+        f.write(str(round((Frequency*(15/8)),3))+", ")
+    elif(i==12):
+        f.write(str(round((Frequency*(2)),3))+"\n")
         f.write("};\n")
-
 # f.write("uint8_t EVEN_HARMONICS_WAV_DATA[] = {\n")
 # f.write('    '+even_harmonics+'\n')
 # f.write('};\n')
