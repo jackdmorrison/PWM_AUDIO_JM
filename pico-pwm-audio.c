@@ -383,13 +383,7 @@ void rawHandler1(){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_RISE|GPIO_IRQ_EDGE_FALL );
         adc_value=((adc_read())*conversionfactor);
         subScript=round(20*adc_value);
-        if(60<subScript>=0){
-            frequency=OCTAVE1[subScript];
-        } else{
-            frequency=OCTAVE1[59];
-        }
-        
-
+        frequency=OCTAVE1[subScript];
         updateClockDiv(clockDivChange(frequency));
     }
 }
