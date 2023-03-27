@@ -338,10 +338,6 @@ int main(void) {
     adc_gpio_init(ADC_PIN);
     adc_select_input(0);
 
-    // gpio_init(VIBRATO_PIN);
-    // gpio_set_dir(VIBRATO_PIN,GPIO_IN);
-    // gpio_set_irq_enabled(VIBRATO_PIN,GPIO_IRQ_EDGE_RISE ,true);
-    // gpio_add_raw_irq_handler_masked(( 0x01 << VIBRATO_PIN),&rawHandler1);
 
     gpio_init(GATE);
     gpio_set_dir(GATE,GPIO_IN);
@@ -383,8 +379,8 @@ int main(void) {
     }
 }
 void rawHandler1(){
-    if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_RISE ){
-        gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_RISE );
+    if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_RISE|GPIO_IRQ_EDGE_FALL ){
+        gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_RISE|GPIO_IRQ_EDGE_FALL );
         adc_value=((adc_read())*conversionfactor);
         subScript=round(20*adc_value);
         if(60<subScript>=0){
