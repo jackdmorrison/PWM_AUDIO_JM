@@ -45,7 +45,7 @@ int oddHarmonics=0;
 int value=0;
 bool vibUP=true;
 int subScript = 0;
-
+bool PLAY=false;
 closure_t handlers[28] = {NULL};
 alarm_id_t alarm_ids[28];
 double sine_wave_y(double x) {
@@ -390,4 +390,5 @@ void rawHandler1(){
     }else if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_FALL );
         PLAY=false;
+    }
 }
