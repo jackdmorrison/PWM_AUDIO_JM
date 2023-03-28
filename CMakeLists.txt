@@ -41,6 +41,7 @@ target_link_libraries(pico-pwm-audio
         hardware_timer
         hardware_clocks
         hardware_pwm
+        hardware_adc
         )
 
 pico_add_extra_outputs(pico-pwm-audio)
