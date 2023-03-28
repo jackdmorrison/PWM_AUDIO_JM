@@ -128,8 +128,8 @@ class wave:
             h+=1
         return harmonics
 f=open("waves.h","w")
-Frequency=128.43
-samplerate=44000
+Frequency=float(input("FREQUENCY:"))
+samplerate=float(input("SAMPLERATE:"))
 amplitude=1
 wav = wave(Frequency,amplitude,samplerate)
 sin=wav.make_sin_wav()
@@ -146,6 +146,7 @@ f.write(" */\n")
 f.write("#define WAV_DATA_LENGTH "+str(math.ceil(samplerate/Frequency))+'\n')
 f.write("#define WAV_FREQUENCY "+str(Frequency)+'\n')
 f.write('\n')
+f.write('float clkDiv='+str(88000/samplerate)+';\n\n')
 
 f.write("uint8_t SIN_WAV_DATA[] = {\n")
 f.write('    '+sin+'\n')

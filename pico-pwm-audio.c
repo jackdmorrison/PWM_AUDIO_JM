@@ -36,7 +36,6 @@ float currentF = WAV_FREQUENCY;
 int freqNum=0;
 int interval=0;
 //int FreqCount = round(sizeof(frequencies)/sizeof(frequencies[0]))-1;
-float clkDiv=2.0f;
 const float vibsize = WAV_FREQUENCY/12;
 float vibchangeParam = vibsize/12;
 int buttonNum = 0;
