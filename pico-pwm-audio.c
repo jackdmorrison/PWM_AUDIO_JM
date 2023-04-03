@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "button.h"
-#include "pico/stdlib.h"    
+#include <pico/stdlib.h>    
 #include "hardware/irq.h"  
 #include "hardware/pwm.h"  
 #include "hardware/sync.h" 
@@ -27,6 +27,8 @@
 #define GATE 15
 
 #include "waves.h"
+pwm_config config;
+int audio_pin_slice;
 void rawHandler1();
 int wav_position = 0;
 float adc_value=0;
@@ -366,7 +368,7 @@ int main(void) {
     set_sys_clock_khz(176000, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
     gpio_set_function(AUDIO_PIN2, GPIO_FUNC_PWM);
-    int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
+    audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
     pwm_set_irq_enabled(audio_pin_slice, true);
@@ -375,7 +377,7 @@ int main(void) {
     irq_set_enabled(PWM_IRQ_WRAP, true);
  
     // Setup PWM for audio output
-    pwm_config config = pwm_get_default_config();
+    config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, 250); 
     pwm_init(audio_pin_slice, &config, true);
@@ -384,7 +386,7 @@ int main(void) {
 
 
 
-    int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN2);
+    audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN2);
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
     pwm_set_irq_enabled(audio_pin_slice, true);
@@ -393,7 +395,7 @@ int main(void) {
     irq_set_enabled(PWM_IRQ_WRAP, true);
  
     // Setup PWM for audio output
-    pwm_config config = pwm_get_default_config();
+    config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, 250); 
     pwm_init(audio_pin_slice, &config, true);
