@@ -8,7 +8,8 @@
 #include "hardware/adc.h"
 
   
-#define AUDIO_PIN 28  
+#define AUDIO_PIN  16
+#define AUDIO_PIN2 18
 #define ADC_PIN 26
 
 
@@ -54,13 +55,13 @@ double sine_wave_y(double x) {
 float clockDivChange( float newFrequency){
     return (WAV_FREQUENCY/newFrequency)*2.0f;
 }
-void updateClockDiv(float clkDiv){
-    int pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
+void updateClockDiv(float clkDiv, int PIN){
+    int pin_slice = pwm_gpio_to_slice_num(PIN);
     pwm_config config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, 250); 
     pwm_init(pin_slice, &config, true);
-    pwm_set_gpio_level(AUDIO_PIN, 0);
+    pwm_set_gpio_level(PIN, 0);
 }
 long long int handle_button_alarm(long int a, void *p) {
   button_t *b = (button_t *)(p);
@@ -160,171 +161,177 @@ void onchange(button_t *button_p) {
 
 
 void pwm_interrupt_handler() {
-    pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    if(PLAY){
-        if(vibrato){
-            if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 8 cycles this is >>3 
-                switch (buttonNum){
-                    case 0: //sin wave
-                        value=SIN_WAV_DATA[wav_position>>3];
-                        break;
-                    case 1: //square wave
-                        value=SQR_WAV_DATA[wav_position>>3];
-                        break;
-                    case 2: //Triangle wave
-                        value=TRI_WAV_DATA[wav_position>>3];
-                        break;
-                    case 3: //Saw wave
-                        value=SAW_WAV_DATA[wav_position>>3];
-                        break;
-                    case 4: //Reverse Saw wave
-                        value=R_SAW_WAV_DATA[wav_position>>3];
-                        break;
-                    case 5:
-                        value=PRBA_WAV_DATA[wav_position>>3];
-                        break;
-                }
-                switch(evenHarmonics){
-                    case 0:
-                        break;
-                    case 1:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3];
-                        break;
-                    case 2:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3];
-                        break;
-                    case 3:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3];
-                        break;
-                    case 4:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
-                        break;
-                    case 5:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3];
-                        break;
-                    case 6:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3]+HARMONIC12_WAV_DATA[wav_position>>3];
-                        break;
-                }
-                switch(oddHarmonics){
-                    case 0:
-                        break;
-                    case 1:
-                        value=value+HARMONIC3_WAV_DATA[wav_position>>3];
-                        break;
-                    case 2:
-                        value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3];
-                        break;
-                    case 3:
-                        value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3];
-                        break;
-                    case 4:
-                        value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
-                        break;
-                    case 5:
-                        value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3]+HARMONIC11_WAV_DATA[wav_position>>3];
-                        break;
-                }
-                pwm_set_gpio_level(AUDIO_PIN, round(value/(evenHarmonics+oddHarmonics+1)));
-                wav_position++;
-            } else {
-                // reset to start
-                wav_position = 0;
-                if(vibUP){
-                    if(currentF<frequency+vibsize){
-                        currentF+=vibchangeParam;
-                    } else{
-                        vibUP=false;
+    //if(gpio_get_irq_event_mask(AUDIO_PIN)){
+        pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
+        pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN2));
+        if(PLAY){
+            if(vibrato){
+                if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
+                    // set pwm level 
+                    // allow the pwm value to repeat for 8 cycles this is >>3 
+                    switch (buttonNum){
+                        case 0: //sin wave
+                            value=SIN_WAV_DATA[wav_position>>3];
+                            break;
+                        case 1: //square wave
+                            value=SQR_WAV_DATA[wav_position>>3];
+                            break;
+                        case 2: //Triangle wave
+                            value=TRI_WAV_DATA[wav_position>>3];
+                            break;
+                        case 3: //Saw wave
+                            value=SAW_WAV_DATA[wav_position>>3];
+                            break;
+                        case 4: //Reverse Saw wave
+                            value=R_SAW_WAV_DATA[wav_position>>3];
+                            break;
+                        case 5:
+                            value=PRBA_WAV_DATA[wav_position>>3];
+                            break;
                     }
-                    updateClockDiv(clockDivChange(currentF));
-                } else{
-                    if(currentF>frequency-vibsize){
-                        currentF-=vibchangeParam;
-                    } else{
-                        vibUP=true;
+                    switch(evenHarmonics){
+                        case 0:
+                            break;
+                        case 1:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3];
+                            break;
+                        case 2:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3];
+                            break;
+                        case 3:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3];
+                            break;
+                        case 4:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
+                            break;
+                        case 5:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3];
+                            break;
+                        case 6:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3]+HARMONIC12_WAV_DATA[wav_position>>3];
+                            break;
                     }
-                    updateClockDiv(clockDivChange(currentF));
+                    switch(oddHarmonics){
+                        case 0:
+                            break;
+                        case 1:
+                            value=value+HARMONIC3_WAV_DATA[wav_position>>3];
+                            break;
+                        case 2:
+                            value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3];
+                            break;
+                        case 3:
+                            value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3];
+                            break;
+                        case 4:
+                            value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
+                            break;
+                        case 5:
+                            value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3]+HARMONIC11_WAV_DATA[wav_position>>3];
+                            break;
+                    }
+                    pwm_set_gpio_level(AUDIO_PIN, round(value/(evenHarmonics+oddHarmonics+1)));
+                    pwm_set_gpio_level(AUDIO_PIN2, round(value/(evenHarmonics+oddHarmonics+1)));
+                    wav_position++;
+                } else {
+                    // reset to start
+                    wav_position = 0;
+                    if(vibUP){
+                        if(currentF<frequency+vibsize){
+                            currentF+=vibchangeParam;
+                        } else{
+                            vibUP=false;
+                        }
+                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN);
+                    } else{
+                        if(currentF>frequency-vibsize){
+                            currentF-=vibchangeParam;
+                        } else{
+                            vibUP=true;
+                        }
+                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN);
+                    }
+                    
                 }
-                
+            }else{
+                if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
+                    // set pwm level 
+                    // allow the pwm value to repeat for 8 cycles this is >>3 
+                    switch (buttonNum){
+                        case 0: //sin wave
+                            value=SIN_WAV_DATA[wav_position>>3];
+                            break;
+                        case 1: //square wave
+                            value=SQR_WAV_DATA[wav_position>>3];
+                            break;
+                        case 2: //Triangle wave
+                            value=TRI_WAV_DATA[wav_position>>3];
+                            break;
+                        case 3: //Saw wave
+                            value=SAW_WAV_DATA[wav_position>>3];
+                            break;
+                        case 4: //Reverse Saw wave
+                            value=R_SAW_WAV_DATA[wav_position>>3];
+                            break;
+                        case 5:
+                            value=PRBA_WAV_DATA[wav_position>>3];
+                            break;
+                    }
+                    switch(evenHarmonics){
+                        case 0:
+                            break;
+                        case 1:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3];
+                            break;
+                        case 2:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3];
+                            break;
+                        case 3:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3];
+                            break;
+                        case 4:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
+                            break;
+                        case 5:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3];
+                            break;
+                        case 6:
+                            value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3]+HARMONIC12_WAV_DATA[wav_position>>3];
+                            break;
+                    }
+                    switch(oddHarmonics){
+                        case 0:
+                            break;
+                        case 1:
+                            value=value+HARMONIC3_WAV_DATA[wav_position>>3];
+                            break;
+                        case 2:
+                            value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3];
+                            break;
+                        case 3:
+                            value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3];
+                            break;
+                        case 4:
+                            value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
+                            break;
+                        case 5:
+                            value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3]+HARMONIC11_WAV_DATA[wav_position>>3];
+                            break;
+                    }
+                    pwm_set_gpio_level(AUDIO_PIN, round(value/(evenHarmonics+oddHarmonics+1)));
+                    pwm_set_gpio_level(AUDIO_PIN2, round(value/(evenHarmonics+oddHarmonics+1)));
+                    wav_position++;
+                } else {
+                    
+                    // reset to start
+                    wav_position = 0;
+                    
+                    
+                }
             }
-        }else{
-            if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 8 cycles this is >>3 
-                switch (buttonNum){
-                    case 0: //sin wave
-                        value=SIN_WAV_DATA[wav_position>>3];
-                        break;
-                    case 1: //square wave
-                        value=SQR_WAV_DATA[wav_position>>3];
-                        break;
-                    case 2: //Triangle wave
-                        value=TRI_WAV_DATA[wav_position>>3];
-                        break;
-                    case 3: //Saw wave
-                        value=SAW_WAV_DATA[wav_position>>3];
-                        break;
-                    case 4: //Reverse Saw wave
-                        value=R_SAW_WAV_DATA[wav_position>>3];
-                        break;
-                    case 5:
-                        value=PRBA_WAV_DATA[wav_position>>3];
-                        break;
-                }
-                switch(evenHarmonics){
-                    case 0:
-                        break;
-                    case 1:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3];
-                        break;
-                    case 2:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3];
-                        break;
-                    case 3:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3];
-                        break;
-                    case 4:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3];
-                        break;
-                    case 5:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3];
-                        break;
-                    case 6:
-                        value=value+HARMONIC2_WAV_DATA[wav_position>>3]+HARMONIC4_WAV_DATA[wav_position>>3]+HARMONIC6_WAV_DATA[wav_position>>3]+HARMONIC8_WAV_DATA[wav_position>>3]+HARMONIC10_WAV_DATA[wav_position>>3]+HARMONIC12_WAV_DATA[wav_position>>3];
-                        break;
-                }
-                switch(oddHarmonics){
-                    case 0:
-                        break;
-                    case 1:
-                        value=value+HARMONIC3_WAV_DATA[wav_position>>3];
-                        break;
-                    case 2:
-                        value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3];
-                        break;
-                    case 3:
-                        value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3];
-                        break;
-                    case 4:
-                        value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
-                        break;
-                    case 5:
-                        value=value+HARMONIC3_WAV_DATA[wav_position>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3]+HARMONIC11_WAV_DATA[wav_position>>3];
-                        break;
-                }
-                pwm_set_gpio_level(AUDIO_PIN, round(value/(evenHarmonics+oddHarmonics+1)));
-                wav_position++;
-            } else {
-                
-                // reset to start
-                wav_position = 0;
-                
-                
-            }
-        }
+        //}
     }
+    
 
     
 }
@@ -358,6 +365,7 @@ int main(void) {
     
     set_sys_clock_khz(176000, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
+    gpio_set_function(AUDIO_PIN2, GPIO_FUNC_PWM);
     int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
@@ -374,6 +382,23 @@ int main(void) {
 
     pwm_set_gpio_level(AUDIO_PIN, 0);
 
+
+
+    int audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN2);
+    // Setup PWM interrupt to fire when PWM cycle is complete
+    pwm_clear_irq(audio_pin_slice);
+    pwm_set_irq_enabled(audio_pin_slice, true);
+    // set the handle function above
+    irq_set_exclusive_handler(PWM_IRQ_WRAP, pwm_interrupt_handler); 
+    irq_set_enabled(PWM_IRQ_WRAP, true);
+ 
+    // Setup PWM for audio output
+    pwm_config config = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config, clkDiv); 
+    pwm_config_set_wrap(&config, 250); 
+    pwm_init(audio_pin_slice, &config, true);
+
+    pwm_set_gpio_level(AUDIO_PIN2, 0);
     while(1) {
         __wfi(); // Wait for Interrupt
     }
@@ -384,7 +409,8 @@ void rawHandler1(){
         adc_value=((adc_read())*conversionfactor);
         subScript=round(20*adc_value);
         frequency=OCTAVE1[subScript];
-        updateClockDiv(clockDivChange(frequency));
+        updateClockDiv(clockDivChange(frequency),AUDIO_PIN);
+        updateClockDiv(clockDivChange(frequency),AUDIO_PIN2);
         PLAY=true;
     }else if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_FALL );
