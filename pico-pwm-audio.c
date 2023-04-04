@@ -577,8 +577,7 @@ void rawHandler1(){
         adc_value=((adc_read())*conversionfactor);
         subScript=round(20*adc_value);
         frequency=OCTAVE1[subScript];
-        updateClockDiv(clockDivChange(frequency),AUDIO_PIN);
-        updateClockDiv(clockDivChange(frequency),AUDIO_PIN2);
+        updateClockDiv(clockDivChange(frequency));
         PLAY=true;
     }else if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_FALL );
