@@ -14,17 +14,18 @@
 #define ADC_PIN2 27
 
 
-#define HM_ODD_DOWN 13
-#define HM_ODD_UP 12
-#define HM_EVEN_DOWN 11
-#define HM_EVEN_UP 10
+#define HM_ODD_DOWN 12
+#define HM_ODD_UP 11
+#define HM_EVEN_DOWN 10
+#define HM_EVEN_UP 9
 
-#define PORABOLA 9
-#define SAWTOOTH 8
-#define TRIANGLE 6
-#define SQUARE 5
+#define PORABOLA 8
+#define SAWTOOTH 7
+#define TRIANGLE 5
+
+#define SQUARE 4
 #define SINE 2
-#define SWITCHSIGNAL 1
+#define SWITCHSIGNAL 13
 #define VIBRATO_PIN 0
 #define GATE 15
 #define GATE2 14
@@ -204,45 +205,93 @@ void onchange(button_t *button_p) {
 
   switch(button->pin){
     case SINE:
-        buttonNum=0;
+        if(signal1){
+            buttonNum=0;
+        }else{
+            buttonNum2=0;
+        }
         break;
     case SQUARE:
-        buttonNum=1;
+        if(signal1){
+            buttonNum=1;
+        }else{
+            buttonNum2=1;
+        }
         break;
     case TRIANGLE:
-        buttonNum=2;
+        if(signal1){
+            buttonNum=2;
+        }else{
+            buttonNum2=2;
+        }
         break;
     case SAWTOOTH:
-        if(buttonNum==3){
-            buttonNum=4;
+        if(signal1){
+            if(buttonNum==3){
+                buttonNum=4;
+            }else{
+                buttonNum=3;
+            }
         }else{
-            buttonNum=3;
+            if(buttonNum2==3){
+                buttonNum2=4;
+            }else{
+                buttonNum2=3;
+            }
         }
         break;
     case PORABOLA:
-        buttonNum=5;
+        if(signal1){
+            buttonNum=5;
+        }else{
+            buttonNum2=5;
+        }
         break;
     case HM_EVEN_UP:
-        if(evenHarmonics<6){
-            evenHarmonics++;
-        }
-        
+        if(signal1){
+            if(evenHarmonics<6){
+                evenHarmonics++;
+            }
+        }else{
+            if(evenHarmonics2<6){
+                evenHarmonics2++;
+            }
+        }    
         break;
     case HM_EVEN_DOWN:
-        if(evenHarmonics!=0){
-            evenHarmonics--;
+        if(signal1){
+            if(evenHarmonics!=0){
+                evenHarmonics--;
+            }
+        }else{
+            if(evenHarmonics2!=0){
+                evenHarmonics2--;
+            }
         }
         break;
     case HM_ODD_UP:
-        if(oddHarmonics<5){
-            oddHarmonics++;
+        if(signal1){
+            if(oddHarmonics<5){
+                oddHarmonics++;
+            }
+        }else{
+            if(oddHarmonics2<5){
+                oddHarmonics2++;
+            }
         }
         break;
     case HM_ODD_DOWN:
-        if(oddHarmonics!=0){
-            oddHarmonics--;
+        if(signal1){
+            if(oddHarmonics!=0){
+                oddHarmonics--;
+            }
+            break;
+        }else{
+            if(oddHarmonics2!=0){
+                oddHarmonics2--;
+            }
+            break;
         }
-        break;
     case VIBRATO_PIN:
         if(signal1){
             if(vibrato){
@@ -260,6 +309,12 @@ void onchange(button_t *button_p) {
         
         break;
     case SWITCHSIGNAL:
+        if(signal1){
+            signal1=false;
+        }else{
+            signal1=true;
+        }
+        break;
   }
 }
 
@@ -320,8 +375,8 @@ void pwm_interrupt_handler() {
                 if (wav_position2 < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is >>3 
-                    pwm_set_gpio_level(AUDIO_PIN, round(findValue(buttomNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
-                    wav_position++;
+                    pwm_set_gpio_level(AUDIO_PIN2, round(findValue(buttomNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
+                    wav_position2++;
                 } else {
                     // reset to start
                     wav_position2 = 0;
@@ -346,73 +401,12 @@ void pwm_interrupt_handler() {
                 if (wav_position2 < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is >>3 
-                    switch (buttonNum2){
-                        case 0: //sin wave
-                            value=SIN_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 1: //square wave
-                            value=SQR_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 2: //Triangle wave
-                            value=TRI_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 3: //Saw wave
-                            value=SAW_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 4: //Reverse Saw wave
-                            value=R_SAW_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 5:
-                            value=PRBA_WAV_DATA[wav_position2>>3];
-                            break;
-                    }
-                    switch(evenHarmonics2){
-                        case 0:
-                            break;
-                        case 1:
-                            value=value+HARMONIC2_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 2:
-                            value=value+HARMONIC2_WAV_DATA[wav_position2>>3]+HARMONIC4_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 3:
-                            value=value+HARMONIC2_WAV_DATA[wav_position2>>3]+HARMONIC4_WAV_DATA[wav_position2>>3]+HARMONIC6_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 4:
-                            value=value+HARMONIC2_WAV_DATA[wav_position2>>3]+HARMONIC4_WAV_DATA[wav_position2>>3]+HARMONIC6_WAV_DATA[wav_position2>>3]+HARMONIC8_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 5:
-                            value=value+HARMONIC2_WAV_DATA[wav_position2>>3]+HARMONIC4_WAV_DATA[wav_position2>>3]+HARMONIC6_WAV_DATA[wav_position2>>3]+HARMONIC8_WAV_DATA[wav_position2>>3]+HARMONIC10_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 6:
-                            value=value+HARMONIC2_WAV_DATA[wav_position2>>3]+HARMONIC4_WAV_DATA[wav_position2>>3]+HARMONIC6_WAV_DATA[wav_position2>>3]+HARMONIC8_WAV_DATA[wav_position2>>3]+HARMONIC10_WAV_DATA[wav_position2>>3]+HARMONIC12_WAV_DATA[wav_position2>>3];
-                            break;
-                    }
-                    switch(oddHarmonics2){
-                        case 0:
-                            break;
-                        case 1:
-                            value=value+HARMONIC3_WAV_DATA[wav_position2>>3];
-                            break;
-                        case 2:
-                            value=value+HARMONIC3_WAV_DATA[wav_position2>>3]+HARMONIC5_WAV_DATA[wav_position>>3];
-                            break;
-                        case 3:
-                            value=value+HARMONIC3_WAV_DATA[wav_position2>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3];
-                            break;
-                        case 4:
-                            value=value+HARMONIC3_WAV_DATA[wav_position2>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3];
-                            break;
-                        case 5:
-                            value=value+HARMONIC3_WAV_DATA[wav_position2>>3]+HARMONIC5_WAV_DATA[wav_position>>3]+HARMONIC7_WAV_DATA[wav_position>>3]+HARMONIC9_WAV_DATA[wav_position>>3]+HARMONIC11_WAV_DATA[wav_position>>3];
-                            break;
-                    }
-                    pwm_set_gpio_level(AUDIO_PIN2, round(value/(evenHarmonics+oddHarmonics+1)));
-                    wav_position++;
+                    pwm_set_gpio_level(AUDIO_PIN2, round(findValue(buttomNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
+                    wav_position2++;
                 } else {
                     
                     // reset to start
-                    wav_position = 0;
+                    wav_position2 = 0;
                     
                     
                 }
