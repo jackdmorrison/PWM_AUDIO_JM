@@ -179,7 +179,9 @@ for harmonic in harmonics:
     f.write('};\n')
     d+=1
 Frequency=Frequency/4
-f.write("float OCTAVE1[]={\n")
+f.write("const float lowestFrequency="+str(round(((Frequency/2)*15/8),3))+";\n")
+f.write("const float highestFrequency="+str(round(((Frequency*32)*16/15),3))+";\n")
+f.write("const float freqList[]={\n")
 for i in range(0,12):
     if(i==0):
         f.write("   "+str(1*Frequency)+", ")
