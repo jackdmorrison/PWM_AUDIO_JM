@@ -45,20 +45,20 @@ bool vibrato2 = false; //vibrato on or off
 int subScript = 0;
 int subScript2=0;
 
-float frequency=freqList[subScript];
-float frequency2=freqList[subScript2];
+float frequency=freqList[0];
+float frequency2=freqList[0];
 
-float currentF = freqList[subScript];
-float currentF2 = freqList[subScript];
+float currentF = freqList[0];
+float currentF2 = freqList[0];
 
-float upperVibrato=freqList[subScript+1];
-float upperVibrato2=freqList[subScript+1];
+float upperVibrato=freqList[1];
+float upperVibrato2=freqList[1];
 
 float lowerVibrato=lowestFrequency;
 float lowerVibrato2=lowestFrequency;
 
-float vibchangeParam = (freqList[subScript+1]-lowestFrequency)/24;
-float vibchangeParam2 = (freqList[subScript+1]-lowestFrequency)/24;
+float vibchangeParam = (freqList[1]-lowestFrequency)/24;
+float vibchangeParam2 = (freqList[1]-lowestFrequency)/24;
 
 int buttonNum = 0;
 int buttonNum2 = 0;
@@ -73,6 +73,7 @@ int value=0;
 int value2=0;
 
 bool vibUP=true;
+bool vibUP2=true;
 bool signal1=true;
 bool PLAY=false;
 bool PLAY2=false;
@@ -132,7 +133,7 @@ button_t * create_button(int pin, void (*onchange)(button_t *)) {
   b->state = gpio_get(pin);
   return b;
 }
-float findValue(int buttomNumber,int evenHarmonicsNum,int oddHarmonicsNum,int wave_position){
+float findValue(int buttonNumber,int evenHarmonicsNum,int oddHarmonicsNum,int wave_position){
     float value=0;
     switch (buttonNumber){
         case 0: //sin wave
@@ -331,7 +332,7 @@ void pwm_interrupt_handler() {
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is >>3 
                     
-                    pwm_set_gpio_level(AUDIO_PIN, round(findValue(buttomNum,evenHarmonics,oddHarmonics,wav_position)/(evenHarmonics+oddHarmonics+1)));
+                    pwm_set_gpio_level(AUDIO_PIN, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position)/(evenHarmonics+oddHarmonics+1)));
                     wav_position++;
                 } else {
                     // reset to start
@@ -344,7 +345,7 @@ void pwm_interrupt_handler() {
                         }
                         updateClockDiv(clockDivChange(currentF),AUDIO_PIN);
                     } else{
-                        if(currentF>Frequency-freqList[subScript+1]){
+                        if(currentF>frequency-freqList[subScript+1]){
                             currentF-=vibchangeParam;
                         } else{
                             vibUP=true;
@@ -357,7 +358,7 @@ void pwm_interrupt_handler() {
                 if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is >>3 
-                    pwm_set_gpio_level(AUDIO_PIN, round(findValue(buttomNum,evenHarmonics,oddHarmonics,wav_position)/(evenHarmonics+oddHarmonics+1)));
+                    pwm_set_gpio_level(AUDIO_PIN, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position)/(evenHarmonics+oddHarmonics+1)));
                     wav_position++;
                 } else {
                     
@@ -375,7 +376,7 @@ void pwm_interrupt_handler() {
                 if (wav_position2 < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is >>3 
-                    pwm_set_gpio_level(AUDIO_PIN2, round(findValue(buttomNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
+                    pwm_set_gpio_level(AUDIO_PIN2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
                     wav_position2++;
                 } else {
                     // reset to start
@@ -401,7 +402,7 @@ void pwm_interrupt_handler() {
                 if (wav_position2 < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is >>3 
-                    pwm_set_gpio_level(AUDIO_PIN2, round(findValue(buttomNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
+                    pwm_set_gpio_level(AUDIO_PIN2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
                     wav_position2++;
                 } else {
                     
