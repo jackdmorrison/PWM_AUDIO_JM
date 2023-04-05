@@ -338,14 +338,14 @@ void pwm_interrupt_handler() {
                     // reset to start
                     wav_position = 0;
                     if(vibUP){
-                        if(currentF<freqList[subScript+1]){
+                        if(currentF<upperVibrato2){
                             currentF+=vibchangeParam;
                         } else{
                             vibUP=false;
                         }
                         updateClockDiv(clockDivChange(currentF),AUDIO_PIN);
                     } else{
-                        if(currentF>frequency-freqList[subScript+1]){
+                        if(currentF>lowerVibrato2){
                             currentF-=vibchangeParam;
                         } else{
                             vibUP=true;
@@ -446,11 +446,13 @@ int main(void) {
     button_t *square = create_button(SQUARE, onchange);
     button_t *triangle = create_button(TRIANGLE, onchange);
     button_t *porabola = create_button(PORABOLA, onchange);
+    button_t *sawtooth= create_button(SAWTOOTH, onchange);
     button_t *hm_even_up = create_button(HM_EVEN_UP, onchange);
     button_t *hm_even_down = create_button(HM_EVEN_DOWN, onchange);
     button_t *hm_odd_up = create_button(HM_ODD_UP, onchange);
     button_t *hm_odd_down = create_button(HM_ODD_DOWN, onchange);
     button_t *vibrato = create_button(VIBRATO_PIN, onchange);
+    button_t *switchsignal = create_button(SWITCHSIGNAL, onchange);
     irq_set_enabled(IO_IRQ_BANK0, true);
     
     set_sys_clock_khz(176000, true); 
