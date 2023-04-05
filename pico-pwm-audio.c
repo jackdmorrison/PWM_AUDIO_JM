@@ -32,7 +32,12 @@
 
 #include "waves.h"
 pwm_config config;
-int audio_pin_slice;
+uint audio_pin_slice;
+uint audio_pin_slice2;
+uint audio_pin_channel;
+uint audio_pin_channel2;
+uint16_t wrap=99;
+
 void rawHandler1();
 int wav_position = 0;
 int wav_position2=0;
@@ -84,10 +89,9 @@ double sine_wave_y(double x) {
 }
 
 float clockDivChange( float newFrequency){
-    return (WAV_FREQUENCY/newFrequency)*2.0f;
+    return (WAV_FREQUENCY/newFrequency)*clkDiv;
 }
-void updateClockDiv(float clkDiv, int PIN){
-    int pin_slice = pwm_gpio_to_slice_num(PIN);
+void updateClockDiv(float clkDiv, int PIN,int pin_slice){
     pwm_config config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, 250); 
@@ -332,7 +336,7 @@ void pwm_interrupt_handler() {
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is >>3 
                     
-                    pwm_set_gpio_level(AUDIO_PIN, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position)/(evenHarmonics+oddHarmonics+1)));
+                    pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position)/(evenHarmonics+oddHarmonics+1)));
                     wav_position++;
                 } else {
                     // reset to start
@@ -358,7 +362,7 @@ void pwm_interrupt_handler() {
                 if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is >>3 
-                    pwm_set_gpio_level(AUDIO_PIN, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position)/(evenHarmonics+oddHarmonics+1)));
+                    pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position)/(evenHarmonics+oddHarmonics+1)));
                     wav_position++;
                 } else {
                     
@@ -376,7 +380,7 @@ void pwm_interrupt_handler() {
                 if (wav_position2 < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is >>3 
-                    pwm_set_gpio_level(AUDIO_PIN2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
+                    pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
                     wav_position2++;
                 } else {
                     // reset to start
@@ -402,7 +406,7 @@ void pwm_interrupt_handler() {
                 if (wav_position2 < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is >>3 
-                    pwm_set_gpio_level(AUDIO_PIN2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
+                    pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
                     wav_position2++;
                 } else {
                     
@@ -455,11 +459,12 @@ int main(void) {
     button_t *switchsignal = create_button(SWITCHSIGNAL, onchange);
     irq_set_enabled(IO_IRQ_BANK0, true);
     
-    set_sys_clock_khz(176000, true); 
+    set_sys_clock_khz(clockFreq, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
     gpio_set_function(AUDIO_PIN2, GPIO_FUNC_PWM);
 
     audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
+    audio_pin_channel = pwm_gpio_to_channel(AUDIO_PIN)
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
     pwm_set_irq_enabled(audio_pin_slice, true);
@@ -470,17 +475,18 @@ int main(void) {
     // Setup PWM for audio output
     config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
-    pwm_config_set_wrap(&config, 250); 
+    pwm_config_set_wrap(&config, wrap); 
     pwm_init(audio_pin_slice, &config, true);
 
     pwm_set_gpio_level(AUDIO_PIN, 0);
 
 
 
-    audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN2);
+    audio_pin_slice2 = pwm_gpio_to_slice_num(AUDIO_PIN2);
+    audio_pin_channel2 = pwm_gpio_to_channel(AUDIO_PIN2);
     // Setup PWM interrupt to fire when PWM cycle is complete
-    pwm_clear_irq(audio_pin_slice);
-    pwm_set_irq_enabled(audio_pin_slice, true);
+    pwm_clear_irq(audio_pin_slice2);
+    pwm_set_irq_enabled(audio_pin_slice2, true);
     // set the handle function above
     irq_set_exclusive_handler(PWM_IRQ_WRAP, pwm_interrupt_handler); 
     irq_set_enabled(PWM_IRQ_WRAP, true);
@@ -489,7 +495,7 @@ int main(void) {
     config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, 250); 
-    pwm_init(audio_pin_slice, &config, true);
+    pwm_init(audio_pin_slice2, &config, true);
 
     pwm_set_gpio_level(AUDIO_PIN2, 0);
     while(1) {
