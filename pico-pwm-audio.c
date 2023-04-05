@@ -10,8 +10,8 @@
   
 #define AUDIO_PIN  16
 #define AUDIO_PIN2 18
-#define ADC_PIN 27
-#define ADC_PIN2 28
+#define ADC_PIN 28
+#define ADC_PIN2 27
 
 
 #define HM_ODD_DOWN 12
@@ -27,8 +27,8 @@
 #define SINE 2
 #define SWITCHSIGNAL 13
 #define VIBRATO_PIN 0
-#define GATE 15
-#define GATE2 14
+#define GATE 20
+#define GATE2 21
 
 #include "waves.h"
 pwm_config config;
