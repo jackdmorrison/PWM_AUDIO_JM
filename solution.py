@@ -146,7 +146,7 @@ f.write(" */\n")
 f.write("#define WAV_DATA_LENGTH "+str(math.ceil(samplerate/Frequency))+'\n')
 f.write("#define WAV_FREQUENCY "+str(Frequency)+'\n')
 f.write('\n')
-f.write('float clkDiv='+str(88000/samplerate)+';\n\n')
+f.write('float clkDiv='+str(round((88000/samplerate),3))+';\n\n')
 
 f.write("uint8_t SIN_WAV_DATA[] = {\n")
 f.write('    '+sin+'\n')
