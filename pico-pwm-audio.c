@@ -36,7 +36,6 @@ uint audio_pin_slice;
 uint audio_pin_slice2;
 uint audio_pin_channel;
 uint audio_pin_channel2;
-uint16_t wrap=99;
 
 void rawHandler1();
 int wav_position = 0;
@@ -347,14 +346,14 @@ void pwm_interrupt_handler() {
                         } else{
                             vibUP=false;
                         }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN);
+                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
                     } else{
                         if(currentF>lowerVibrato){
                             currentF-=vibchangeParam;
                         } else{
                             vibUP=true;
                         }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN);
+                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
                     }
                     
                 }
@@ -391,14 +390,14 @@ void pwm_interrupt_handler() {
                         } else{
                             vibUP2=false;
                         }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2);
+                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
                     } else{
                         if(currentF2>lowerVibrato2){
                             currentF2-=vibchangeParam2;
                         } else{
                             vibUP2=true;
                         }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2);
+                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
                     }
                     
                 }
@@ -464,7 +463,7 @@ int main(void) {
     gpio_set_function(AUDIO_PIN2, GPIO_FUNC_PWM);
 
     audio_pin_slice = pwm_gpio_to_slice_num(AUDIO_PIN);
-    audio_pin_channel = pwm_gpio_to_channel(AUDIO_PIN)
+    audio_pin_channel = pwm_gpio_to_channel(AUDIO_PIN);
     // Setup PWM interrupt to fire when PWM cycle is complete
     pwm_clear_irq(audio_pin_slice);
     pwm_set_irq_enabled(audio_pin_slice, true);
@@ -528,7 +527,7 @@ void rawHandler1(){
         }
         vibchangeParam = (upperVibrato-lowerVibrato)/24;
         
-        updateClockDiv(clockDivChange(frequency),AUDIO_PIN);
+        updateClockDiv(clockDivChange(frequency),AUDIO_PIN,audio_pin_slice);
         PLAY=true;
     }else if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_FALL );
@@ -559,7 +558,7 @@ void rawHandler1(){
         }
         vibchangeParam2 = (upperVibrato2-lowerVibrato2)/24;
         
-        updateClockDiv(clockDivChange(frequency2),AUDIO_PIN2);
+        updateClockDiv(clockDivChange(frequency2),AUDIO_PIN2,audio_pin_slice2);
         PLAY2=true;
     }else if(gpio_get_irq_event_mask(GATE2) & GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(GATE2, GPIO_IRQ_EDGE_FALL );
