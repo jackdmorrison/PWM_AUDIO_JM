@@ -10,8 +10,8 @@
   
 #define AUDIO_PIN  16
 #define AUDIO_PIN2 18
-#define ADC_PIN 26
-#define ADC_PIN2 27
+#define ADC_PIN 27
+#define ADC_PIN2 28
 
 
 #define HM_ODD_DOWN 12
@@ -425,7 +425,8 @@ int main(void) {
     stdio_init_all();
     adc_init();
     adc_gpio_init(ADC_PIN);
-    adc_select_input(0);
+    adc_gpio_init(ADC_PIN2);
+    adc_select_input(1);
 
 
     gpio_init(GATE);
@@ -495,6 +496,7 @@ int main(void) {
 void rawHandler1(){
     if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_RISE){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_RISE );
+        adc_select_input(1);
         adc_value=((adc_read())*conversionfactor);
         subScript=round(60*adc_value/3);
         if(subScript>60){
@@ -524,6 +526,7 @@ void rawHandler1(){
         PLAY=false;
     }
     else if(gpio_get_irq_event_mask(GATE2) & GPIO_IRQ_EDGE_RISE){
+        adc_select_input(2);
         gpio_acknowledge_irq(GATE2, GPIO_IRQ_EDGE_RISE );
         adc_value=((adc_read())*conversionfactor);
         subScript2=round(60*adc_value/3);
