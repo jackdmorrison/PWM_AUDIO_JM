@@ -338,14 +338,14 @@ void pwm_interrupt_handler() {
                     // reset to start
                     wav_position = 0;
                     if(vibUP){
-                        if(currentF<upperVibrato2){
+                        if(currentF<upperVibrato){
                             currentF+=vibchangeParam;
                         } else{
                             vibUP=false;
                         }
                         updateClockDiv(clockDivChange(currentF),AUDIO_PIN);
                     } else{
-                        if(currentF>lowerVibrato2){
+                        if(currentF>lowerVibrato){
                             currentF-=vibchangeParam;
                         } else{
                             vibUP=true;
