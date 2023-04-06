@@ -91,11 +91,17 @@ float clockDivChange( float newFrequency){
     return (WAV_FREQUENCY/newFrequency)*clkDiv;
 }
 void updateClockDiv(float clkDiv, int PIN,int pin_slice){
-    pwm_config config = pwm_get_default_config();
-    pwm_config_set_clkdiv(&config, clkDiv); 
-    pwm_config_set_wrap(&config, 250); 
-    pwm_init(pin_slice, &config, true);
-    pwm_set_gpio_level(PIN, 0);
+    if(1.f<=clkDiv<=256.f){
+        pwm_set_clkdiv(pin_slice, clkDiv); 
+        pwm_set_gpio_level(PIN, 0);
+    }else if(clkDiv<1.f){
+        pwm_set_clkdiv(pin_slice, 1.f); 
+        pwm_set_gpio_level(PIN, 0);
+    }else if(clkDiv>256.f){
+        pwm_set_clkdiv(pin_slice, 256.f); 
+        pwm_set_gpio_level(PIN, 0);
+    }
+    
 }
 long long int handle_button_alarm(long int a, void *p) {
   button_t *b = (button_t *)(p);
@@ -416,6 +422,9 @@ void pwm_interrupt_handler() {
                 }
             }
         }
+    }else{
+        //this is in the documentation...cancel raspberry pi? what?
+        pwm_retard_count(1);
     }
     
 
@@ -475,8 +484,9 @@ int main(void) {
     config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, wrap); 
+    //pwm_config_set_phase_correct(&config,true);
     pwm_init(audio_pin_slice, &config, true);
-
+    
     pwm_set_gpio_level(AUDIO_PIN, 0);
 
 
@@ -494,6 +504,7 @@ int main(void) {
     config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, 250); 
+    //pwm_config_set_phase_correct(&config,true);
     pwm_init(audio_pin_slice2, &config, true);
 
     pwm_set_gpio_level(AUDIO_PIN2, 0);
