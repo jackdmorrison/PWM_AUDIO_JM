@@ -538,7 +538,7 @@ void rawHandler1(){
         }
         vibchangeParam = (upperVibrato-lowerVibrato)/24;
         
-        updateClockDiv(clockDivChange(frequency),AUDIO_PIN,audio_pin_slice);
+        updateClockDiv(clockDivChange(freqList[60]),AUDIO_PIN,audio_pin_slice);
         PLAY=true;
     }else if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_FALL );
