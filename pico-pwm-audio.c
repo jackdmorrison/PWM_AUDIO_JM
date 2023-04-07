@@ -466,7 +466,7 @@ int main(void) {
     button_t *vibrato = create_button(VIBRATO_PIN, onchange);
     button_t *switchsignal = create_button(SWITCHSIGNAL, onchange);
     irq_set_enabled(IO_IRQ_BANK0, true);
-    
+    vreg_set_voltage(VREG_VOLTAGE_1_05);
     set_sys_clock_khz(clockFreq, true); 
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
     gpio_set_function(AUDIO_PIN2, GPIO_FUNC_PWM);
