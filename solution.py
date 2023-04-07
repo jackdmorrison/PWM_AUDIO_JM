@@ -184,13 +184,13 @@ for harmonic in harmonics:
     f.write('    '+harmonic+'\n')
     f.write('};\n')
     d+=1
-Frequency=Frequency/32
+Frequency=Frequency/16
 f.write("const float lowestFrequency="+str(round(((Frequency/2)*15/8),3))+";\n")
 f.write("const float highestFrequency="+str(round(((Frequency*32)*16/15),3))+";\n")
 f.write("const float freqList[]={\n")
 for i in range(0,12):
     if(i==0):
-        f.write("   "+str(1*Frequency)+", ")
+        f.write("   "+str(round((Frequency),3))+", ")
     elif(i==1):
         f.write(str(round((Frequency*(16/15)),3))+", ")
     elif(i==2):
@@ -216,7 +216,7 @@ for i in range(0,12):
 Frequency=Frequency*2
 for i in range(0,12):
     if(i==0):
-        f.write(str(1*Frequency)+", ")
+        f.write(str(round((Frequency),3))+", ")
     elif(i==1):
         f.write(str(round((Frequency*(16/15)),3))+", ")
     elif(i==2):
@@ -243,7 +243,7 @@ for i in range(0,12):
 Frequency=Frequency*2
 for i in range(0,12):
     if(i==0):
-        f.write(str(1*Frequency)+", ")
+        f.write(str(round((Frequency),3))+", ")
     elif(i==1):
         f.write(str(round((Frequency*(16/15)),3))+", ")
     elif(i==2):
@@ -269,7 +269,7 @@ for i in range(0,12):
 Frequency=Frequency*2
 for i in range(0,12):
     if(i==0):
-        f.write(str(1*Frequency)+", ")
+        f.write(str(round((Frequency),3))+", ")
     elif(i==1):
         f.write(str(round((Frequency*(16/15)),3))+", ")
     elif(i==2):
@@ -296,7 +296,7 @@ for i in range(0,12):
 Frequency=Frequency*2
 for i in range(0,13):
     if(i==0):
-        f.write(str(1*Frequency)+", ")
+        f.write(str(round((Frequency),3))+", ")
     elif(i==1):
         f.write(str(round((Frequency*(16/15)),3))+", ")
     elif(i==2):
