@@ -6,6 +6,7 @@
 #include "hardware/pwm.h"  
 #include "hardware/sync.h" 
 #include "hardware/adc.h"
+#include "hardware/vreg.h"
 
   
 #define AUDIO_PIN  16
