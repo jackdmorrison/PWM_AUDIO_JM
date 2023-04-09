@@ -504,7 +504,7 @@ int main(void) {
     // Setup PWM for audio output
     config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
-    pwm_config_set_wrap(&config, 250); 
+    pwm_config_set_wrap(&config, wrap); 
     //pwm_config_set_phase_correct(&config,true);
     pwm_init(audio_pin_slice2, &config, true);
 
