@@ -90,9 +90,9 @@ double sine_wave_y(double x) {
 
 float clockDivChange( float newFrequency){
     if(newFrequency>freqList[36]){
-        return (WAV_FREQUENCY/newFrequency)*clkDiv*2;
-    }else if(newFrequency<freqList[24]){
         return (WAV_FREQUENCY/newFrequency)*clkDiv/2;
+    }else if(newFrequency<freqList[24]){
+        return (WAV_FREQUENCY/newFrequency)*clkDiv*2;
     }else{
         return (WAV_FREQUENCY/newFrequency)*clkDiv;
     }
