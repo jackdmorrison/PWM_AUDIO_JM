@@ -143,7 +143,7 @@ button_t * create_button(int pin, void (*onchange)(button_t *)) {
   b->state = gpio_get(pin);
   return b;
 }
-float findValue(int buttonNumber,int evenHarmonicsNum,int oddHarmonicsNum,int wave_position>>1){
+float findValue(int buttonNumber,int evenHarmonicsNum,int oddHarmonicsNum,int wave_position){
     float value=0;
     switch (buttonNumber){
         case 0: //sin wave
