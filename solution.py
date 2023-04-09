@@ -149,7 +149,7 @@ f.write(" */\n")
 f.write("#define WAV_DATA_LENGTH "+str(math.ceil(samplerate/Frequency))+'\n')
 f.write("#define WAV_FREQUENCY "+str(Frequency)+'\n')
 f.write('\n')
-f.write('const float clkDiv='+str(round((clockfreq*1000/(samplerate*2*(wrap+1))),3))+';\n')
+f.write('const float clkDiv='+str(round((clockfreq*1000/(samplerate*4*(wrap+1))),3))+';\n')
 f.write('uint16_t wrap='+str(wrap)+';\n')
 f.write('int clockFreq='+str(clockfreq)+';\n\n')
 
@@ -184,7 +184,7 @@ for harmonic in harmonics:
     f.write('    '+harmonic+'\n')
     f.write('};\n')
     d+=1
-Frequency=Frequency/2
+Frequency=Frequency/4
 f.write("const float lowestFrequency="+str(round(((Frequency/2)*15/8),3))+";\n")
 f.write("const float highestFrequency="+str(round(((Frequency*32)*16/15),3))+";\n")
 f.write("const float freqList[]={\n")
