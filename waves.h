@@ -4,7 +4,7 @@
 #define WAV_DATA_LENGTH 200
 #define WAV_FREQUENCY 216.0
 
-const float clkDiv=0.312;
+const float clkDiv=2.5;
 uint16_t wrap=199;
 int clockFreq=216000;
 

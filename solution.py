@@ -149,7 +149,7 @@ f.write(" */\n")
 f.write("#define WAV_DATA_LENGTH "+str(math.ceil(samplerate/Frequency))+'\n')
 f.write("#define WAV_FREQUENCY "+str(Frequency)+'\n')
 f.write('\n')
-f.write('const float clkDiv='+str(round((clockfreq*100/(samplerate*8*(wrap+1))),3))+';\n')
+f.write('const float clkDiv='+str(round((clockfreq*100/(samplerate*(wrap+1))),3))+';\n')
 f.write('uint16_t wrap='+str(wrap)+';\n')
 f.write('int clockFreq='+str(clockfreq)+';\n\n')
 
