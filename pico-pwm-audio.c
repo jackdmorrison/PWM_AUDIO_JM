@@ -143,67 +143,67 @@ button_t * create_button(int pin, void (*onchange)(button_t *)) {
   b->state = gpio_get(pin);
   return b;
 }
-float findValue(int buttonNumber,int evenHarmonicsNum,int oddHarmonicsNum,int wave_position){
+float findValue(int buttonNumber,int evenHarmonicsNum,int oddHarmonicsNum,int wave_position>>1){
     float value=0;
     switch (buttonNumber){
         case 0: //sin wave
-            value=SIN_WAV_DATA[wave_position];
+            value=SIN_WAV_DATA[wave_position>>1];
             break;
         case 1: //square wave
-            value=SQR_WAV_DATA[wave_position];
+            value=SQR_WAV_DATA[wave_position>>1];
             break;
         case 2: //Triangle wave
-            value=TRI_WAV_DATA[wave_position];
+            value=TRI_WAV_DATA[wave_position>>1];
             break;
         case 3: //Saw wave
-            value=SAW_WAV_DATA[wave_position];
+            value=SAW_WAV_DATA[wave_position>>1];
             break;
         case 4: //Reverse Saw wave
-            value=R_SAW_WAV_DATA[wave_position];
+            value=R_SAW_WAV_DATA[wave_position>>1];
             break;
         case 5:
-            value=PRBA_WAV_DATA[wave_position];
+            value=PRBA_WAV_DATA[wave_position>>1];
             break;
     }
     switch(evenHarmonicsNum){
         case 0:
             break;
         case 1:
-            value=value+HARMONIC2_WAV_DATA[wave_position];
+            value=value+HARMONIC2_WAV_DATA[wave_position>>1];
             break;
         case 2:
-            value=value+HARMONIC2_WAV_DATA[wave_position]+HARMONIC4_WAV_DATA[wave_position];
+            value=value+HARMONIC2_WAV_DATA[wave_position>>1]+HARMONIC4_WAV_DATA[wave_position>>1];
             break;
         case 3:
-            value=value+HARMONIC2_WAV_DATA[wave_position]+HARMONIC4_WAV_DATA[wave_position]+HARMONIC6_WAV_DATA[wave_position];
+            value=value+HARMONIC2_WAV_DATA[wave_position>>1]+HARMONIC4_WAV_DATA[wave_position>>1]+HARMONIC6_WAV_DATA[wave_position>>1];
             break;
         case 4:
-            value=value+HARMONIC2_WAV_DATA[wave_position]+HARMONIC4_WAV_DATA[wave_position]+HARMONIC6_WAV_DATA[wave_position]+HARMONIC8_WAV_DATA[wave_position];
+            value=value+HARMONIC2_WAV_DATA[wave_position>>1]+HARMONIC4_WAV_DATA[wave_position>>1]+HARMONIC6_WAV_DATA[wave_position>>1]+HARMONIC8_WAV_DATA[wave_position>>1];
             break;
         case 5:
-            value=value+HARMONIC2_WAV_DATA[wave_position]+HARMONIC4_WAV_DATA[wave_position]+HARMONIC6_WAV_DATA[wave_position]+HARMONIC8_WAV_DATA[wave_position]+HARMONIC10_WAV_DATA[wave_position];
+            value=value+HARMONIC2_WAV_DATA[wave_position>>1]+HARMONIC4_WAV_DATA[wave_position>>1]+HARMONIC6_WAV_DATA[wave_position>>1]+HARMONIC8_WAV_DATA[wave_position>>1]+HARMONIC10_WAV_DATA[wave_position>>1];
             break;
         case 6:
-            value=value+HARMONIC2_WAV_DATA[wave_position]+HARMONIC4_WAV_DATA[wave_position]+HARMONIC6_WAV_DATA[wave_position]+HARMONIC8_WAV_DATA[wave_position]+HARMONIC10_WAV_DATA[wave_position]+HARMONIC12_WAV_DATA[wave_position];
+            value=value+HARMONIC2_WAV_DATA[wave_position>>1]+HARMONIC4_WAV_DATA[wave_position>>1]+HARMONIC6_WAV_DATA[wave_position>>1]+HARMONIC8_WAV_DATA[wave_position>>1]+HARMONIC10_WAV_DATA[wave_position>>1]+HARMONIC12_WAV_DATA[wave_position>>1];
             break;
     }
     switch(oddHarmonicsNum){
         case 0:
             break;
         case 1:
-            value=value+HARMONIC3_WAV_DATA[wave_position];
+            value=value+HARMONIC3_WAV_DATA[wave_position>>1];
             break;
         case 2:
-            value=value+HARMONIC3_WAV_DATA[wave_position]+HARMONIC5_WAV_DATA[wave_position];
+            value=value+HARMONIC3_WAV_DATA[wave_position>>1]+HARMONIC5_WAV_DATA[wave_position>>1];
             break;
         case 3:
-            value=value+HARMONIC3_WAV_DATA[wave_position]+HARMONIC5_WAV_DATA[wave_position]+HARMONIC7_WAV_DATA[wave_position];
+            value=value+HARMONIC3_WAV_DATA[wave_position>>1]+HARMONIC5_WAV_DATA[wave_position>>1]+HARMONIC7_WAV_DATA[wave_position>>1];
             break;
         case 4:
-            value=value+HARMONIC3_WAV_DATA[wave_position]+HARMONIC5_WAV_DATA[wave_position]+HARMONIC7_WAV_DATA[wave_position]+HARMONIC9_WAV_DATA[wave_position];
+            value=value+HARMONIC3_WAV_DATA[wave_position>>1]+HARMONIC5_WAV_DATA[wave_position>>1]+HARMONIC7_WAV_DATA[wave_position>>1]+HARMONIC9_WAV_DATA[wave_position>>1];
             break;
         case 5:
-            value=value+HARMONIC3_WAV_DATA[wave_position]+HARMONIC5_WAV_DATA[wave_position]+HARMONIC7_WAV_DATA[wave_position]+HARMONIC9_WAV_DATA[wave_position]+HARMONIC11_WAV_DATA[wave_position];
+            value=value+HARMONIC3_WAV_DATA[wave_position>>1]+HARMONIC5_WAV_DATA[wave_position>>1]+HARMONIC7_WAV_DATA[wave_position>>1]+HARMONIC9_WAV_DATA[wave_position>>1]+HARMONIC11_WAV_DATA[wave_position>>1];
             break;
     }
     return value;
@@ -338,7 +338,7 @@ void pwm_interrupt_handler() {
         pwm_clear_irq(0);
         if(PLAY){
             if(vibrato){
-                if (wav_position < (WAV_DATA_LENGTH) - 1) { 
+                if (wav_position < (WAV_DATA_LENGTH<<1) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is  
                     
@@ -365,7 +365,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }else{
-                if (wav_position < (WAV_DATA_LENGTH) - 1) { 
+                if (wav_position < (WAV_DATA_LENGTH<<1) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is  
                     pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position)/(evenHarmonics+oddHarmonics+1)));
@@ -383,7 +383,7 @@ void pwm_interrupt_handler() {
         pwm_clear_irq(1);
         if(PLAY2){
             if(vibrato2){
-                if (wav_position2 < (WAV_DATA_LENGTH) - 1) { 
+                if (wav_position2 < (WAV_DATA_LENGTH<<1) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is  
                     pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
@@ -409,7 +409,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }else{
-                if (wav_position2 < (WAV_DATA_LENGTH) - 1) { 
+                if (wav_position2 < (WAV_DATA_LENGTH<<1) - 1) { 
                     // set pwm level 
                     // allow the pwm value to repeat for 8 cycles this is  
                     pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
@@ -485,7 +485,7 @@ int main(void) {
     config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, wrap); 
-    //pwm_config_set_phase_correct(&config,true);
+    pwm_config_set_phase_correct(&config,true);
     pwm_init(audio_pin_slice, &config, true);
     
     pwm_set_gpio_level(AUDIO_PIN, 0);
@@ -505,7 +505,7 @@ int main(void) {
     config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, wrap); 
-    //pwm_config_set_phase_correct(&config,true);
+    pwm_config_set_phase_correct(&config,true);
     pwm_init(audio_pin_slice2, &config, true);
 
     pwm_set_gpio_level(AUDIO_PIN2, 0);
