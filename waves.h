@@ -1,10 +1,10 @@
-/* wave tables for a frequency of 108.0
- * with sampling rate of 21600.0
+/* wave tables for a frequency of 432.0
+ * with sampling rate of 86400.0
  */
 #define WAV_DATA_LENGTH 200
-#define WAV_FREQUENCY 108.0
+#define WAV_FREQUENCY 432.0
 
-const float clkDiv=10.0;
+const float clkDiv=5.0;
 uint16_t wrap=249;
 int clockFreq=216000;
 
