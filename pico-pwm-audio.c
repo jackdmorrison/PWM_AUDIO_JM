@@ -664,7 +664,7 @@ int main(void) {
     config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, wrap); 
-    pwm_config_set_phase_correct(&config,true);
+    //pwm_config_set_phase_correct(&config,true);
     pwm_init(audio_pin_slice, &config, true);
     
     pwm_set_gpio_level(AUDIO_PIN, 0);
@@ -684,7 +684,7 @@ int main(void) {
     config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, wrap); 
-    pwm_config_set_phase_correct(&config,true);
+    //pwm_config_set_phase_correct(&config,true);
     pwm_init(audio_pin_slice2, &config, true);
 
     pwm_set_gpio_level(AUDIO_PIN2, 0);
