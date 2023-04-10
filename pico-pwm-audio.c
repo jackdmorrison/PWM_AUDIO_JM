@@ -8,7 +8,7 @@
 #include "hardware/sync.h" 
 #include "hardware/adc.h"
 #include "hardware/vreg.h"
-
+#include "waves.h"
 
   
 #define AUDIO_PIN  16
@@ -33,7 +33,7 @@
 #define GATE 20
 #define GATE2 21
 
-#include "waves.h"
+
 pwm_config config;
 uint audio_pin_slice;
 uint audio_pin_slice2;
@@ -566,7 +566,12 @@ void pwm_interrupt_handler() {
             }
             
         }
-    }else if(irq & (1<<1)){
+    }
+}
+void pwm_interrupt_handler2() {
+    int irq;
+    irq= pwm_get_irq_status_mask();
+    if(irq & (1<<1)){
         pwm_clear_irq(1);
         if(PLAY2){
             if(frequency2>freqList[36]){
@@ -703,6 +708,7 @@ void pwm_interrupt_handler() {
 
     
 }
+void main2() __attribute__ ((section (".scratch_x.")));
 void main2(){
     //stdio_init_all();
     adc_gpio_init(ADC_PIN2);
@@ -722,7 +728,7 @@ void main2(){
     pwm_clear_irq(audio_pin_slice2);
     pwm_set_irq_enabled(audio_pin_slice2, true);
     // set the handle function above
-    irq_set_exclusive_handler(PWM_IRQ_WRAP, pwm_interrupt_handler); 
+    irq_set_exclusive_handler(PWM_IRQ_WRAP, pwm_interrupt_handler2); 
     irq_set_enabled(PWM_IRQ_WRAP, true);
  
     // Setup PWM for audio output
@@ -742,7 +748,7 @@ int main(void) {
      * multiple of typical audio sampling rates.
      */
     stdio_init_all();
-    multicore_launch_core1(main2);
+    
 
     adc_init();
     adc_gpio_init(ADC_PIN);
@@ -771,6 +777,8 @@ int main(void) {
     irq_set_enabled(IO_IRQ_BANK0, true);
     vreg_set_voltage(VREG_VOLTAGE_1_05);
     set_sys_clock_khz(clockFreq, true); 
+    multicore_launch_core1(main2);
+
     gpio_set_function(AUDIO_PIN, GPIO_FUNC_PWM);
     
 
