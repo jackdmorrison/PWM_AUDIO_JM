@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <math.h>
 #include "button.h"
-#include <pico/stdlib.h>    
+#include <pico/stdlib.h>
+#include <pico/multicore.h>    
 #include "hardware/irq.h"  
 #include "hardware/pwm.h"  
 #include "hardware/sync.h" 
 #include "hardware/adc.h"
 #include "hardware/vreg.h"
+
 
   
 #define AUDIO_PIN  16
