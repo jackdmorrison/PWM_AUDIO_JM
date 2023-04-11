@@ -7,7 +7,7 @@ class wave:
         self.period = 1/frequency
         self.B=2*math.pi*frequency
         self.interval = 1/samplerate
-        self.wrap = wrap+1
+        self.wrap = wrap+5
     def make_sin_wav(self):
         x=0
         v=self.amplitude*(math.sin(self.B*x))
@@ -81,20 +81,20 @@ class wave:
             x+=self.interval
         return vals
     def make_reversed_sawtooth_wav(self):
-        tan_theta_down=self.period/(2*self.amplitude)
+        tan_theta=2*(self.amplitude/self.period)
         x=0
-        v=(self.amplitude)-(x/tan_theta_down)
-        vals=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
+        v=(x*tan_theta)
+        vals=str(int((self.amplitude-v)/(self.amplitude*2)*self.wrap))
         x+=self.interval
-        # while(x<(self.period+self.interval)/2):
-        #     vals+=', '
-        #     v=(self.amplitude)-(x/tan_theta_down)
-        #     vals+=str(int((v+self.amplitude)/(self.amplitude*2)*255))
-        #     x+=self.interval
+        while(x<(self.period+self.interval)/2):
+            vals+=', '
+            v=(x*tan_theta)
+            vals+=str(int((self.amplitude-v)/(self.amplitude*2)*self.wrap))
+            x+=self.interval
         while x<(self.period+(self.interval)):
             vals+=', '
-            v=(self.amplitude)-(x/tan_theta_down)
-            vals+=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
+            v=(x*tan_theta)
+            vals+=str(int((3*self.amplitude-v)/(self.amplitude*2)*self.wrap))
             x+=self.interval
             
         return vals
