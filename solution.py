@@ -47,11 +47,10 @@ class wave:
             v=x*(tan_theta)
             vals+=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
             x+=self.interval
-            
-        tan_theta_down=self.period/(4*self.amplitude)
+        
         while(x<(3*(self.period+self.interval)/4)):
             vals+=', '
-            v=2*(self.amplitude)-(x/tan_theta_down)
+            v=2*(self.amplitude)-(x*tan_theta)
             vals+=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
             x+=self.interval
             
