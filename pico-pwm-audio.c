@@ -565,7 +565,7 @@ void pwm_interrupt_handler() {
     }else if(irq & (1<<1)){
         pwm_clear_irq(1);
     
-        if(frequency2>freqList[42]){
+        if(frequency2>freqList[48]){
                 if(vibrato2){
                 if (wav_position2 < (WAV_DATA_LENGTH) - 1) { 
                     // set pwm level 
@@ -893,7 +893,7 @@ void rawHandler1(){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_FALL );
         
     }
-    else if(gpio_get_irq_event_mask(GATE2) & GPIO_IRQ_EDGE_RISE){
+    if(gpio_get_irq_event_mask(GATE2) & GPIO_IRQ_EDGE_RISE){
         adc_select_input(2);
         gpio_acknowledge_irq(GATE2, GPIO_IRQ_EDGE_RISE );
         adc_value=((adc_read())*conversionfactor);
