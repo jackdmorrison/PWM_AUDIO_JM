@@ -41,7 +41,7 @@ void pwm_interrupt_handler()
     if (wav_position<(wavelength<<3) - 1 ) { 
         // set pwm level 
 
-        value=round(127.5*(1+((var-wavelength)/wavelength)*((var-wavelength)/wavelength)));
+        value=round(255*(1+((var-wavelength)/wavelength)*((var-wavelength)/wavelength)));
          
 
          
