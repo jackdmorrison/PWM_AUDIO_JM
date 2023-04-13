@@ -89,7 +89,7 @@ double sine_wave_y(double x) {
 }
 
 float clockDivChange( float newFrequency){
-    if(newFrequency>freqList[42]){
+    if(newFrequency>freqList[48]){
         return (WAV_FREQUENCY/newFrequency)*clkDiv*4;
     }
     else if(newFrequency>freqList[36]){
@@ -864,7 +864,7 @@ int main(void) {
 void rawHandler1(){
     if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_RISE){
         gpio_acknowledge_irq(GATE, GPIO_IRQ_EDGE_RISE );
-        adc_select_input(1);
+        adc_select_input(2);
         adc_value=((adc_read())*conversionfactor);
         subScript=round(60*adc_value/3);
         if(subScript>60){
@@ -894,7 +894,7 @@ void rawHandler1(){
         
     }
     if(gpio_get_irq_event_mask(GATE2) & GPIO_IRQ_EDGE_RISE){
-        adc_select_input(2);
+        adc_select_input(1);
         gpio_acknowledge_irq(GATE2, GPIO_IRQ_EDGE_RISE );
         adc_value=((adc_read())*conversionfactor);
         subScript2=round(60*adc_value/3);
