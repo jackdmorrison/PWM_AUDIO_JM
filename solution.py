@@ -184,150 +184,71 @@ for harmonic in harmonics:
     f.write('    '+harmonic+'\n')
     f.write('};\n')
     d+=1
-Frequency=Frequency/6
+Frequency=Frequency/4
 f.write("const float lowestFrequency="+str(round(((Frequency/2)*15/8),3))+";\n")
 f.write("const float highestFrequency="+str(round(((Frequency*32)*16/15),3))+";\n")
 f.write("const float freqList[]={\n")
-for i in range(0,12):
-    if(i==0):
-        f.write("   "+str(round((Frequency),3))+", ")
-    elif(i==1):
-        f.write(str(round((Frequency*(16/15)),3))+", ")
-    elif(i==2):
-        f.write(str(round((Frequency*(9/8)),3))+", ")
-    elif(i==3):
-        f.write(str(round((Frequency*(6/5)),3))+", ")
-    elif(i==4):
-        f.write(str(round((Frequency*(5/4)),3))+", ")
-    elif(i==5):
-        f.write(str(round((Frequency*(4/3)),3))+", ")
-    elif(i==6):
-        f.write(str(round((Frequency*(45/32)),3))+", ")
-    elif(i==7):
-        f.write(str(round((Frequency*(3/2)),3))+", ")
-    elif(i==8):
-        f.write(str(round((Frequency*(8/5)),3))+", ")
-    elif(i==9):
-        f.write(str(round((Frequency*(5/3)),3))+", ")
-    elif(i==10):
-        f.write(str(round((Frequency*(9/5)),3))+", ")
-    elif(i==11):
-        f.write(str(round((Frequency*(15/8)),3))+", ")
-Frequency=Frequency*2
-for i in range(0,12):
-    if(i==0):
-        f.write(str(round((Frequency),3))+", ")
-    elif(i==1):
-        f.write(str(round((Frequency*(16/15)),3))+", ")
-    elif(i==2):
-        f.write(str(round((Frequency*(9/8)),3))+", ")
-    elif(i==3):
-        f.write(str(round((Frequency*(6/5)),3))+", ")
-    elif(i==4):
-        f.write(str(round((Frequency*(5/4)),3))+", ")
-    elif(i==5):
-        f.write(str(round((Frequency*(4/3)),3))+", ")
-    elif(i==6):
-        f.write(str(round((Frequency*(45/32)),3))+", ")
-    elif(i==7):
-        f.write(str(round((Frequency*(3/2)),3))+", ")
-    elif(i==8):
-        f.write(str(round((Frequency*(8/5)),3))+", ")
-    elif(i==9):
-        f.write(str(round((Frequency*(5/3)),3))+", ")
-    elif(i==10):
-        f.write(str(round((Frequency*(9/5)),3))+", ")
-    elif(i==11):
-        f.write(str(round((Frequency*(15/8)),3))+", ")
-
-Frequency=Frequency*2
-for i in range(0,12):
-    if(i==0):
-        f.write(str(round((Frequency),3))+", ")
-    elif(i==1):
-        f.write(str(round((Frequency*(16/15)),3))+", ")
-    elif(i==2):
-        f.write(str(round((Frequency*(9/8)),3))+", ")
-    elif(i==3):
-        f.write(str(round((Frequency*(6/5)),3))+", ")
-    elif(i==4):
-        f.write(str(round((Frequency*(5/4)),3))+", ")
-    elif(i==5):
-        f.write(str(round((Frequency*(4/3)),3))+", ")
-    elif(i==6):
-        f.write(str(round((Frequency*(45/32)),3))+", ")
-    elif(i==7):
-        f.write(str(round((Frequency*(3/2)),3))+", ")
-    elif(i==8):
-        f.write(str(round((Frequency*(8/5)),3))+", ")
-    elif(i==9):
-        f.write(str(round((Frequency*(5/3)),3))+", ")
-    elif(i==10):
-        f.write(str(round((Frequency*(9/5)),3))+", ")
-    elif(i==11):
-        f.write(str(round((Frequency*(15/8)),3))+", ")
-Frequency=Frequency*2
-for i in range(0,12):
-    if(i==0):
-        f.write(str(round((Frequency),3))+", ")
-    elif(i==1):
-        f.write(str(round((Frequency*(16/15)),3))+", ")
-    elif(i==2):
-        f.write(str(round((Frequency*(9/8)),3))+", ")
-    elif(i==3):
-        f.write(str(round((Frequency*(6/5)),3))+", ")
-    elif(i==4):
-        f.write(str(round((Frequency*(5/4)),3))+", ")
-    elif(i==5):
-        f.write(str(round((Frequency*(4/3)),3))+", ")
-    elif(i==6):
-        f.write(str(round((Frequency*(45/32)),3))+", ")
-    elif(i==7):
-        f.write(str(round((Frequency*(3/2)),3))+", ")
-    elif(i==8):
-        f.write(str(round((Frequency*(8/5)),3))+", ")
-    elif(i==9):
-        f.write(str(round((Frequency*(5/3)),3))+", ")
-    elif(i==10):
-        f.write(str(round((Frequency*(9/5)),3))+", ")
-    elif(i==11):
-        f.write(str(round((Frequency*(15/8)),3))+", ")
-
-Frequency=Frequency*2
-for i in range(0,13):
-    if(i==0):
-        f.write(str(round((Frequency),3))+", ")
-    elif(i==1):
-        f.write(str(round((Frequency*(16/15)),3))+", ")
-    elif(i==2):
-        f.write(str(round((Frequency*(9/8)),3))+", ")
-    elif(i==3):
-        f.write(str(round((Frequency*(6/5)),3))+", ")
-    elif(i==4):
-        f.write(str(round((Frequency*(5/4)),3))+", ")
-    elif(i==5):
-        f.write(str(round((Frequency*(4/3)),3))+", ")
-    elif(i==6):
-        f.write(str(round((Frequency*(45/32)),3))+", ")
-    elif(i==7):
-        f.write(str(round((Frequency*(3/2)),3))+", ")
-    elif(i==8):
-        f.write(str(round((Frequency*(8/5)),3))+", ")
-    elif(i==9):
-        f.write(str(round((Frequency*(5/3)),3))+", ")
-    elif(i==10):
-        f.write(str(round((Frequency*(9/5)),3))+", ")
-    elif(i==11):
-        f.write(str(round((Frequency*(15/8)),3))+", ")
-    elif(i==12):
+def justTuning(Frequency,f,last):
+    for i in range(0,12):
+        #perfect first
+        if(i==0):
+            f.write("   "+str(round((Frequency),3))+", ")
+        #minor second
+        elif(i==1):
+            f.write(str(round((Frequency*(16/15)),3))+", ")
+        #major second
+        elif(i==2):
+            f.write(str(round((Frequency*(9/8)),3))+", ")
+        #minor third
+        elif(i==3):
+            f.write(str(round((Frequency*(6/5)),3))+", ")
+        #perfect fourth
+        elif(i==4):
+            f.write(str(round((Frequency*(5/4)),3))+", ")
+        #Tri Tone
+        elif(i==5):
+            f.write(str(round((Frequency*(4/3)),3))+", ")
+        #perfect fifth 
+        elif(i==6):
+            f.write(str(round((Frequency*(45/32)),3))+", ")
+        #minor sixth
+        elif(i==7):
+            f.write(str(round((Frequency*(3/2)),3))+", ")
+        #major sixth
+        elif(i==8):
+            f.write(str(round((Frequency*(8/5)),3))+", ")
+        #minor seventh
+        elif(i==9):
+            f.write(str(round((Frequency*(5/3)),3))+", ")
+        #major seventh
+        elif(i==10):
+            f.write(str(round((Frequency*(9/5)),3))+", ")
+        #Perfect eighth
+        elif(i==11):
+            f.write(str(round((Frequency*(15/8)),3))+", ")
+    #1 Ocatave up if last 
+    if(last):
         f.write(str(round((Frequency*(2)),3))+"\n")
         f.write("};\n")
-# f.write("uint8_t EVEN_HARMONICS_WAV_DATA[] = {\n")
-# f.write('    '+even_harmonics+'\n')
-# f.write('};\n')
+justTuning(Frequency,f,False)
+justTuning(Frequency*2,f,False)
+justTuning(Frequency*4,f,False)
+justTuning(Frequency*8,f,False)
+justTuning(Frequency*16,f,True)
+f.write("const float freqListEqualT[]={\n")
+f.write("   ")
+def equal_temperament(Frequency,f,last):
+    for i in range(0,12):
+        f.write(str(round((Frequency*(2**(i/12))),3))+", ")
+    #1 Ocatave up if last 
+    if(last):
+        f.write(str(round((Frequency*(2)),3))+"\n")
+        f.write("};\n")
+equal_temperament(Frequency,f,False)
+equal_temperament(Frequency*2,f,False)
+equal_temperament(Frequency*4,f,False)
+equal_temperament(Frequency*8,f,False)
+equal_temperament(Frequency*16,f,True)
 
-# f.write("uint8_t ODD_HARMONICS_WAV_DATA[] = {\n")
-# f.write('    '+odd_harmonics+'\n')
-# f.write('};\n')
 f.close()
 
