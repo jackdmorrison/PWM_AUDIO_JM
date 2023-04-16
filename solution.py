@@ -222,7 +222,7 @@ def justTuning(Frequency,f,last):
             f.write(str(round((Frequency*(5/3)),3))+", ")
         #major seventh
         elif(i==10):
-            f.write(str(round((Frequency*(9/5)),3))+", ")
+            f.write(str(round((Frequency*(7/4)),3))+", ")
         #Perfect eighth
         elif(i==11):
             f.write(str(round((Frequency*(15/8)),3))+", ")
