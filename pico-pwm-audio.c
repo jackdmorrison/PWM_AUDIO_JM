@@ -903,6 +903,9 @@ void rawHandler1(){
             frequency=*(freqList);
         }else{
             frequency=*(freqList+subScript);
+            if(frequency<27){
+                frequency=150;
+            }
         }
         currentF = *(freqList+subScript);
         if(subScript==60){
