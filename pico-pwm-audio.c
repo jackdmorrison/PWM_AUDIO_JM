@@ -895,9 +895,9 @@ void rawHandler1(){
         adc_select_input(2);
         adc_value=((adc_read())*conversionfactor);
         subScript=round(60*adc_value/3);
-        if(subScript>60){
+        if(subScript>=60){
             frequency=*(freqList+60);
-        }else if(subScript=<0){
+        }else if(subScript<=0){
             frequency=*(freqList);
         }else{
             frequency=*(freqList+subScript);
@@ -926,9 +926,9 @@ void rawHandler1(){
         gpio_acknowledge_irq(GATE2, GPIO_IRQ_EDGE_RISE );
         adc_value=((adc_read())*conversionfactor);
         subScript2=round(60*adc_value/3);
-        if(subScript2>60){
+        if(subScript2>=60){
             frequency2=*(freqList+60);
-        }else if(subScript2<0){
+        }else if(subScript2<=0){
             frequency2=*(freqList);
         }else{
             frequency2=*(freqList+subScript2);
