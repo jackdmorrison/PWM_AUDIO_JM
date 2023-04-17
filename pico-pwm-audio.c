@@ -73,7 +73,16 @@ int value2=0;
 bool vibUP=true;
 bool vibUP2=true;
 bool signal1=true;
+float frequency;
+float frequency2;
 
+float currentF ;
+float currentF2 ;
+
+float upperVibrato;
+float upperVibrato2;
+float vibchangeParam ;
+float vibchangeParam2;
 
 closure_t handlers[28] = {NULL};
 alarm_id_t alarm_ids[28];
@@ -785,16 +794,16 @@ void pwm_interrupt_handler() {
 }
 
 int main(void) {
-    float frequency=*(freqList);
-    float frequency2=*(freqList);
+    frequency=*(freqList);
+    frequency2=*(freqList);
 
-    float currentF = *(freqList);
-    float currentF2 = *(freqList);
+    currentF = *(freqList);
+    currentF2 = *(freqList);
 
-    float upperVibrato=*(freqList+1);
-    float upperVibrato2=*(freqList+1);
-    float vibchangeParam = (*(freqList+1)-lowestFrequency)/24;
-    float vibchangeParam2 = (*(freqList+1)-lowestFrequency)/24;
+    upperVibrato=*(freqList+1);
+    upperVibrato2=*(freqList+1);
+    vibchangeParam = (*(freqList+1)-lowestFrequency)/24;
+    vibchangeParam2 = (*(freqList+1)-lowestFrequency)/24;
 
     /* Overclocking for fun but then also so the system clock is a 
      * multiple of typical audio sampling rates.
