@@ -363,7 +363,7 @@ void pwm_interrupt_handler() {
     //if(gpio_get_irq_event_mask(AUDIO_PIN)){
         pwm_clear_irq(0);
         
-        if(frequency>(*(freqList+48))){
+        if(frequency>freqListJust[48]){
             if(vibrato){
                 if (wav_position < (WAV_DATA_LENGTH) - 1) { 
                     // set pwm level 
@@ -406,7 +406,7 @@ void pwm_interrupt_handler() {
                 }
             }
         }
-        else if(frequency>(*(freqList+36))){
+        else if(frequency>freqListJust[36]){
             if(vibrato){
                 if (wav_position < (WAV_DATA_LENGTH<<1) - 1) { 
                     // set pwm level 
@@ -448,7 +448,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }
-    }else if(frequency<(*(freqList+12))){
+    }else if(frequency<freqListJust[12]){
             if(vibrato){
                 if (wav_position < (WAV_DATA_LENGTH<<4) - 1) { 
                     // set pwm level 
@@ -490,7 +490,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }
-    }else if(frequency<(*(freqList+24))){
+    }else if(frequency<freqListJust[24]){
             if(vibrato){
                 if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
@@ -579,7 +579,7 @@ void pwm_interrupt_handler() {
     }else if(irq & (1<<1)){
         pwm_clear_irq(1);
     
-        if(frequency2>(*(freqList+48))){
+        if(frequency2>freqListJust[48]){
                 if(vibrato2){
                 if (wav_position2 < (WAV_DATA_LENGTH) - 1) { 
                     // set pwm level 
@@ -620,7 +620,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }
-        }else if(frequency2>(*(freqList+36))){
+        }else if(frequency2>freqListJust[36]){
             if(vibrato2){
                 if (wav_position2 < (WAV_DATA_LENGTH<<1) - 1) { 
                     // set pwm level 
@@ -661,7 +661,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }
-        }else if(frequency2<(*(freqList+12))){
+        }else if(frequency2<freqListJust[12]){
             if(vibrato2){
                 if (wav_position2 < (WAV_DATA_LENGTH<<4) - 1) { 
                     // set pwm level 
@@ -702,7 +702,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }
-        }else if(frequency2<(*(freqList+24))){
+        }else if(frequency2<freqListJust[24]){
             if(vibrato2){
                 if (wav_position2 < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
