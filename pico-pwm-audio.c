@@ -913,7 +913,7 @@ void rawHandler1(){
                 upperVibrato=freqListJust[subScript+1];
                 lowerVibrato=freqListJust[subScript-1];
             }
-            vibchangeParam = (upperVibrato-lowerVibrato)/24;
+            vibchangeParam = (upperVibrato-lowerVibrato)/48;
         }else{
             if(subScript>=60){
                 frequency=freqListEqualT[60];
@@ -967,7 +967,7 @@ void rawHandler1(){
                 upperVibrato2=freqListJust[subScript2+1];
                 lowerVibrato2=freqListJust[subScript2-1];
             }
-            vibchangeParam2 = (upperVibrato2-lowerVibrato2)/24;
+            vibchangeParam2 = (upperVibrato2-lowerVibrato2)/48;
         }else{
             if(subScript2>=60){
                 frequency2=freqListEqualT[60];
