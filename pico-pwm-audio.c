@@ -56,6 +56,16 @@ bool just=true;
 
 float lowerVibrato=lowestFrequency;
 float lowerVibrato2=lowestFrequency;
+float frequency;
+float frequency2;
+
+float currentF ;
+float currentF2 ;
+
+float upperVibrato;
+float upperVibrato2;
+float vibchangeParam ;
+float vibchangeParam2;
 
 
 int buttonNum = 0;
