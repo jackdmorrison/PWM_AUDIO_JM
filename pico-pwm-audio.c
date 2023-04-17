@@ -50,7 +50,7 @@ bool vibrato2 = false; //vibrato on or off
 
 int subScript = 0;
 int subScript2=0;
-float *freqList;
+//float *freqList;
 
 bool just=true;
 
@@ -345,10 +345,8 @@ void onchange(button_t *button_p) {
         break;
     case INTONATION:
         if(just){
-            *freqList=freqListEqualT;
             just=false;
         }else{
-            *freqList=freqListJust;
             just=true;
         }
         break;
@@ -795,17 +793,16 @@ void pwm_interrupt_handler() {
 }
 
 int main(void) {
-    *freqList=freqListJust;
-    float frequency=*(freqList);
-    float frequency2=*(freqList);
+    float frequency=freqListJust[0];
+    float frequency2=freqListJust[0];
 
-    float currentF = *(freqList);
-    float currentF2 = *(freqList);
+    float currentF = freqListJust[0];
+    float currentF2 = freqListJust[0];
 
-    float upperVibrato=*(freqList+1);
-    float upperVibrato2=*(freqList+1);
-    float vibchangeParam = (*(freqList+1)-lowestFrequency)/24;
-    float vibchangeParam2 = (*(freqList+1)-lowestFrequency)/24;
+    float upperVibrato=freqListJust[0];
+    float upperVibrato2=freqListJust[0];
+    float vibchangeParam = (freqListJust[0]-lowestFrequency)/24;
+    float vibchangeParam2 = (freqListJust[0]-lowestFrequency)/24;
 
     /* Overclocking for fun but then also so the system clock is a 
      * multiple of typical audio sampling rates.
@@ -897,28 +894,48 @@ void rawHandler1(){
         adc_select_input(2);
         adc_value=((adc_read())*conversionfactor);
         subScript=round(60*adc_value/3);
-        if(subScript>=60){
-            frequency=*(freqList+60);
-        }else if(subScript<=0){
-            frequency=*(freqList);
-        }else{
-            frequency=*(freqList+subScript);
-            if(frequency<27){
-                frequency=150;
+        if(just){
+            if(subScript>=60){
+                frequency=freqListJust[60];
+            }else if(subScript<=0){
+                frequency=freqListJust[0];
+            }else{
+                frequency=freqListJust[subScript];
             }
-        }
-        currentF = *(freqList+subScript);
-        if(subScript==60){
-            upperVibrato=highestFrequency;
-            lowerVibrato=*(freqList+subScript-1);
-        }else if(subScript==0){
-            upperVibrato=*(freqList+subScript+1);
-            lowerVibrato=lowestFrequency;
+            currentF = freqListJust[subScript];
+            if(subScript==60){
+                upperVibrato=highestFrequency;
+                lowerVibrato=freqListJust[subScript-1];
+            }else if(subScript==0){
+                upperVibrato=freqListJust[subScript+1];
+                lowerVibrato=lowestFrequency;
+            }else{
+                upperVibrato=freqListJust[subScript+1];
+                lowerVibrato=freqListJust[subScript-1];
+            }
+            vibchangeParam = (upperVibrato-lowerVibrato)/24;
         }else{
-            upperVibrato=*(freqList+subScript+1);
-            lowerVibrato=*(freqList+subScript-1);
+            if(subScript>=60){
+                frequency=freqListEqualT[60];
+            }else if(subScript<=0){
+                frequency=freqListEqualT[0];
+            }else{
+                frequency=freqListEqualT[subScript];
+            }
+            currentF = freqListEqualT[subScript];
+            if(subScript==60){
+                upperVibrato=highestFrequency;
+                lowerVibrato=freqListEqualT[subScript-1];
+            }else if(subScript==0){
+                upperVibrato=freqListEqualT[subScript+1];
+                lowerVibrato=lowestFrequency;
+            }else{
+                upperVibrato=freqListEqualT[subScript+1];
+                lowerVibrato=freqListEqualT[subScript-1];
+            }
+            vibchangeParam = (upperVibrato-lowerVibrato)/24;
         }
-        vibchangeParam = (upperVibrato-lowerVibrato)/24;
+        
         
         updateClockDiv(clockDivChange(frequency),AUDIO_PIN,audio_pin_slice);
         
@@ -931,25 +948,48 @@ void rawHandler1(){
         gpio_acknowledge_irq(GATE2, GPIO_IRQ_EDGE_RISE );
         adc_value=((adc_read())*conversionfactor);
         subScript2=round(60*adc_value/3);
-        if(subScript2>=60){
-            frequency2=*(freqList+60);
-        }else if(subScript2<=0){
-            frequency2=*(freqList);
+        if(just){
+            if(subScript2>=60){
+                frequency2=freqListJust[60];
+            }else if(subScript2<=0){
+                frequency2=freqListJust[0];
+            }else{
+                frequency2=freqListJust[subScript2];
+            }
+            currentF2 = freqListJust[subScript2];
+            if(subScript2==60){
+                upperVibrato2=highestFrequency;
+                lowerVibrato2=freqListJust[subScript2-1];
+            }else if(subScript2==0){
+                upperVibrato2=freqListJust[subScript2+1];
+                lowerVibrato2=lowestFrequency;
+            }else{
+                upperVibrato2=freqListJust[subScript2+1];
+                lowerVibrato2=freqListJust[subScript2-1];
+            }
+            vibchangeParam2 = (upperVibrato2-lowerVibrato2)/24;
         }else{
-            frequency2=*(freqList+subScript2);
+            if(subScript2>=60){
+                frequency2=freqListEqualT[60];
+            }else if(subScript2<=0){
+                frequency2=freqListEqualT[0];
+            }else{
+                frequency2=freqListEqualT[subScript2];
+            }
+            currentF2 = freqListEqualT[subScript2];
+            if(subScript2==60){
+                upperVibrato2=highestFrequency;
+                lowerVibrato2=freqListEqualT[subScript2-1];
+            }else if(subScript2==0){
+                upperVibrato2=freqListEqualT[subScript2+1];
+                lowerVibrato2=lowestFrequency;
+            }else{
+                upperVibrato2=freqListEqualT[subScript2+1];
+                lowerVibrato2=freqListEqualT[subScript2-1];
+            }
+            vibchangeParam2 = (upperVibrato2-lowerVibrato2)/24;
         }
-        currentF2 = *(freqList+subScript2);
-        if(subScript2==60){
-            upperVibrato2=highestFrequency;
-            lowerVibrato2=*(freqList+subScript2-1);
-        }else if(subScript2==0){
-            upperVibrato2=*(freqList+subScript2+1);
-            lowerVibrato2=lowestFrequency;
-        }else{
-            upperVibrato2=*(freqList+subScript2+1);
-            lowerVibrato2=*(freqList+subScript2-1);
-        }
-        vibchangeParam2 = (upperVibrato2-lowerVibrato2)/24;
+        
         
         updateClockDiv(clockDivChange(frequency2),AUDIO_PIN2,audio_pin_slice2);
         
