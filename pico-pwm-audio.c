@@ -13,7 +13,7 @@
 #define AUDIO_PIN2 18
 #define ADC_PIN 28
 #define ADC_PIN2 27
-
+#define LED 25
 
 #define HM_ODD_DOWN 12
 #define HM_ODD_UP 11
@@ -27,6 +27,7 @@
 #define SQUARE 4
 #define SINE 2
 #define SWITCHSIGNAL 13
+#define INTONATION 14
 #define VIBRATO_PIN 0
 #define GATE 20
 #define GATE2 21
@@ -49,21 +50,22 @@ bool vibrato2 = false; //vibrato on or off
 
 int subScript = 0;
 int subScript2=0;
+float *freqList=freqListJust;
 
-float frequency=freqList[0];
-float frequency2=freqList[0];
+float frequency=*(freqList+0);
+float frequency2=*(freqList+0);
 
-float currentF = freqList[0];
-float currentF2 = freqList[0];
+float currentF = *(freqList+0);
+float currentF2 = *(freqList+0);
 
-float upperVibrato=freqList[1];
-float upperVibrato2=freqList[1];
+float upperVibrato=*(freqList+1);
+float upperVibrato2=*(freqList+1);
 
 float lowerVibrato=lowestFrequency;
 float lowerVibrato2=lowestFrequency;
 
-float vibchangeParam = (freqList[1]-lowestFrequency)/24;
-float vibchangeParam2 = (freqList[1]-lowestFrequency)/24;
+float vibchangeParam = (*(freqList+1)-lowestFrequency)/24;
+float vibchangeParam2 = (*(freqList+1)-lowestFrequency)/24;
 
 int buttonNum = 0;
 int buttonNum2 = 0;
@@ -80,8 +82,8 @@ int value2=0;
 bool vibUP=true;
 bool vibUP2=true;
 bool signal1=true;
-//bool PLAY=false;
-//bool PLAY2=false;
+
+
 closure_t handlers[28] = {NULL};
 alarm_id_t alarm_ids[28];
 double sine_wave_y(double x) {
@@ -89,14 +91,14 @@ double sine_wave_y(double x) {
 }
 
 float clockDivChange( float newFrequency){
-    if(newFrequency>freqList[48]){
+    if(newFrequency>*(freqList+48)){
         return (WAV_FREQUENCY/newFrequency)*clkDiv*4;
     }
-    else if(newFrequency>freqList[36]){
+    else if(newFrequency>*(freqList+32)){
         return (WAV_FREQUENCY/newFrequency)*clkDiv*2;
-    }else if(newFrequency<freqList[12]){
+    }else if(newFrequency<*(freqList+12)){
         return (WAV_FREQUENCY/newFrequency)*clkDiv/4;
-    }else if(newFrequency<freqList[24]){
+    }else if(newFrequency<*(freqList+24)){
         return (WAV_FREQUENCY/newFrequency)*clkDiv/2;
     }else{
         return (WAV_FREQUENCY/newFrequency)*clkDiv;
@@ -333,9 +335,20 @@ void onchange(button_t *button_p) {
         break;
     case SWITCHSIGNAL:
         if(signal1){
+            gpio_put(LED, false);
             signal1=false;
         }else{
+            gpio_put(LED, true);
             signal1=true;
+        }
+        break;
+    case INTONATION:
+        if(just){
+            freqList=freqListEqualT;
+            just=false;
+        }else{
+            freqList=freqListJust;
+            just=true;
         }
         break;
   }
@@ -349,7 +362,7 @@ void pwm_interrupt_handler() {
     //if(gpio_get_irq_event_mask(AUDIO_PIN)){
         pwm_clear_irq(0);
         
-        if(frequency>freqList[48]){
+        if(frequency>*(freqList+48)){
             if(vibrato){
                 if (wav_position < (WAV_DATA_LENGTH) - 1) { 
                     // set pwm level 
@@ -392,7 +405,7 @@ void pwm_interrupt_handler() {
                 }
             }
         }
-        else if(frequency>freqList[36]){
+        else if(frequency>*(freqList+36)){
             if(vibrato){
                 if (wav_position < (WAV_DATA_LENGTH<<1) - 1) { 
                     // set pwm level 
@@ -434,7 +447,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }
-    }else if(frequency<freqList[12]){
+    }else if(frequency<*(freqList+12)){
             if(vibrato){
                 if (wav_position < (WAV_DATA_LENGTH<<4) - 1) { 
                     // set pwm level 
@@ -476,7 +489,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }
-    }else if(frequency<freqList[24]){
+    }else if(frequency<*(freqList+24)){
             if(vibrato){
                 if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
@@ -565,7 +578,7 @@ void pwm_interrupt_handler() {
     }else if(irq & (1<<1)){
         pwm_clear_irq(1);
     
-        if(frequency2>freqList[48]){
+        if(frequency2>*(freqList+48)){
                 if(vibrato2){
                 if (wav_position2 < (WAV_DATA_LENGTH) - 1) { 
                     // set pwm level 
@@ -606,7 +619,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }
-        }else if(frequency2>freqList[36]){
+        }else if(frequency2>*(freqList+36)){
             if(vibrato2){
                 if (wav_position2 < (WAV_DATA_LENGTH<<1) - 1) { 
                     // set pwm level 
@@ -647,7 +660,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }
-        }else if(frequency2<freqList[12]){
+        }else if(frequency2<*(freqList+12)){
             if(vibrato2){
                 if (wav_position2 < (WAV_DATA_LENGTH<<4) - 1) { 
                     // set pwm level 
@@ -688,7 +701,7 @@ void pwm_interrupt_handler() {
                     
                 }
             }
-        }else if(frequency2<freqList[24]){
+        }else if(frequency2<*(freqList+24)){
             if(vibrato2){
                 if (wav_position2 < (WAV_DATA_LENGTH<<3) - 1) { 
                     // set pwm level 
@@ -784,6 +797,9 @@ int main(void) {
     /* Overclocking for fun but then also so the system clock is a 
      * multiple of typical audio sampling rates.
      */
+    gpio_init(LED);
+    gpio_set_dir(LED, GPIO_OUT);
+    gpio_put(led_pin, true);
     stdio_init_all();
     adc_init();
     adc_gpio_init(ADC_PIN);
@@ -814,6 +830,7 @@ int main(void) {
     button_t *hm_odd_down = create_button(HM_ODD_DOWN, onchange);
     button_t *vibrato = create_button(VIBRATO_PIN, onchange);
     button_t *switchsignal = create_button(SWITCHSIGNAL, onchange);
+    button_t *intonation = create_button(INTONATION, onchange);
     irq_set_enabled(IO_IRQ_BANK0, true);
     vreg_set_voltage(VREG_VOLTAGE_1_05);
     set_sys_clock_khz(clockFreq, true); 
@@ -868,22 +885,22 @@ void rawHandler1(){
         adc_value=((adc_read())*conversionfactor);
         subScript=round(60*adc_value/3);
         if(subScript>60){
-            frequency=freqList[0];
+            frequency=*(freqList+0);
         }else if(subScript<0){
-            frequency=freqList[60];
+            frequency=*(freqList+60);
         }else{
-            frequency=freqList[subScript];
+            frequency=*(freqList+subScript);
         }
-        currentF = freqList[subScript];
+        currentF = *(freqList+subScript);
         if(subScript==60){
             upperVibrato=highestFrequency;
-            lowerVibrato=freqList[subScript-1];
+            lowerVibrato=*(freqList+subScript-1);
         }else if(subScript==0){
-            upperVibrato=freqList[subScript+1];
+            upperVibrato=*(freqList+subScript+1);
             lowerVibrato=lowestFrequency;
         }else{
-            upperVibrato=freqList[subScript+1];
-            lowerVibrato=freqList[subScript-1];
+            upperVibrato=*(freqList+subScript+1);
+            lowerVibrato=*(freqList+subScript-1);
         }
         vibchangeParam = (upperVibrato-lowerVibrato)/24;
         
@@ -899,22 +916,22 @@ void rawHandler1(){
         adc_value=((adc_read())*conversionfactor);
         subScript2=round(60*adc_value/3);
         if(subScript2>60){
-            frequency2=freqList[0];
+            frequency2=*(freqList+0);
         }else if(subScript2<0){
-            frequency2=freqList[60];
+            frequency2=*(freqList+60);
         }else{
-            frequency2=freqList[subScript2];
+            frequency2=*(freqList+subScript2);
         }
-        currentF2 = freqList[subScript2];
+        currentF2 = *(freqList+subScript2);
         if(subScript2==60){
             upperVibrato2=highestFrequency;
-            lowerVibrato2=freqList[subScript2-1];
+            lowerVibrato2=*(freqList+subScript2-1);
         }else if(subScript2==0){
-            upperVibrato2=freqList[subScript2+1];
+            upperVibrato2=*(freqList+subScript2+1);
             lowerVibrato2=lowestFrequency;
         }else{
-            upperVibrato2=freqList[subScript2+1];
-            lowerVibrato2=freqList[subScript2-1];
+            upperVibrato2=*(freqList+subScript2+1);
+            lowerVibrato2=*(freqList+subScript2-1);
         }
         vibchangeParam2 = (upperVibrato2-lowerVibrato2)/24;
         

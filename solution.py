@@ -187,7 +187,7 @@ for harmonic in harmonics:
 Frequency=Frequency/4
 f.write("const float lowestFrequency="+str(round(((Frequency/2)*15/8),3))+";\n")
 f.write("const float highestFrequency="+str(round(((Frequency*32)*16/15),3))+";\n")
-f.write("const float freqList[]={\n")
+f.write("const float freqListJust[]={\n")
 def justTuning(Frequency,f,last):
     for i in range(0,12):
         #perfect first
