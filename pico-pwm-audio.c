@@ -52,20 +52,11 @@ int subScript = 0;
 int subScript2=0;
 float *freqList=freqListJust;
 
-float frequency=*(freqList+0);
-float frequency2=*(freqList+0);
-
-float currentF = *(freqList+0);
-float currentF2 = *(freqList+0);
-
-float upperVibrato=*(freqList+1);
-float upperVibrato2=*(freqList+1);
+bool just=true;
 
 float lowerVibrato=lowestFrequency;
 float lowerVibrato2=lowestFrequency;
 
-float vibchangeParam = (*(freqList+1)-lowestFrequency)/24;
-float vibchangeParam2 = (*(freqList+1)-lowestFrequency)/24;
 
 int buttonNum = 0;
 int buttonNum2 = 0;
@@ -794,12 +785,23 @@ void pwm_interrupt_handler() {
 }
 
 int main(void) {
+    float frequency=*(freqList+0);
+    float frequency2=*(freqList+0);
+
+    float currentF = *(freqList+0);
+    float currentF2 = *(freqList+0);
+
+    float upperVibrato=*(freqList+1);
+    float upperVibrato2=*(freqList+1);
+    float vibchangeParam = (*(freqList+1)-lowestFrequency)/24;
+    float vibchangeParam2 = (*(freqList+1)-lowestFrequency)/24;
+
     /* Overclocking for fun but then also so the system clock is a 
      * multiple of typical audio sampling rates.
      */
     gpio_init(LED);
     gpio_set_dir(LED, GPIO_OUT);
-    gpio_put(led_pin, true);
+    gpio_put(LED, true);
     stdio_init_all();
     adc_init();
     adc_gpio_init(ADC_PIN);
