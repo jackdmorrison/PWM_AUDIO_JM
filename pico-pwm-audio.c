@@ -50,7 +50,7 @@ bool vibrato2 = false; //vibrato on or off
 
 int subScript = 0;
 int subScript2=0;
-float *freqList=freqListJust;
+float *freqList;
 
 bool just=true;
 
@@ -795,6 +795,7 @@ void pwm_interrupt_handler() {
 }
 
 int main(void) {
+    freqList=freqListJust;
     float frequency=*(freqList+0);
     float frequency2=*(freqList+0);
 
