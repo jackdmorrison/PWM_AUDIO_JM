@@ -92,14 +92,14 @@ double sine_wave_y(double x) {
 }
 
 float clockDivChange( float newFrequency){
-    if(newFrequency>*(freqList+48)){
+    if(newFrequency>freqListJust[48]){
         return (WAV_FREQUENCY/newFrequency)*clkDiv*4;
     }
-    else if(newFrequency>*(freqList+32)){
+    else if(newFrequency>freqListJust[32]){
         return (WAV_FREQUENCY/newFrequency)*clkDiv*2;
-    }else if(newFrequency<*(freqList+12)){
+    }else if(newFrequency<freqListJust[12]){
         return (WAV_FREQUENCY/newFrequency)*clkDiv/4;
-    }else if(newFrequency<*(freqList+24)){
+    }else if(newFrequency<freqListJust[24]){
         return (WAV_FREQUENCY/newFrequency)*clkDiv/2;
     }else{
         return (WAV_FREQUENCY/newFrequency)*clkDiv;
