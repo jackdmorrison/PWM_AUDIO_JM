@@ -52,7 +52,7 @@ int subScript = 0;
 int subScript2=0;
 //float *freqList;
 
-bool just=true;
+bool just=false;
 
 float lowerVibrato=lowestFrequency;
 float lowerVibrato2=lowestFrequency;
