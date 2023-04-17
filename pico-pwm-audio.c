@@ -79,7 +79,8 @@ int oddHarmonics2=0;
 int irq;
 int value=0;
 int value2=0;
-
+int val=1;
+int val2=1;
 bool vibUP=true;
 bool vibUP2=true;
 bool signal1=true;
@@ -361,298 +362,86 @@ void pwm_interrupt_handler() {
     //if(gpio_get_irq_event_mask(AUDIO_PIN)){
         pwm_clear_irq(0);
         
-        if(frequency>freqListJust[48]){
-            if (wav_position < (WAV_DATA_LENGTH) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 1 cycles this is  
-                
-                pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position)/(evenHarmonics+oddHarmonics+1)));
-                wav_position++;
-            } else {
-                // reset to start
-                wav_position = 0;
-                if(vibrato){
-                    if(vibUP){
-                        if(currentF<upperVibrato){
-                            currentF+=vibchangeParam;
-                        } else{
-                            vibUP=false;
-                        }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
+        if (wav_position < (WAV_DATA_LENGTH<<val) - 1) { 
+            // set pwm level 
+            // allow the pwm value to repeat for 2 cycles this is  
+            
+            pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position>>val)/(evenHarmonics+oddHarmonics+1)));
+            wav_position++;
+        } else {
+            // reset to start
+            wav_position = 0;
+            if(vibrato){
+                if(vibUP){
+                    if(currentF<upperVibrato){
+                        currentF+=vibchangeParam;
                     } else{
-                        if(currentF>lowerVibrato){
-                            currentF-=vibchangeParam;
-                        } else{
-                            vibUP=true;
-                        }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
+                        vibUP=false;
+                    }
+                    updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
+                } else{
+                    if(currentF>lowerVibrato){
+                        currentF-=vibchangeParam;
+                    } else{
+                        vibUP=true;
+                    }
+                    updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
+                    if(currentF>freqListJust[48]){
+                        val=0;
+                    }else if(currentF>freqListJust[32]){
+                        val=1;
+                    }else if(currentF<freqListJust[12]){
+                        val=4;
+                    }else if(currentF<freqListJust[24]){
+                        val=3;
+                    }else{
+                        val=2;
                     }
                 }
                 
             }
         }
-        else if(frequency>freqListJust[36]){
-            
-            if (wav_position < (WAV_DATA_LENGTH<<1) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 2 cycles this is  
-                
-                pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position>>1)/(evenHarmonics+oddHarmonics+1)));
-                wav_position++;
-            } else {
-                // reset to start
-                wav_position = 0;
-                if(vibrato){
-                    if(vibUP){
-                        if(currentF<upperVibrato){
-                            currentF+=vibchangeParam;
-                        } else{
-                            vibUP=false;
-                        }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
-                    } else{
-                        if(currentF>lowerVibrato){
-                            currentF-=vibchangeParam;
-                        } else{
-                            vibUP=true;
-                        }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
-                    }
-                }
-                
-            }
-    }else if(frequency<freqListJust[12]){
-            if (wav_position < (WAV_DATA_LENGTH<<4) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 16 cycles this is  
-                
-                pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position>>4)/(evenHarmonics+oddHarmonics+1)));
-                wav_position++;
-            } else {
-                // reset to start
-                wav_position = 0;
-                if(vibrato){
-                    if(vibUP){
-                        if(currentF<upperVibrato){
-                            currentF+=vibchangeParam;
-                        } else{
-                            vibUP=false;
-                        }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
-                    } else{
-                        if(currentF>lowerVibrato){
-                            currentF-=vibchangeParam;
-                        } else{
-                            vibUP=true;
-                        }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
-                    }
-                }
-                
-            }
-    }else if(frequency<freqListJust[24]){
-            if (wav_position < (WAV_DATA_LENGTH<<3) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 8 cycles this is  
-                
-                pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position>>3)/(evenHarmonics+oddHarmonics+1)));
-                wav_position++;
-            } else {
-                // reset to start
-                wav_position = 0;
-                if(vibrato){
-                    if(vibUP){
-                        if(currentF<upperVibrato){
-                            currentF+=vibchangeParam;
-                        } else{
-                            vibUP=false;
-                        }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
-                    } else{
-                        if(currentF>lowerVibrato){
-                            currentF-=vibchangeParam;
-                        } else{
-                            vibUP=true;
-                        }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
-                    }
-                }
-                
-            }
-        }else{
-            if (wav_position < (WAV_DATA_LENGTH<<2) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 4 cycles this is  
-                
-                pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position>>2)/(evenHarmonics+oddHarmonics+1)));
-                wav_position++;
-            } else {
-                // reset to start
-                wav_position = 0;
-                if(vibrato){
-                    if(vibUP){
-                        if(currentF<upperVibrato){
-                            currentF+=vibchangeParam;
-                        } else{
-                            vibUP=false;
-                        }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
-                    } else{
-                        if(currentF>lowerVibrato){
-                            currentF-=vibchangeParam;
-                        } else{
-                            vibUP=true;
-                        }
-                        updateClockDiv(clockDivChange(currentF),AUDIO_PIN,audio_pin_slice);
-                    }
-                }
-                
-            }
-            
-        }
+    }
         
     }else if(irq & (1<<1)){
         pwm_clear_irq(1);
     
-        if(frequency2>freqListJust[48]){
-            if (wav_position2 < (WAV_DATA_LENGTH) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 1 cycles 
-                pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2)/(evenHarmonics2+oddHarmonics2+1)));
-                wav_position2++;
-            } else {
-                // reset to start
-                wav_position2 = 0;
-                if(vibrato2){
-                    if(vibUP2){
-                        if(currentF2<upperVibrato2){
-                            currentF2+=vibchangeParam2;
-                        } else{
-                            vibUP2=false;
-                        }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
+        if (wav_position2 < (WAV_DATA_LENGTH<<val) - 1) { 
+            // set pwm level 
+            // allow the pwm value to repeat for 2 cycles  
+            pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2>>val)/(evenHarmonics2+oddHarmonics2+1)));
+            wav_position2++;
+        } else {
+            // reset to start
+            wav_position2 = 0;
+            if(vibrato2){
+                if(vibUP2){
+                    if(currentF2<upperVibrato2){
+                        currentF2+=vibchangeParam2;
                     } else{
-                        if(currentF2>lowerVibrato2){
-                            currentF2-=vibchangeParam2;
-                        } else{
-                            vibUP2=true;
-                        }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
+                        vibUP2=false;
                     }
-                }
-            }
-            }
-        }else if(frequency2>freqListJust[36]){
-            if (wav_position2 < (WAV_DATA_LENGTH<<1) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 2 cycles  
-                pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2>>1)/(evenHarmonics2+oddHarmonics2+1)));
-                wav_position2++;
-            } else {
-                // reset to start
-                wav_position2 = 0;
-                if(vibrato2){
-                    if(vibUP2){
-                        if(currentF2<upperVibrato2){
-                            currentF2+=vibchangeParam2;
-                        } else{
-                            vibUP2=false;
-                        }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
+                    updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
+                } else{
+                    if(currentF2>lowerVibrato2){
+                        currentF2-=vibchangeParam2;
                     } else{
-                        if(currentF2>lowerVibrato2){
-                            currentF2-=vibchangeParam2;
-                        } else{
-                            vibUP2=true;
-                        }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
+                        vibUP2=true;
                     }
+                    updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
                 }
-                
-            }
-        }else if(frequency2<freqListJust[12]){
-            if (wav_position2 < (WAV_DATA_LENGTH<<4) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 16 cycles
-                pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2>>4)/(evenHarmonics2+oddHarmonics2+1)));
-                wav_position2++;
-            } else {
-                // reset to start
-                wav_position2 = 0;
-                if(vibrato2){
-                    if(vibUP2){
-                        if(currentF2<upperVibrato2){
-                            currentF2+=vibchangeParam2;
-                        } else{
-                            vibUP2=false;
-                        }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
-                    } else{
-                        if(currentF2>lowerVibrato2){
-                            currentF2-=vibchangeParam2;
-                        } else{
-                            vibUP2=true;
-                        }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
-                    }
+                if(currentF2>freqListJust[48]){
+                    val2=0;
                 }
-                
-            }
-        }else if(frequency2<freqListJust[24]){
-            if (wav_position2 < (WAV_DATA_LENGTH<<3) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 8 cycles  
-                pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2>>3)/(evenHarmonics2+oddHarmonics2+1)));
-                wav_position2++;
-            } else {
-                // reset to start
-                wav_position2 = 0;
-                if(vibrato2){
-                    if(vibUP2){
-                        if(currentF2<upperVibrato2){
-                            currentF2+=vibchangeParam2;
-                        } else{
-                            vibUP2=false;
-                        }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
-                    } else{
-                        if(currentF2>lowerVibrato2){
-                            currentF2-=vibchangeParam2;
-                        } else{
-                            vibUP2=true;
-                        }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
-                    }
+                else if(currentF2>freqListJust[32]){
+                    val2=1;
+                }else if(currentF2<freqListJust[12]){
+                    val2=4;
+                }else if(currentF2<freqListJust[24]){
+                    val2=3;
+                }else{
+                    val2=2;
                 }
-                
-            }
-        }else{
-            if (wav_position2 < (WAV_DATA_LENGTH<<2) - 1) { 
-                // set pwm level 
-                // allow the pwm value to repeat for 4 cycles 
-                pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2>>2)/(evenHarmonics2+oddHarmonics2+1)));
-                wav_position2++;
-            } else {
-                // reset to start
-                wav_position2 = 0;
-                if(vibrato2){
-                    if(vibUP2){
-                        if(currentF2<upperVibrato2){
-                            currentF2+=vibchangeParam2;
-                        } else{
-                            vibUP2=false;
-                        }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
-                    } else{
-                        if(currentF2>lowerVibrato2){
-                            currentF2-=vibchangeParam2;
-                        } else{
-                            vibUP2=true;
-                        }
-                        updateClockDiv(clockDivChange(currentF2),AUDIO_PIN2,audio_pin_slice2);
-                    }
-                }
-                
             }
         }
     }
@@ -802,6 +591,17 @@ void rawHandler1(){
                 upperVibrato=freqListEqualT[subScript+1];
                 lowerVibrato=freqListEqualT[subScript-1];
             }
+            if(frequency>freqListJust[48]){
+                val=0;
+            }else if(frequency>freqListJust[32]){
+                val=1;
+            }else if(frequency<freqListJust[12]){
+                val=4;
+            }else if(frequency<freqListJust[24]){
+                val=3;
+            }else{
+                val=2;
+            }
             vibchangeParam = (upperVibrato-lowerVibrato)/24;
         }
         
@@ -858,7 +658,18 @@ void rawHandler1(){
             }
             vibchangeParam2 = (upperVibrato2-lowerVibrato2)/24;
         }
-        
+        if(frequency2>freqListJust[48]){
+            val2=0;
+        }
+        else if(frequency2>freqListJust[32]){
+            val2=1;
+        }else if(frequency2<freqListJust[12]){
+            val2=4;
+        }else if(frequency2<freqListJust[24]){
+            val2=3;
+        }else{
+            val2=2;
+        }
         
         updateClockDiv(clockDivChange(frequency2),AUDIO_PIN2,audio_pin_slice2);
         
