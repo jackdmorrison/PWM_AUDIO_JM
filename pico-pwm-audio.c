@@ -345,10 +345,10 @@ void onchange(button_t *button_p) {
         break;
     case INTONATION:
         if(just){
-            freqList=freqListEqualT;
+            *freqList=freqListEqualT;
             just=false;
         }else{
-            freqList=freqListJust;
+            *freqList=freqListJust;
             just=true;
         }
         break;
@@ -795,7 +795,7 @@ void pwm_interrupt_handler() {
 }
 
 int main(void) {
-    freqList=freqListJust;
+    *freqList=freqListJust;
     float frequency=*(freqList);
     float frequency2=*(freqList);
 
