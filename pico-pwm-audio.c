@@ -475,16 +475,16 @@ void pwm_interrupt_handler() {
 
 int main(void) {
     //
-    float frequency=freqListJust[0];
-    float frequency2=freqListJust[0];
+    frequency=freqListJust[0];
+    frequency2=freqListJust[0];
 
-    float currentF = freqListJust[0];
-    float currentF2 = freqListJust[0];
+    currentF = freqListJust[0];
+    currentF2 = freqListJust[0];
 
-    float upperVibrato=freqListJust[0];
-    float upperVibrato2=freqListJust[0];
-    float vibchangeParam = (freqListJust[0]-lowestFrequency)/24;
-    float vibchangeParam2 = (freqListJust[0]-lowestFrequency)/24;
+    upperVibrato=freqListJust[0];
+    upperVibrato2=freqListJust[0];
+    vibchangeParam = (freqListJust[0]-lowestFrequency)/24;
+    vibchangeParam2 = (freqListJust[0]-lowestFrequency)/24;
 
     /* Overclocking for fun but then also so the system clock is a 
      * multiple of typical audio sampling rates.
