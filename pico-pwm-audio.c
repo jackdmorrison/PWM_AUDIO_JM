@@ -474,6 +474,7 @@ void pwm_interrupt_handler() {
 }
 
 int main(void) {
+    //
     float frequency=freqListJust[0];
     float frequency2=freqListJust[0];
 
@@ -640,7 +641,9 @@ void rawHandler1(){
         gpio_acknowledge_irq(GATE2, GPIO_IRQ_EDGE_RISE );
         adc_value=((adc_read())*conversionfactor);
         subScript2=round(60*adc_value/3);
+        //check if just or equal tempered
         if(just){
+            //set values frequency for just tuning
             if(subScript2>=60){
                 frequency2=freqListJust[60];
             }else if(subScript2<=0){
@@ -648,19 +651,26 @@ void rawHandler1(){
             }else{
                 frequency2=freqListJust[subScript2];
             }
+            //finds the current frequency 
             currentF2 = freqListJust[subScript2];
+            //set upper and lower vibrato frequency variables
             if(subScript2==60){
+                //upper set to semitone above freqListJust[60]
                 upperVibrato2=highestFrequency;
                 lowerVibrato2=freqListJust[subScript2-1];
             }else if(subScript2==0){
                 upperVibrato2=freqListJust[subScript2+1];
+                //upper set to semitone below freqListJust[0]
                 lowerVibrato2=lowestFrequency;
             }else{
+                //upper set to semitone above
                 upperVibrato2=freqListJust[subScript2+1];
+                //lower set for semitone below
                 lowerVibrato2=freqListJust[subScript2-1];
             }
             vibchangeParam2 = (upperVibrato2-lowerVibrato2)/48;
         }else{
+            //set values frequency for equal tempered tuning
             if(subScript2>=60){
                 frequency2=freqListEqualT[60];
             }else if(subScript2<=0){
@@ -668,6 +678,7 @@ void rawHandler1(){
             }else{
                 frequency2=freqListEqualT[subScript2];
             }
+             //finds the current frequency 
             currentF2 = freqListEqualT[subScript2];
             if(subScript2==60){
                 upperVibrato2=highestFrequency;
@@ -698,6 +709,5 @@ void rawHandler1(){
         
     }else if(gpio_get_irq_event_mask(GATE2) & GPIO_IRQ_EDGE_FALL){
         gpio_acknowledge_irq(GATE2, GPIO_IRQ_EDGE_FALL );
-        
     }
 }

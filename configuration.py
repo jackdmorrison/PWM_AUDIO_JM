@@ -1,12 +1,12 @@
 import math
 class wave:
-    def __init__(self,frequency,amplitude,samplerate,wrap):
+    def __init__(self,frequency,amplitude,repeatRate,wrap):
         self.frequency = frequency
         self.amplitude = amplitude
-        self.samplerate = samplerate
+        self.repeatRate = repeatRate
         self.period = 1/frequency
         self.B=2*math.pi*frequency
-        self.interval = 1/samplerate
+        self.interval = 1/repeatRate
         self.wrap = wrap+5
     def make_sin_wav(self):
         x=0
@@ -128,12 +128,73 @@ class wave:
             h+=1
         return harmonics
 f=open("waves.h","w")
-Frequency=float(input("FREQUENCY: "))
-samplerate=float(input("SAMPLERATE: "))
-wrap=int(input("WRAP(default 99): "))
-clockfreq=int(input("CLOCKSPEED(default 172800)kHz: "))
+valid=False
+bit=8
+def checkWrapAndRR(wrap,repeatRate):
+    if(wrap>256):
+        print("try reducing the wrap to less than 256\n")
+        if(10800>repeatRate>86400):
+            print("and/or try changing the repeat rate to 10800-86400\n")
+    elif(wrap<50):
+        print("try increase the wrap to above 50\n")
+        if(10800>repeatRate>86400):
+            print("and/or try changing the repeat rate to 10800-86400\n")
+    else:
+        if(10800>repeatRate>86400):
+            print("try changing the repeat rate to 10800-86400\n")
+def checkClockDiv(clockfreq, repeatRate,wrap):
+    if(round((clockfreq*1000/(repeatRate*4*(wrap+1))))<2.5):
+            checkWrapAndRR(wrap,repeatRate)
+    elif(round((clockfreq*1000/(repeatRate*4*(wrap+1))))>256):
+            checkWrapAndRR(wrap,repeatRate)
+while (valid==False):
+    Frequency=float(input("FREQUENCY: "))
+    repeatRate=float(input("Repeated Rate: "))
+    wrap=int(input("WRAP(MAX 65536): "))
+    clockfreq=int(input("CLOCKSPEED(125000-220000)kHz: "))
+    valid=True
+    if(clockfreq>220000):
+        print("Clock frequency too large\n")
+        checkClockDiv(clockfreq, repeatRate,wrap)
+        valid=False
+    elif(clockfreq<125000):
+        print("Clock frequency too small\n")
+        checkClockDiv(clockfreq, repeatRate,wrap)
+        valid=False
+    elif(round((clockfreq*1000/(repeatRate*4*(wrap+1))))<2.5):
+        valid=False
+        checkWrapAndRR(wrap,repeatRate)
+    elif(round((clockfreq*1000/(repeatRate*4*(wrap+1))))>256):
+        valid=False
+        checkWrapAndRR(wrap,repeatRate)
+    elif(10800>repeatRate or repeatRate>86400):
+        print("try changing the repeat rate to 10800-86400\n")
+    elif(500<math.ceil(repeatRate/Frequency)):
+        valid=False
+        print("you should probably increase the base frequency\n")
+    elif(math.ceil(repeatRate/Frequency)<20):
+        valid=False
+        print("you should probably decrease the base frequency\n")
+    elif(wrap<256):
+        bit=8
+    elif(wrap<65536):
+        bit=16
+    else:
+        print("wrap too large\n")
+        valid=False
+
+    
+            
+    if(10800>repeatRate or repeatRate>86400):
+        print("try changing the repeat rate to 10800-86400\n")
+    elif(500<math.ceil(repeatRate/Frequency)):
+        valid=False
+        print("you should probably increase the base frequency\n")
+    elif(math.ceil(repeatRate/Frequency)<20):
+        print("you should probably decrease the base frequency\n")
+    
 amplitude=1
-wav = wave(Frequency,amplitude,samplerate,wrap)
+wav = wave(Frequency,amplitude,repeatRate,wrap)
 sin=wav.make_sin_wav()
 sqr=wav.make_square_wav()
 tri=wav.make_triangle_wav()
@@ -142,44 +203,44 @@ rsaw=wav.make_reversed_sawtooth_wav()
 pbla=wav.make_porabola_wav()
 harmonics=wav.make_harmonics()
 f.write("/* wave tables for a frequency of "+str(Frequency)+'\n')
-f.write(" * with sampling rate of " + str(samplerate)+'\n')
+f.write(" * with repeating rate of " + str(repeatRate)+'\n')
 f.write(" */\n")
 
-f.write("#define WAV_DATA_LENGTH "+str(math.ceil(samplerate/Frequency))+'\n')
+f.write("#define WAV_DATA_LENGTH "+str(math.ceil(repeatRate/Frequency))+'\n')
 f.write("#define WAV_FREQUENCY "+str(Frequency)+'\n')
 f.write('\n')
-f.write('const float clkDiv='+str(round((clockfreq*1000/(samplerate*4*(wrap+1))),3))+';\n')
+f.write('const float clkDiv='+str(round((clockfreq*1000/(repeatRate*4*(wrap+1))),3))+';\n')
 f.write('uint16_t wrap='+str(wrap)+';\n')
 f.write('int clockFreq='+str(clockfreq)+';\n\n')
 
 
-f.write("uint8_t SIN_WAV_DATA[] = {\n")
+f.write("uint"+str(bit)+"_t SIN_WAV_DATA[] = {\n")
 f.write('    '+sin+'\n')
 f.write('};\n')
 
-f.write("uint8_t SQR_WAV_DATA[] = {\n")
+f.write("uint"+str(bit)+"_t SQR_WAV_DATA[] = {\n")
 f.write('    '+sqr+'\n')
 f.write('};\n')
 
-f.write("uint8_t TRI_WAV_DATA[] = {\n")
+f.write("uint"+str(bit)+"_t TRI_WAV_DATA[] = {\n")
 f.write('    '+tri+'\n')
 f.write('};\n')
 
-f.write("uint8_t SAW_WAV_DATA[] = {\n")
+f.write("uint"+str(bit)+"_t SAW_WAV_DATA[] = {\n")
 f.write('    '+saw+'\n')
 f.write('};\n')
 
-f.write("uint8_t R_SAW_WAV_DATA[] = {\n")
+f.write("uint"+str(bit)+"_t R_SAW_WAV_DATA[] = {\n")
 f.write('    '+rsaw+'\n')
 f.write('};\n')
 
-f.write("uint8_t PRBA_WAV_DATA[] = {\n")
+f.write("uint"+str(bit)+"_t PRBA_WAV_DATA[] = {\n")
 f.write('    '+pbla+'\n')
 f.write('};\n')
 
 d=2
 for harmonic in harmonics:
-    f.write("uint8_t HARMONIC"+str(d)+"_WAV_DATA[] = {\n")
+    f.write("uint"+str(bit)+"_t HARMONIC"+str(d)+"_WAV_DATA[] = {\n")
     f.write('    '+harmonic+'\n')
     f.write('};\n')
     d+=1
