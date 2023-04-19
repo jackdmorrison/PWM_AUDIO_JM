@@ -584,7 +584,7 @@ void rawHandler1(){
             }else{
                 frequency=freqListJust[subScript];
             }
-            currentF = freqListJust[subScript];
+            currentF = frequency;
             if(subScript==60){
                 upperVibrato=highestFrequency;
                 lowerVibrato=freqListJust[subScript-1];
@@ -595,7 +595,6 @@ void rawHandler1(){
                 upperVibrato=freqListJust[subScript+1];
                 lowerVibrato=freqListJust[subScript-1];
             }
-            vibchangeParam = (upperVibrato-lowerVibrato)/48;
         }else{
             if(subScript>=60){
                 frequency=freqListEqualT[60];
@@ -604,7 +603,7 @@ void rawHandler1(){
             }else{
                 frequency=freqListEqualT[subScript];
             }
-            currentF = freqListEqualT[subScript];
+            currentF = frequency;
             if(subScript==60){
                 upperVibrato=highestFrequency;
                 lowerVibrato=freqListEqualT[subScript-1];
@@ -626,10 +625,20 @@ void rawHandler1(){
             }else{
                 val=2;
             }
-            vibchangeParam = (upperVibrato-lowerVibrato)/24;
         }
-        
-        
+        vibchangeParam = 3*(upperVibrato-lowerVibrato)/currentF;
+        if(frequency>freqListJust[48]){
+            val=0;
+        }
+        else if(frequency>freqListJust[32]){
+            val=1;
+        }else if(frequency<freqListJust[12]){
+            val=4;
+        }else if(frequency<freqListJust[24]){
+            val=3;
+        }else{
+            val=2;
+        }
         updateClockDiv(clockDivChange(frequency),AUDIO_PIN,audio_pin_slice);
         
     }else if(gpio_get_irq_event_mask(GATE) & GPIO_IRQ_EDGE_FALL){
@@ -668,7 +677,6 @@ void rawHandler1(){
                 //lower set for semitone below
                 lowerVibrato2=freqListJust[subScript2-1];
             }
-            vibchangeParam2 = (upperVibrato2-lowerVibrato2)/48;
         }else{
             //set values frequency for equal tempered tuning
             if(subScript2>=60){
@@ -690,8 +698,9 @@ void rawHandler1(){
                 upperVibrato2=freqListEqualT[subScript2+1];
                 lowerVibrato2=freqListEqualT[subScript2-1];
             }
-            vibchangeParam2 = (upperVibrato2-lowerVibrato2)/24;
+            
         }
+        vibchangeParam2 = 3*(upperVibrato2-lowerVibrato2)/currentF2;
         if(frequency2>freqListJust[48]){
             val2=0;
         }
