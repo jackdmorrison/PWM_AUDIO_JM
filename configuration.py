@@ -10,15 +10,20 @@ class wave:
         self.wrap = wrap+5
     def make_sin_wav(self):
         x=0
+        #v value is the duty cycle at given point x
         v=self.amplitude*(math.sin(self.B*x))
+        #store value at string justifying it to the middle of the wrap size
         vals=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
+        #adding 1 interval
         x+=self.interval
+        #loops until the x point is above the period length
         while x<(self.period+(self.interval)):
             vals+=', '
             v=self.amplitude*(math.sin(self.B*x))
+            #concatenate value
             vals+=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
             x+=self.interval
-            
+        #returns the string
         return vals
     def make_square_wav(self):
         x=0
