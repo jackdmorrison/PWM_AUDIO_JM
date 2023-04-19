@@ -322,12 +322,35 @@ void onchange(button_t *button_p) {
     case VIBRATO_PIN:
         if(signal1){
             if(vibrato){
+                if(frequency>freqListJust[48]){
+                    val=0;
+                }else if(frequency>freqListJust[32]){
+                    val=1;
+                }else if(frequency<freqListJust[12]){
+                    val=4;
+                }else if(frequency<freqListJust[24]){
+                    val=3;
+                }else{
+                    val=2;
+                }
                 vibrato=false;
             }else{
                 vibrato=true;
             }
         }else{
             if(vibrato2){
+                if(frequency2>freqListJust[48]){
+                    val2=0;
+                }
+                else if(frequency2>freqListJust[32]){
+                    val2=1;
+                }else if(frequency2<freqListJust[12]){
+                    val2=4;
+                }else if(frequency2<freqListJust[24]){
+                    val2=3;
+                }else{
+                    val2=2;
+                }
                 vibrato2=false;
             }else{
                 vibrato2=true;
