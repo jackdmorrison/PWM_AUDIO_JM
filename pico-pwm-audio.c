@@ -423,9 +423,7 @@ void pwm_interrupt_handler() {
                 }
                 
             }
-        }
-    }
-        
+        }  
     }else if(irq & (1<<1)){
         pwm_clear_irq(1);
     
