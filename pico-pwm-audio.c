@@ -312,13 +312,12 @@ void onchange(button_t *button_p) {
             if(oddHarmonics!=0){
                 oddHarmonics--;
             }
-            break;
         }else{
             if(oddHarmonics2!=0){
                 oddHarmonics2--;
             }
-            break;
         }
+        break;
     case VIBRATO_PIN:
         if(signal1){
             if(vibrato){
@@ -338,6 +337,7 @@ void onchange(button_t *button_p) {
                 vibrato=true;
             }
         }else{
+            
             if(vibrato2){
                 if(frequency2>freqListJust[48]){
                     val2=0;
@@ -518,7 +518,7 @@ int main(void) {
     button_t *hm_even_down = create_button(HM_EVEN_DOWN, onchange);
     button_t *hm_odd_up = create_button(HM_ODD_UP, onchange);
     button_t *hm_odd_down = create_button(HM_ODD_DOWN, onchange);
-    button_t *vibrato = create_button(VIBRATO_PIN, onchange);
+    button_t *vibratoB = create_button(VIBRATO_PIN, onchange);
     button_t *switchsignal = create_button(SWITCHSIGNAL, onchange);
     button_t *intonation = create_button(INTONATION, onchange);
     irq_set_enabled(IO_IRQ_BANK0, true);
@@ -593,7 +593,6 @@ void rawHandler1(){
                 upperVibrato=freqListJust[subScript+1];
                 lowerVibrato=freqListJust[subScript-1];
             }
-            vibchangeParam = (upperVibrato-lowerVibrato)/48;
         }else{
             if(subScript>=60){
                 frequency=freqListEqualT[60];
@@ -613,19 +612,20 @@ void rawHandler1(){
                 upperVibrato=freqListEqualT[subScript+1];
                 lowerVibrato=freqListEqualT[subScript-1];
             }
-            if(frequency>freqListJust[48]){
-                val=0;
-            }else if(frequency>freqListJust[32]){
-                val=1;
-            }else if(frequency<freqListJust[12]){
-                val=4;
-            }else if(frequency<freqListJust[24]){
-                val=3;
-            }else{
-                val=2;
-            }
-            vibchangeParam = (upperVibrato-lowerVibrato)/24;
         }
+        if(frequency>freqListJust[48]){
+            val=0;
+        }else if(frequency>freqListJust[32]){
+            val=1;
+        }else if(frequency<freqListJust[12]){
+            val=4;
+        }else if(frequency<freqListJust[24]){
+            val=3;
+        }else{
+            val=2;
+        }
+        vibchangeParam = 3*(upperVibrato-lowerVibrato)/currentF;
+        
         
         
         updateClockDiv(clockDivChange(frequency),AUDIO_PIN,audio_pin_slice);
@@ -666,7 +666,6 @@ void rawHandler1(){
                 //lower set for semitone below
                 lowerVibrato2=freqListJust[subScript2-1];
             }
-            vibchangeParam2 = (upperVibrato2-lowerVibrato2)/48;
         }else{
             //set values frequency for equal tempered tuning
             if(subScript2>=60){
@@ -688,8 +687,8 @@ void rawHandler1(){
                 upperVibrato2=freqListEqualT[subScript2+1];
                 lowerVibrato2=freqListEqualT[subScript2-1];
             }
-            vibchangeParam2 = (upperVibrato2-lowerVibrato2)/24;
         }
+        vibchangeParam2 = 3*(upperVibrato2-lowerVibrato2)/currentF2;
         if(frequency2>freqListJust[48]){
             val2=0;
         }
