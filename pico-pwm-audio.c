@@ -2,10 +2,10 @@
 #include <math.h>
 #include "button.c"
 #include <pico/stdlib.h>    
-#include "hardware/irq.h"  
-#include "hardware/pwm.h"  
+#include "hardware/irq.h"  //interupts
+#include "hardware/pwm.h"  //pwm
 #include "hardware/sync.h" 
-#include "hardware/adc.h"
+#include "hardware/adc.h"//adc
 #include "hardware/vreg.h"
 
 //Macros for Pin numbers
