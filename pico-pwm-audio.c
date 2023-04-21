@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <math.h>
-#include "button.h"
+#include "button.c"
 #include <pico/stdlib.h>    
 #include "hardware/irq.h"  
 #include "hardware/pwm.h"  
@@ -8,89 +8,102 @@
 #include "hardware/adc.h"
 #include "hardware/vreg.h"
 
-  
+//Macros for Pin numbers
 #define AUDIO_PIN  16
 #define AUDIO_PIN2 18
+
 #define ADC_PIN 28
 #define ADC_PIN2 27
+
 #define LED 25
 
 #define HM_ODD_DOWN 12
 #define HM_ODD_UP 11
 #define HM_EVEN_DOWN 10
 #define HM_EVEN_UP 9
-
 #define PORABOLA 8
 #define SAWTOOTH 7
 #define TRIANGLE 5
-
 #define SQUARE 4
 #define SINE 2
+
 #define SWITCHSIGNAL 13
 #define INTONATION 14
 #define VIBRATO_PIN 0
+
 #define GATE 20
 #define GATE2 21
 
+//header file with wave frequency, configuration and level arrays
 #include "waves.h"
-pwm_config config;
+//global variables for the PWM slices
 uint audio_pin_slice;
 uint audio_pin_slice2;
+//global variables for Audio channels 
 uint audio_pin_channel;
 uint audio_pin_channel2;
 
+//handler function declaration
 void rawHandler1();
+
+//global wave postion variables
 int wav_position = 0;
 int wav_position2=0;
+//global adc variable
 float adc_value=0;
+//adc vref/adc range to give the conversion factor for adc_read to volts(float)
 const float conversionfactor=3.3f/(1<<12);
 
 bool vibrato = false; //vibrato on or off
 bool vibrato2 = false; //vibrato on or off
 
+//subscript variables for freqList array 
 int subScript = 0;
 int subScript2=0;
-//float *freqList;
 
-bool just=false;
+bool just=false;//just intonation on or off
 
+//lower frequency in vibrato
 float lowerVibrato=lowestFrequency;
 float lowerVibrato2=lowestFrequency;
+//global frequency variables for each Output
 float frequency;
 float frequency2;
 
+//currentF used to determine frequency in vibrato
 float currentF ;
 float currentF2 ;
 
+// upper frequency in vibrato
 float upperVibrato;
 float upperVibrato2;
+
+//rate of change in frequency per wave cycle of vibrato Variable
 float vibchangeParam ;
 float vibchangeParam2;
 
-
+//buttonNum used to determine level input array 
 int buttonNum = 0;
 int buttonNum2 = 0;
 
+//number of even harmonics to be added to wave
 int evenHarmonics=0;
 int evenHarmonics2=0;
-
+//number of off harmonics to be added to wave
 int oddHarmonics=0;
 int oddHarmonics2=0;
+//variable to determine which pwm slice corresponds to an interupt
 int irq;
-int value=0;
-int value2=0;
+
+//used to determine bitshift for each octave to increase number of repetitions of level array values
 int val=1;
 int val2=1;
-bool vibUP=true;
-bool vibUP2=true;
-bool signal1=true;
 
+bool vibUP=true;//vibrato move up or down in frequency
+bool vibUP2=true;//vibrato move up or down in frequency
 
-closure_t handlers[28] = {NULL};
-alarm_id_t alarm_ids[28];
-double sine_wave_y(double x) {
-    return sin(x);
-}
+bool signal1=true;//buttons effects for signal 1(true) or 2(false)
+
 
 float clockDivChange( float newFrequency){
     if(newFrequency>freqListJust[48]){
@@ -120,47 +133,11 @@ void updateClockDiv(float clkDiv, int PIN,int pin_slice){
     }
     
 }
-long long int handle_button_alarm(long int a, void *p) {
-  button_t *b = (button_t *)(p);
-  bool state = gpio_get(b->pin);
-  if (state != b->state) {
-    b->state = state;
-    b->onchange(b);
-  }
-  return 0;
-}
 
-void handle_button_interrupt(void *p) {
-  button_t *b = (button_t *)(p);
-  if (alarm_ids[b->pin]) cancel_alarm(alarm_ids[b->pin]);
-  alarm_ids[b->pin] = add_alarm_in_us(DEBOUNCE_US, handle_button_alarm, b, true);
-}
 
-void handle_interrupt(uint gpio, uint32_t events) {
-  closure_t handler = handlers[gpio];
-  handler.fn(handler.argument);
-}
 
-void listen(uint pin, int condition, handler fn, void *arg) {
-  gpio_set_irq_enabled_with_callback(pin, condition, true, handle_interrupt);
-  closure_t *handler = malloc(sizeof(closure_t));
-  handler->argument = arg;
-  handler->fn = fn;
-  handlers[pin] = *handler;
-}
-
-button_t * create_button(int pin, void (*onchange)(button_t *)) {
-  gpio_init(pin);
-  gpio_pull_up(pin);
-  button_t *b = (button_t *)(malloc(sizeof(button_t)));
-  listen(pin, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, handle_button_interrupt, b);
-  b->pin = pin;
-  b->onchange = onchange;
-  b->state = gpio_get(pin);
-  return b;
-}
 float findValue(int buttonNumber,int evenHarmonicsNum,int oddHarmonicsNum,int wave_position){
-    value=0;
+    int value=0;
     switch (buttonNumber){
         case 0: //sin wave
             value=SIN_WAV_DATA[wave_position];
@@ -537,10 +514,9 @@ int main(void) {
     irq_set_enabled(PWM_IRQ_WRAP, true);
  
     // Setup PWM for audio output
-    config = pwm_get_default_config();
+    pwm_config config = pwm_get_default_config();
     pwm_config_set_clkdiv(&config, clkDiv); 
     pwm_config_set_wrap(&config, wrap); 
-    //pwm_config_set_phase_correct(&config,true);
     pwm_init(audio_pin_slice, &config, true);
     
     pwm_set_gpio_level(AUDIO_PIN, 0);
@@ -557,11 +533,10 @@ int main(void) {
     irq_set_enabled(PWM_IRQ_WRAP, true);
  
     // Setup PWM for audio output
-    config = pwm_get_default_config();
-    pwm_config_set_clkdiv(&config, clkDiv); 
-    pwm_config_set_wrap(&config, wrap); 
-    //pwm_config_set_phase_correct(&config,true);
-    pwm_init(audio_pin_slice2, &config, true);
+    pwm_config config2 = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config2, clkDiv); 
+    pwm_config_set_wrap(&config2, wrap); 
+    pwm_init(audio_pin_slice2, &config2, true);
 
     pwm_set_gpio_level(AUDIO_PIN2, 0);
     while(1) {
