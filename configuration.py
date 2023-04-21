@@ -133,20 +133,28 @@ bit=8
 def checkWrapAndRR(wrap,repeatRate):
     if(wrap>256):
         print("try reducing the wrap to less than 256\n")
-        if(10800>repeatRate>86400):
+        if(repeatRate>86400 or repeatRate<10800):
             print("and/or try changing the repeat rate to 10800-86400\n")
     elif(wrap<50):
         print("try increase the wrap to above 50\n")
-        if(10800>repeatRate>86400):
+        if(repeatRate>86400 or repeatRate<10800):
             print("and/or try changing the repeat rate to 10800-86400\n")
     else:
-        if(10800>repeatRate>86400):
+        if(repeatRate>86400 or repeatRate<10800):
             print("try changing the repeat rate to 10800-86400\n")
-def checkClockDiv(clockfreq, repeatRate,wrap):
-    if(round((clockfreq*1000/(repeatRate*4*(wrap+1))))<2.5):
-            checkWrapAndRR(wrap,repeatRate)
-    elif(round((clockfreq*1000/(repeatRate*4*(wrap+1))))>256):
-            checkWrapAndRR(wrap,repeatRate)
+def checkClockDiv(clockfreq, repeatRate,wrap,Frequency):
+    clkdiv=round((clockfreq*1000/(repeatRate*4*(wrap+1))))
+    print("clock Divider:"+str(clkdiv))
+    if(clkdiv<2.5):
+        checkWrapAndRR(wrap,repeatRate)
+    elif(clkdiv>256):
+        checkWrapAndRR(wrap,repeatRate)
+    highestFreq=(Frequency*8)*16/15
+    lowestFreq=(Frequency/8)*15/8
+    if(round(Frequency/highestFreq*clkdiv)<1.5):
+        print("highest Frequency cant be met\n")
+    if(256<round(Frequency/lowestFreq*clkdiv)):
+        print("lowest Frequency cant be met\n")
 while (valid==False):
     Frequency=float(input("FREQUENCY: "))
     repeatRate=float(input("Repeated Rate: "))
@@ -155,43 +163,40 @@ while (valid==False):
     valid=True
     if(clockfreq>220000):
         print("Clock frequency too large\n")
-        checkClockDiv(clockfreq, repeatRate,wrap)
+        checkClockDiv(clockfreq, repeatRate,wrap,Frequency)
         valid=False
     elif(clockfreq<125000):
         print("Clock frequency too small\n")
-        checkClockDiv(clockfreq, repeatRate,wrap)
+        checkClockDiv(clockfreq, repeatRate,wrap,Frequency)
         valid=False
-    elif(round((clockfreq*1000/(repeatRate*4*(wrap+1))))<2.5):
-        valid=False
-        checkWrapAndRR(wrap,repeatRate)
-    elif(round((clockfreq*1000/(repeatRate*4*(wrap+1))))>256):
-        valid=False
-        checkWrapAndRR(wrap,repeatRate)
-    elif(10800>repeatRate or repeatRate>86400):
-        print("try changing the repeat rate to 10800-86400\n")
-    elif(500<math.ceil(repeatRate/Frequency)):
-        valid=False
-        print("you should probably increase the base frequency\n")
-    elif(math.ceil(repeatRate/Frequency)<20):
-        valid=False
-        print("you should probably decrease the base frequency\n")
-    elif(wrap<256):
-        bit=8
-    elif(wrap<65536):
-        bit=16
     else:
-        print("wrap too large\n")
-        valid=False
-
-    
-            
-    if(10800>repeatRate or repeatRate>86400):
-        print("try changing the repeat rate to 10800-86400\n")
-    elif(500<math.ceil(repeatRate/Frequency)):
-        valid=False
-        print("you should probably increase the base frequency\n")
-    elif(math.ceil(repeatRate/Frequency)<20):
-        print("you should probably decrease the base frequency\n")
+        clkdiv=(clockfreq*1000/(repeatRate*4*(wrap+1)))
+        print("clock Divider:"+str(clkdiv)+"\n")
+        if(clkdiv<2.5):
+            valid=False
+            checkWrapAndRR(wrap,repeatRate)
+        elif(clkdiv>256):
+            valid=False
+            checkWrapAndRR(wrap,repeatRate)
+        
+        highestFreq=(Frequency*8)*16/15
+        lowestFreq=(Frequency/8)*15/8
+        if(Frequency/highestFreq*clkdiv*4<1.5):
+            valid=False
+            print("highestFrequency cant be met\n")
+        if(256<round(Frequency/lowestFreq*clkdiv/4)):
+            valid=False
+            print("lowest Frequency cant be met\n")
+        if(wrap<256):
+            bit=8
+        elif(wrap<65536):
+            bit=16
+        else:
+            print("wrap too large\n")
+            valid=False
+        if(repeatRate>86400 or repeatRate<10800):
+            valid=False
+            print("and/or try changing the repeat rate to 10800-86400\n")
     
 amplitude=1
 wav = wave(Frequency,amplitude,repeatRate,wrap)
@@ -244,9 +249,9 @@ for harmonic in harmonics:
     f.write('    '+harmonic+'\n')
     f.write('};\n')
     d+=1
+f.write("const float lowestFrequency="+str(round(((Frequency/8)*15/8),3))+";\n")
+f.write("const float highestFrequency="+str(round(((Frequency*8)*16/15),3))+";\n")
 Frequency=Frequency/4
-f.write("const float lowestFrequency="+str(round(((Frequency/2)*15/8),3))+";\n")
-f.write("const float highestFrequency="+str(round(((Frequency*32)*16/15),3))+";\n")
 f.write("const float freqListJust[]={\n")
 def justTuning(Frequency,f,last):
     for i in range(0,12):

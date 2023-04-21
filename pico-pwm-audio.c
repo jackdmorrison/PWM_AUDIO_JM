@@ -104,30 +104,42 @@ bool vibUP2=true;//vibrato move up or down in frequency
 
 bool signal1=true;//buttons effects for signal 1(true) or 2(false)
 
-
+//function that return clock divider to achieve the frequency parameter
 float clockDivChange( float newFrequency){
+    //Octave 5
     if(newFrequency>freqListJust[48]){
         return (WAV_FREQUENCY/newFrequency)*clkDiv*4;
     }
+    //Octave 4
     else if(newFrequency>freqListJust[32]){
         return (WAV_FREQUENCY/newFrequency)*clkDiv*2;
-    }else if(newFrequency<freqListJust[12]){
+    }
+    //Octave 1
+    else if(newFrequency<freqListJust[12]){
         return (WAV_FREQUENCY/newFrequency)*clkDiv/4;
-    }else if(newFrequency<freqListJust[24]){
+    }
+    //Octave 2
+    else if(newFrequency<freqListJust[24]){
         return (WAV_FREQUENCY/newFrequency)*clkDiv/2;
-    }else{
+    }
+    //Octave 3
+    else{
         return (WAV_FREQUENCY/newFrequency)*clkDiv;
     }
     
 }
+//function to update hardware with new clockdivider
 void updateClockDiv(float clkDiv, int PIN,int pin_slice){
+    //check if within limits
     if(1.f<=clkDiv<=256.f){
         pwm_set_clkdiv(pin_slice, clkDiv); 
         pwm_set_gpio_level(PIN, 0);
-    }else if(clkDiv<1.f){
+    }//ensure limits are achieved
+    else if(clkDiv<1.f){
         pwm_set_clkdiv(pin_slice, 1.f); 
         pwm_set_gpio_level(PIN, 0);
-    }else if(clkDiv>256.f){
+    }
+    else if(clkDiv>256.f){
         pwm_set_clkdiv(pin_slice, 256.f); 
         pwm_set_gpio_level(PIN, 0);
     }
