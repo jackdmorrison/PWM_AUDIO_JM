@@ -103,7 +103,7 @@ bool vibUP=true;//vibrato move up or down in frequency
 bool vibUP2=true;//vibrato move up or down in frequency
 
 bool effects1=true;//buttons effects for effects 1(true) or 2(false)
-
+float level;
 //function to update hardware with new clock divider based on the newFrequency
 //also update the val variable for each octave
 void updateClockDiv(int PIN,int pin_slice, float newFrequency){
@@ -447,7 +447,8 @@ void pwm_interrupt_handler() {
         if (wav_position2 < (WAV_DATA_LENGTH<<val) - 1) { 
             // set pwm level on slice and pin
             // allow the pwm value to repeat for 2^val cycles   
-            pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2>>val)/(evenHarmonics2+oddHarmonics2+1)));
+            level=findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2>>val)/(evenHarmonics2+oddHarmonics2+1)
+            pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(level));
             wav_position2++;
         } else {
             // reset to start
