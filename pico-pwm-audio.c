@@ -16,7 +16,7 @@
 
 int wav_position = 0;
 float adc_value=0;
-const float conversionfactor=1.65f/(1<<12);
+const float conversionfactor=3.3f/(1<<12);
 //float frequency=WAV_FREQUENCY;
 float clkDiv=2.0f;
 int pulseLength=86;
@@ -47,9 +47,7 @@ void updateClockDiv(float clkDiv){
 // }
 void pwm_interrupt_handler() {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    
     if (wav_position < (pulseLength<<3) - 1) { 
-        // set pwm level 
         pwm_set_gpio_level(AUDIO_PIN, 255);
         wav_position++;
 
@@ -59,16 +57,14 @@ void pwm_interrupt_handler() {
     }
     else {
         adc_value=(adc_read())*conversionfactor;
-        pulseLength=round(86*adc_value);
-        if(pulseLength>172){
-            pulseLength=172;
+        pulseLength=round(wavelength*(adc_value/3.3));
+        if(pulseLength>wavelength){
+            pulseLength=wavelength;
         }
         
         // reset to start
         wav_position = 0;
     }
-    
-    
     
 }
 
