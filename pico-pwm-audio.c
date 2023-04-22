@@ -37,22 +37,18 @@ void updateClockDiv(float clkDiv)
 void pwm_interrupt_handler()
 {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    var=wav_position>>3;
     if (wav_position<(wavelength<<3) - 1 ) { 
-        // set pwm level 
-
-        value=round(255*(1+((var-wavelength/2)/wavelength/2)*((var-wavelength/2)/wavelength/2)));
-         
-
-         
+        //root value
+        B=(((wav_position>>3)-wavelength/2)/wavelength/2)
+        //multiply by wrap
+        value=round(250*(1+B*B));         
         pwm_set_gpio_level(AUDIO_PIN,value);
         wav_position++;
-
     }
     else
     {
         adc_value = (adc_read()) * conversionfactor;
-        wavelength = round(172 * adc_value);
+        wavelength = round(wavelength * adc_value/3.3);
         // reset to start
         wav_position = 0;
     }
