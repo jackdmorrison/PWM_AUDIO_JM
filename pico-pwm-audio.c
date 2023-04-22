@@ -118,7 +118,6 @@ void updateClockDiv(int PIN,int pin_slice, float newFrequency){
         }else{
             val2=0;
         }
-        
     }
     //Octave 4
     else if(newFrequency>freqListJust[32]){
@@ -411,7 +410,8 @@ void pwm_interrupt_handler() {
         if (wav_position < (WAV_DATA_LENGTH<<val) - 1) { 
             // set pwm level on slice and pin
             // allow the pwm value to repeat for 2^val cycles  
-            pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position>>val)/(evenHarmonics+oddHarmonics+1)));
+            level=findValue(buttonNum,evenHarmonics,oddHarmonics,wav_position>>val)/(evenHarmonics+oddHarmonics+1);
+            pwm_set_chan_level(audio_pin_slice,audio_pin_channel, round(level) );
             wav_position++;
         } else {
             // reset to start
