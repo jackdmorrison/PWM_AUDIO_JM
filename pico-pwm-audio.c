@@ -38,31 +38,27 @@ void updateClockDiv(float clkDiv)
 void pwm_interrupt_handler()
 {
     pwm_clear_irq(pwm_gpio_to_slice_num(AUDIO_PIN));
-    var=(wav_position>>3);
     if (wav_position <= (pulseLength<<3) ) { 
-        
-        pwm_set_gpio_level(AUDIO_PIN,round(255*(wav_position/round(pulseLength*8))));
+        value=round(255*(wav_position/round(pulseLength*8)))
+        pwm_set_gpio_level(AUDIO_PIN,value);
         wav_position++;
 
     } else if(wav_position<(wavelength<<3) - 1){
-        value=round((1-(((var)-pulseLength)/n_tan_theta))*255);
-        
-        
+        value=round((1-((((wav_position>>3))-pulseLength)/n_tan_theta))*255);
         pwm_set_gpio_level(AUDIO_PIN, value);
         wav_position++;
     }
     else
     {
         adc_value = (adc_read()) * conversionfactor;
-        pulseLength = round(86 * adc_value);
-        if (pulseLength > 172)
+        pulseLength = round(wavelength * adc_value/3.3);
+        if (pulseLength > wavelength)
         {
-            pulseLength = 172;
+            pulseLength = wavelength;
         }
         n_tan_theta = wavelength - pulseLength;
         // reset to start
         wav_position = 0;
-        var=1;
     }
 }
 
