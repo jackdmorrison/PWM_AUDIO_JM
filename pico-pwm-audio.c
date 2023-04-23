@@ -35,7 +35,7 @@
 #define GATE2 21
 
 //header file with wave frequency, configuration and level arrays
-#include "waves.h"
+#include "configuration.h"
 //global variables for the PWM slices
 uint audio_pin_slice;
 uint audio_pin_slice2;

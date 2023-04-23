@@ -238,7 +238,7 @@ pbla=wav.make_porabola_wav()#porabola wave
 harmonics=wav.make_harmonics()#array of harmonic waves
 
 #open header file
-f=open("waves.h","w")
+f=open("configuration.h","w")
 #write top comment
 f.write("/* wave tables for a frequency of "+str(Frequency)+'\n')
 f.write(" * with repeating rate of " + str(repeatRate)+'\n')
@@ -278,9 +278,10 @@ f.write('};\n')
 f.write("uint"+str(bit)+"_t PRBA_WAV_DATA[] = {\n")
 f.write('    '+pbla+'\n')
 f.write('};\n')
-
+d=1
 #write each harmonic array in harmonics array array
 for harmonic in harmonics:
+    d+=1
     f.write("uint"+str(bit)+"_t HARMONIC"+str(d)+"_WAV_DATA[] = {\n")
     f.write('    '+harmonic+'\n')
     f.write('};\n')
