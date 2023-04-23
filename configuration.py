@@ -183,10 +183,12 @@ def checkClockDiv(clockfreq, repeatRate,wrap,Frequency):
     if(256<round(Frequency/lowestFreq*clkdiv)):
         print("lowest Frequency cant be met\n")
 while (valid==False):
+    #take input
     Frequency=float(input("FREQUENCY: "))
     repeatRate=float(input("Repeated Rate: "))
     wrap=int(input("WRAP(MAX 65536): "))
     clockfreq=int(input("CLOCKSPEED(125000-220000)kHz: "))
+    #valid initially true
     valid=True
     if(clockfreq>220000):
         print("Clock frequency too large\n")
@@ -208,7 +210,7 @@ while (valid==False):
         
         highestFreq=(Frequency*8)*16/15
         lowestFreq=(Frequency/8)*15/8
-        if(Frequency/highestFreq*clkdiv*4<1.5):
+        if(Frequency/highestFreq*clkdiv*4<1.875):
             valid=False
             print("highestFrequency cant be met\n")
         if(256<round(Frequency/lowestFreq*clkdiv/4)):
