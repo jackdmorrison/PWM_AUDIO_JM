@@ -23,12 +23,12 @@ class wave:
         return vals
     def make_square_wav(self):
         x=0
-        vals=str(self.wrap)
+        vals=str(self.wrap*4/5)
         x+=self.interval
         #set array value to wrap size
         while(x<(self.period+self.interval)/2):
             vals+=', '
-            vals+=str(self.wrap)
+            vals+=str(self.wrap*4/5)
             x+=self.interval
         #set array value to 0
         while(x<(self.period+self.interval)):
