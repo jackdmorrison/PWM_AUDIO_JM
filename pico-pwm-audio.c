@@ -7,7 +7,7 @@
 #include "hardware/sync.h" 
 #include "hardware/adc.h"//adc
 #include "hardware/vreg.h"
-#include "button.h"
+#include "button.c"
 //header file with wave frequency, configuration and level arrays
 #include "configuration.h"
 //Macros for Pin numbers
