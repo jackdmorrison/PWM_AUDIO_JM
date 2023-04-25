@@ -7,7 +7,10 @@
 #include "hardware/sync.h" 
 #include "hardware/adc.h"//adc
 #include "hardware/vreg.h"
-
+//header file with wave frequency, configuration and level arrays
+#include "configuration.h"
+//button lib
+#include "button.c"
 //Macros for Pin numbers
 #define AUDIO_PIN  16
 #define AUDIO_PIN2 18
@@ -34,8 +37,7 @@
 #define GATE 20
 #define GATE2 21
 
-//header file with wave frequency, configuration and level arrays
-#include "configuration.h"
+
 //global variables for the PWM slices
 uint audio_pin_slice;
 uint audio_pin_slice2;
@@ -584,6 +586,7 @@ int main(void) {
     pwm_config_set_wrap(&config2, wrap); 
     //initialise slice with config
     pwm_init(audio_pin_slice2, &config2, true);
+    irq_set_enabled(PWM_IRQ_WRAP, true);
     pwm_set_gpio_level(AUDIO_PIN2, 0);
 
     while(1) {
