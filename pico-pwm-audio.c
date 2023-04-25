@@ -443,7 +443,7 @@ void pwm_interrupt_handler() {
     irq= pwm_get_irq_status_mask();
     //check pin slice 
     if(irq & (1<<0)){
-        pwm_clear_irq(1);
+        pwm_clear_irq(0);
         /*
             if the wave postion is less than the wave position
             variable bit shift that modulates the number of repeated 
