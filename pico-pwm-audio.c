@@ -401,8 +401,8 @@ void pwm_interrupt_handler() {
     //find interupt mask to determin slice
     irq= pwm_get_irq_status_mask();
     //check pin slice 
-    if(irq & (1<<audio_pin_slice)){
-        pwm_clear_irq(audio_pin_slice);
+    if(irq & (1<<0)){
+        pwm_clear_irq(1);
         /*
             if the wave postion is less than the wave position
             variable bit shift that modulates the number of repeated 
@@ -438,8 +438,8 @@ void pwm_interrupt_handler() {
                 updateClockDiv(AUDIO_PIN,audio_pin_slice,currentF);
             }
         }  
-    }else if(irq & (1<<audio_pin_slice2)){
-        pwm_clear_irq(audio_pin_slice2);
+    }else if(irq & (1<<1)){
+        pwm_clear_irq(1);
         /*
             if the wave postion is less than the wave position
             variable bit shift that modulates the number of repeated 
