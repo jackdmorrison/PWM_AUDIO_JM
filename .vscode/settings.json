@@ -3,6 +3,7 @@
     "files.associations": {
         "piano-g6.h": "c",
         "cmath": "c",
-        "configuration.h": "c"
+        "configuration.h": "c",
+        "stdint.h": "c"
     }
 }

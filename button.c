@@ -10,7 +10,7 @@
 
 #ifndef PICO_BUTTON_C
 #define PICO_BUTTON_C
-
+#define DEBOUNCE_US 200
 #include "pico/stdlib.h"
 #include <stdint.h>
 #include <stdlib.h>
