@@ -414,7 +414,6 @@ void onchange(button_t *button_p) {
                     vibrato2=true;
                 }
             }
-            
             break;
         case SWITCHEFFECTS:
             //if effects1 switch to effects2
