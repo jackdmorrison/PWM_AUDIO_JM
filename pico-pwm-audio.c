@@ -113,7 +113,7 @@ void updateClockDiv(int PIN,int pin_slice, float newFrequency){
         //find clock new clock divider
         clockDiv=(WAV_FREQUENCY/newFrequency)*clkDiv*4;
         //find the bitshift value 
-        if(pin_slice=audio_pin_slice){
+        if(pin_slice==audio_pin_slice){
             val=0;
         }else{
             val2=0;
@@ -124,7 +124,7 @@ void updateClockDiv(int PIN,int pin_slice, float newFrequency){
         //find clock new clock divider
         clockDiv=(WAV_FREQUENCY/newFrequency)*clkDiv*2;
         //find the bitshift value 
-        if(pin_slice=audio_pin_slice){
+        if(pin_slice==audio_pin_slice){
             val=1;
         }else{
             val2=1;
@@ -135,7 +135,7 @@ void updateClockDiv(int PIN,int pin_slice, float newFrequency){
         //find clock new clock divider
         clockDiv=(WAV_FREQUENCY/newFrequency)*clkDiv/4;
         //find the bitshift value 
-        if(pin_slice=audio_pin_slice){
+        if(pin_slice==audio_pin_slice){
             val=4;
         }else{
             val2=4;
@@ -146,7 +146,7 @@ void updateClockDiv(int PIN,int pin_slice, float newFrequency){
         //find clock new clock divider
         clockDiv=(WAV_FREQUENCY/newFrequency)*clkDiv/2;
         //find the bitshift value 
-        if(pin_slice=audio_pin_slice){
+        if(pin_slice==audio_pin_slice){
             val=3;
         }else{
             val2=3;
@@ -157,7 +157,7 @@ void updateClockDiv(int PIN,int pin_slice, float newFrequency){
         //find clock new clock divider
         clockDiv=(WAV_FREQUENCY/newFrequency)*clkDiv;
         //find the bitshift value 
-        if(pin_slice=audio_pin_slice){
+        if(pin_slice==audio_pin_slice){
             val=2;
         }else{
             val2=2;
@@ -567,7 +567,7 @@ int main(void) {
     pwm_init(audio_pin_slice, &config, true);
 
     // Setup PWM interrupt to fire when PWM cycle is complete
-    irq_set_enabled(PWM_IRQ_WRAP, true);
+    
     pwm_set_gpio_level(AUDIO_PIN, 0);
 
 
@@ -584,6 +584,7 @@ int main(void) {
     pwm_config_set_wrap(&config2, wrap); 
     //initialise slice with config
     pwm_init(audio_pin_slice2, &config2, true);
+    irq_set_enabled(PWM_IRQ_WRAP, true);
     pwm_set_gpio_level(AUDIO_PIN2, 0);
 
     while(1) {
