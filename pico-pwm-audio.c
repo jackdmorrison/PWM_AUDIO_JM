@@ -30,8 +30,8 @@
 #define SINE 2
 
 #define SWITCHEFFECTS 13
-#define INTONATION 14
-#define VIBRATO_PIN 0
+#define INTONATION 0
+#define VIBRATO_PIN 14
 
 #define GATE 20
 #define GATE2 21
@@ -105,47 +105,7 @@ bool vibUP2=true;//vibrato move up or down in frequency
 
 bool effects1=true;//buttons effects for effects 1(true) or 2(false)
 float level;
-closure_t handlers[28] = {NULL};
-alarm_id_t alarm_ids[28];
-long long int handle_button_alarm(long int a, void *p) {
-  button_t *b = (button_t *)(p);
-  bool state = gpio_get(b->pin);
-  if (state != b->state) {
-    b->state = state;
-    b->onchange(b);
-  }
-  return 0;
-}
 
-void handle_button_interrupt(void *p) {
-  button_t *b = (button_t *)(p);
-  if (alarm_ids[b->pin]) cancel_alarm(alarm_ids[b->pin]);
-  alarm_ids[b->pin] = add_alarm_in_us(DEBOUNCE_US, handle_button_alarm, b, true);
-}
-
-void handle_interrupt(uint gpio, uint32_t events) {
-  closure_t handler = handlers[gpio];
-  handler.fn(handler.argument);
-}
-
-void listen(uint pin, int condition, handler fn, void *arg) {
-  gpio_set_irq_enabled_with_callback(pin, condition, true, handle_interrupt);
-  closure_t *handler = malloc(sizeof(closure_t));
-  handler->argument = arg;
-  handler->fn = fn;
-  handlers[pin] = *handler;
-}
-
-button_t * create_button(int pin, void (*onchange)(button_t *)) {
-  gpio_init(pin);
-  gpio_pull_up(pin);
-  button_t *b = (button_t *)(malloc(sizeof(button_t)));
-  listen(pin, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, handle_button_interrupt, b);
-  b->pin = pin;
-  b->onchange = onchange;
-  b->state = gpio_get(pin);
-  return b;
-}
 //function to update hardware with new clock divider based on the newFrequency
 //also update the val variable for each octave
 void updateClockDiv(int PIN,int pin_slice, float newFrequency){
