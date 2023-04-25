@@ -35,7 +35,7 @@ pico_enable_stdio_usb(pico-pwm-audio 0)
 target_link_libraries(pico-pwm-audio pico_stdlib)
 
 # Add any user requested libraries
-target_link_libraries(Button pico-pwm-audio
+target_link_libraries(pico-pwm-audio
         hardware_dma
         hardware_pio
         hardware_timer
