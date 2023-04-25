@@ -15,17 +15,18 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+typedef void (*handler)(void *argument);
+typedef struct {
+  void * argument;
+  handler fn;
+} closure_t;
 closure_t handlers[28] = {NULL};
+
 typedef struct button_t {
   uint8_t pin;
   bool state;
   void (*onchange)(struct button_t *button);
 } button_t;
-
-typedef struct {
-  void * argument;
-  handler fn;
-} closure_t;
 
 void handle_interupt(uint gpio, uint32_t events) {
   closure_t handler = handlers[gpio];
@@ -47,15 +48,6 @@ void handle_button_interrupt(void *p) {
   bool state = gpio_get(b->pin);
   add_alarm_in_us(200, handle_button_alarm, b, true);
 }
-
-button_t * create_button(int pin, void (*onchange)(button_t *)) {
-  button_t *b = (button_t *)(malloc(sizeof(button_t)));
-  listen(pin, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, handle_button_interrupt, b);
-  b->pin = pin;
-  b->onchange = onchange;
-  b->state = gpio_get(pin);
-  return b;
-}
 void listen(uint pin, int condition, handler fn, void *arg) {
   gpio_init(pin);
   gpio_pull_up(pin);
@@ -64,5 +56,13 @@ void listen(uint pin, int condition, handler fn, void *arg) {
   handler->argument = arg;
   handler->fn = fn;
   handlers[pin] = *handler;
+}
+button_t * create_button(int pin, void (*onchange)(button_t *)) {
+  button_t *b = (button_t *)(malloc(sizeof(button_t)));
+  listen(pin, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, handle_button_interrupt, b);
+  b->pin = pin;
+  b->onchange = onchange;
+  b->state = gpio_get(pin);
+  return b;
 }
 #endif

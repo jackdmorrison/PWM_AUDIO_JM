@@ -361,7 +361,7 @@ void onchange(button_t *button_p) {
             //if effects1 or 2
             if(effects1){
                 if(vibrato){
-                    updateClockDiv(AUDIO_PIN,audio_pin_slice,Frequency);
+                    updateClockDiv(AUDIO_PIN,audio_pin_slice,frequency);
                     vibrato=false;
                 }else{
                     vibrato=true;
@@ -376,7 +376,7 @@ void onchange(button_t *button_p) {
             }
             
             break;
-        case SWITCHSIGNAL:
+        case SWITCHEFFECTS:
             //if effects1 switch to effects2
             if(effects1){
                 gpio_put(LED, false);
@@ -449,7 +449,7 @@ void pwm_interrupt_handler() {
         if (wav_position2 < (WAV_DATA_LENGTH<<val) - 1) { 
             // set pwm level on slice and pin
             // allow the pwm value to repeat for 2^val cycles   
-            level=findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2>>val)/(evenHarmonics2+oddHarmonics2+1)
+            level=findValue(buttonNum2,evenHarmonics2,oddHarmonics2,wav_position2>>val)/(evenHarmonics2+oddHarmonics2+1);
             pwm_set_chan_level(audio_pin_slice2,audio_pin_channel2, round(level));
             wav_position2++;
         } else {
