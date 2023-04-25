@@ -38,65 +38,67 @@ class wave:
         #return array values as string
         return vals
     def make_triangle_wav(self):
-        #find tan theta for quarter of the wave period 
+        
         tan_theta=4*(self.amplitude/self.period)
         x=0
-        #find duty cycle at x interval
-        v=((x*tan_theta)+self.amplitude)/(self.amplitude*2)
-        #find level by multiplying by the wrap
-        vals=str(int(v*self.wrap))
+        v=x*(tan_theta)
+        vals=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
         x+=self.interval
-        #iterate through first quarter of the period
         while(x<(self.period+self.interval)/4):
             vals+=', '
-            #find duty cycle at x interval
-            v=((x*tan_theta)+self.amplitude)/(self.amplitude*2)
-            #find level by multiplying by the wrap
-            vals=str(int(v*self.wrap))
+            v=x*(tan_theta)
+            vals+=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
             x+=self.interval
-        #iterate through the 2nd and 3rd quarter
+        
         while(x<(3*(self.period+self.interval)/4)):
             vals+=', '
-            #find duty cycle at x interval
-            v=(3*(self.amplitude)-(x*tan_theta))/(self.amplitude*2)
-            #find level by multiplying by the wrap
-            vals+=str(int(v*self.wrap))
+            v=2*(self.amplitude)-(x*tan_theta)
+            vals+=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
             x+=self.interval
-        #iterate to end of wave
+            
+            
         while x<(self.period+(self.interval)):
             vals+=', '
-            #find duty cycle at x interval
-            v=((x*(tan_theta))-3*self.amplitude)/(self.amplitude*2)
-            #find level by multiplying by the wrap
-            vals+=str(int(v*self.wrap))
+            v=x*(tan_theta)
+            vals+=str(int((v-3*self.amplitude)/(self.amplitude*2)*self.wrap))
             x+=self.interval
-        #return array values as string
+            
         return vals
     def make_sawtooth_wav(self):
-        #find tan theta for half of the wave period
         tan_theta=2*(self.amplitude/self.period)
         x=0
-        #find the duty cycle at x interval
-        v=(x*(tan_theta)+self.amplitude)/(self.amplitude*2)
-        vals=str(int(v*self.wrap))
+        v=x*(tan_theta)
+        vals=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
         x+=self.interval
-        #find values for first half of the period
         while(x<(self.period+(self.interval))/2):
             vals+=', '
-            #find the duty cycle at x interval
-            v=(x*(tan_theta)+self.amplitude)/(self.amplitude*2)
-            #find level by multiplying by the wrap
-            vals=str(int(v*self.wrap))
+            v=x*(tan_theta)
+            vals+=str(int((v+self.amplitude)/(self.amplitude*2)*self.wrap))
             x+=self.interval
-        #find values for the second half of the period
+            
         while x<(self.period+(self.interval)):
             vals+=', '
-            #find the duty cycle at x interval
-            v=(x*(tan_theta)-self.amplitude)/(self.amplitude*2)
-            #find level by multiplying by the wrap
-            vals+=str(int(v*self.wrap))
+            v=x*(tan_theta)
+            vals+=str(int((v-self.amplitude)/(self.amplitude*2)*self.wrap))
             x+=self.interval
-        #return array values as string
+        return vals
+    def make_reversed_sawtooth_wav(self):
+        tan_theta=2*(self.amplitude/self.period)
+        x=0
+        v=(x*tan_theta)
+        vals=str(int((self.amplitude-v)/(self.amplitude*2)*self.wrap))
+        x+=self.interval
+        while(x<(self.period+self.interval)/2):
+            vals+=', '
+            v=(x*tan_theta)
+            vals+=str(int((self.amplitude-v)/(self.amplitude*2)*self.wrap))
+            x+=self.interval
+        while x<(self.period+(self.interval)):
+            vals+=', '
+            v=(x*tan_theta)
+            vals+=str(int((3*self.amplitude-v)/(self.amplitude*2)*self.wrap))
+            x+=self.interval
+            
         return vals
     def make_reversed_sawtooth_wav(self):
         tan_theta=2*(self.amplitude/self.period)
