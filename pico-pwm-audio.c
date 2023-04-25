@@ -1,16 +1,15 @@
 #include <stdio.h>
 #include <math.h>
-#include "button.c"
+
 #include <pico/stdlib.h>    
 #include "hardware/irq.h"  //interupts
 #include "hardware/pwm.h"  //pwm
 #include "hardware/sync.h" 
 #include "hardware/adc.h"//adc
 #include "hardware/vreg.h"
+#include "button.c"
 //header file with wave frequency, configuration and level arrays
 #include "configuration.h"
-//button lib
-#include "button.c"
 //Macros for Pin numbers
 #define AUDIO_PIN  16
 #define AUDIO_PIN2 18
