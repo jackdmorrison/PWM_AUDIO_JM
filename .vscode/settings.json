@@ -2,6 +2,8 @@
     "C_Cpp.errorSquiggles": "Disabled",
     "files.associations": {
         "piano-g6.h": "c",
-        "cmath": "c"
+        "cmath": "c",
+        "configuration.h": "c",
+        "stdint.h": "c"
     }
 }
