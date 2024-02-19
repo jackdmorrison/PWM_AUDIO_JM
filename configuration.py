@@ -144,13 +144,13 @@ class wave:
             #find B variable for harmonic h
             B=(2*math.pi*(self.frequency)*(h+1))
             #find level at x 
-            vals=str(int(self.wrap*(self.amplitude*(math.sin(B*x))+1)/2))
+            vals=str(int(self.wrap*(1/(h+1))*(self.amplitude*(math.sin(B*x))+1)/2))
             x+=self.interval
             #loop through until period of base frequency reached
             while x<((self.period)+(self.interval)):
                 vals+=', '
                 #find level at x 
-                vals+=str(int(self.wrap*(self.amplitude*(math.sin(B*x))+1)/2))
+                vals+=str(int(self.wrap*(1/(h+1))*(self.amplitude*(math.sin(B*x))+1)/2))
                 x+=self.interval
             #add string of array values to array
             harmonics.append(vals)
